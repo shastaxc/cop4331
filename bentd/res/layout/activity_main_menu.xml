@@ -1,0 +1,46 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    tools:context="${packageName}.${activityClass}" >
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight=".60" />
+    
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight=".40" >
+        
+		<Button
+	        android:id="@+id/resume_btn"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentTop="true"
+	        android:layout_marginTop="50dp"
+	        android:layout_marginRight="20dp"
+	        android:text="@string/resume_btn_txt" />
+		
+	    <Button
+	        android:id="@+id/new_game_btn"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/resume_btn"
+	        android:layout_marginRight="20dp"
+	        android:text="@string/new_game_btn_txt" />
+
+	    <Button
+	        android:id="@+id/settings_btn"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/new_game_btn"
+	        android:layout_marginRight="20dp"
+	        android:text="@string/settings_btn_txt" />
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">bentd</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_game_instance">GameInstance</string>
+    <string name="resume_btn_txt">Resume</string>
+    <string name="new_game_btn_txt">New Game</string>
+    <string name="settings_btn_txt">Settings</string>
+
+</resources>
