@@ -2,12 +2,91 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="${packageName}.${activityClass}"
-    android:padding="10dp" >
+    tools:context="${packageName}.${activityClass}" >
 
-    <TextView
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+    	android:padding="5dp"
+    	android:background="@drawable/stats_bg" >
+        
+        <Button
+	        android:id="@+id/pause_btn"
+        	android:layout_width="25dp"
+        	android:layout_height="25dp"
+        	android:layout_marginRight="5dp"
+    	    android:layout_centerVertical="true"
+        	android:background="@drawable/pause_icon" />
+        
+        <Button
+	        android:id="@+id/settings_btn"
+        	android:layout_width="25dp"
+        	android:layout_height="25dp"
+        	android:layout_marginRight="5dp"
+    	    android:layout_centerVertical="true"
+    	    android:layout_toRightOf="@+id/pause_btn"
+        	android:background="@drawable/settings_icon" />
+        
+    	<ImageView
+	        android:id="@+id/currency_img"
+        	android:layout_width="25dp"
+        	android:layout_height="25dp"
+        	android:layout_marginRight="3dp"
+        	android:contentDescription="@string/currency_icon"
+    	    android:layout_centerVertical="true"
+    	    android:layout_toRightOf="@+id/settings_btn"
+        	android:src="@drawable/currency_icon"
+        	android:text="$" />
+
+    	<TextView
+    	    android:id="@+id/currency_textview"
+    	    android:layout_width="50dp"
+    	    android:layout_height="wrap_content"
+    	    android:layout_centerVertical="true"
+    	    android:layout_toRightOf="@+id/currency_img"
+    	    android:textSize="20sp"
+    	    android:textColor="#000000" />
+    	
+    	<ImageView
+	        android:id="@+id/wave_img"
+        	android:layout_width="25dp"
+        	android:layout_height="25dp"
+    	    android:layout_toRightOf="@+id/currency_textview"
+        	android:layout_marginLeft="5dp"
+        	android:layout_marginRight="3dp"
+    	    android:layout_centerVertical="true"
+        	android:contentDescription="@string/wave_icon"
+        	android:src="@drawable/wave_icon" />
+    	
+    	<TextView
+    	    android:id="@+id/wave_textview"
+    	    android:layout_width="35dp"
+    	    android:layout_height="wrap_content"
+    	    android:layout_centerVertical="true"
+    	    android:layout_toRightOf="@+id/wave_img"
+    	    android:textSize="20sp"
+    	    android:textColor="#000000" />
+    	
+    	<ImageView
+	        android:id="@+id/time_remaining_img"
+        	android:layout_width="25dp"
+        	android:layout_height="25dp"
+    	    android:layout_toRightOf="@+id/wave_textview"
+        	android:layout_marginLeft="5dp"
+        	android:layout_marginRight="3dp"
+        	android:contentDescription="@string/clock_icon"
+    	    android:layout_centerVertical="true"
+        	android:src="@drawable/clock_icon" />
+    	
+    	<TextView
+    	    android:id="@+id/time_remaining_textview"
+    	    android:layout_width="50dp"
+    	    android:layout_height="wrap_content"
+    	    android:layout_centerVertical="true"
+    	    android:layout_toRightOf="@+id/time_remaining_img"
+    	    android:textSize="20sp"
+    	    android:textColor="#000000" />
+
+   	</RelativeLayout>
 
 </LinearLayout>
