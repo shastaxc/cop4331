@@ -18,6 +18,9 @@ public class GameInstance extends Activity {
         TextView currency_textview = (TextView) findViewById(R.id.currency_textview);
         currency_textview.setText("0000");
         
+        TextView life_textview = (TextView) findViewById(R.id.life_textview);
+        life_textview.setText("100");
+        
         TextView wave_textview = (TextView) findViewById(R.id.wave_textview);
         wave_textview.setText("0/8");
         

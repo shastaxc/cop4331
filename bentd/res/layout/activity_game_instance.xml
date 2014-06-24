@@ -22,15 +22,15 @@
 	        android:id="@+id/settings_btn"
         	android:layout_width="25dp"
         	android:layout_height="25dp"
-        	android:layout_marginRight="5dp"
+        	android:layout_marginRight="10dp"
     	    android:layout_centerVertical="true"
     	    android:layout_toRightOf="@+id/pause_btn"
         	android:background="@drawable/settings_icon" />
         
     	<ImageView
 	        android:id="@+id/currency_img"
-        	android:layout_width="25dp"
-        	android:layout_height="25dp"
+        	android:layout_width="15dp"
+        	android:layout_height="15dp"
         	android:layout_marginRight="3dp"
         	android:contentDescription="@string/currency_icon"
     	    android:layout_centerVertical="true"
@@ -40,18 +40,38 @@
 
     	<TextView
     	    android:id="@+id/currency_textview"
-    	    android:layout_width="50dp"
+    	    android:layout_width="wrap_content"
     	    android:layout_height="wrap_content"
     	    android:layout_centerVertical="true"
     	    android:layout_toRightOf="@+id/currency_img"
-    	    android:textSize="20sp"
+    	    android:textSize="15sp"
+    	    android:textColor="#000000" />
+    	
+    	<ImageView
+	        android:id="@+id/life_img"
+        	android:layout_width="15dp"
+        	android:layout_height="15dp"
+        	android:layout_marginLeft="5dp"
+        	android:layout_marginRight="3dp"
+        	android:contentDescription="Life"
+    	    android:layout_centerVertical="true"
+    	    android:layout_toRightOf="@+id/currency_textview"
+        	android:src="@drawable/heart_icon" />
+
+    	<TextView
+    	    android:id="@+id/life_textview"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    android:layout_centerVertical="true"
+    	    android:layout_toRightOf="@+id/life_img"
+    	    android:textSize="15sp"
     	    android:textColor="#000000" />
     	
     	<ImageView
 	        android:id="@+id/wave_img"
-        	android:layout_width="25dp"
-        	android:layout_height="25dp"
-    	    android:layout_toRightOf="@+id/currency_textview"
+        	android:layout_width="15dp"
+        	android:layout_height="15dp"
+    	    android:layout_toRightOf="@+id/life_textview"
         	android:layout_marginLeft="5dp"
         	android:layout_marginRight="3dp"
     	    android:layout_centerVertical="true"
@@ -60,17 +80,17 @@
     	
     	<TextView
     	    android:id="@+id/wave_textview"
-    	    android:layout_width="35dp"
+    	    android:layout_width="wrap_content"
     	    android:layout_height="wrap_content"
     	    android:layout_centerVertical="true"
     	    android:layout_toRightOf="@+id/wave_img"
-    	    android:textSize="20sp"
+    	    android:textSize="15sp"
     	    android:textColor="#000000" />
     	
     	<ImageView
 	        android:id="@+id/time_remaining_img"
-        	android:layout_width="25dp"
-        	android:layout_height="25dp"
+        	android:layout_width="15dp"
+        	android:layout_height="15dp"
     	    android:layout_toRightOf="@+id/wave_textview"
         	android:layout_marginLeft="5dp"
         	android:layout_marginRight="3dp"
@@ -80,11 +100,11 @@
     	
     	<TextView
     	    android:id="@+id/time_remaining_textview"
-    	    android:layout_width="50dp"
+    	    android:layout_width="wrap_content"
     	    android:layout_height="wrap_content"
     	    android:layout_centerVertical="true"
     	    android:layout_toRightOf="@+id/time_remaining_img"
-    	    android:textSize="20sp"
+    	    android:textSize="15sp"
     	    android:textColor="#000000" />
 
    	</RelativeLayout>
