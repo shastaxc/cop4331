@@ -26,28 +26,33 @@ public class MapView extends TileView{
     private static final int TOP_RIGHT_CORNER = 6; //Index to reference drawable
     private static final int BOTTOM_LEFT_CORNER = 7; //Index to reference drawable
     private static final int BOTTOM_RIGHT_CORNER = 8; //Index to reference drawable
-    private static final int NO_EDGE = 9; //Index to reference drawable
-    
-    int[][] map_grid;
+    private static final int TOP_LEFT_INSIDE_CORNER = 9; //Index to reference drawable
+    private static final int TOP_RIGHT_INSIDE_CORNER = 10; //Index to reference drawable
+    private static final int BOTTOM_LEFT_INSIDE_CORNER = 11; //Index to reference drawable
+    private static final int BOTTOM_RIGHT_INSIDE_CORNER = 12; //Index to reference drawable
+    private static final int NO_EDGE = 13; //Index to reference drawable
 	
 	//Various constructors using standard View constructor syntax
     public MapView(Context context) {
         super(context);
+        initializeMap();
     }
 
     public MapView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initializeMap();
     }
 
     public MapView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        initializeMap();
     }
 	
 	public void initializeMap(){
 		setFocusable(true);
 		Resources r = this.getContext().getResources();
 		
-		resetTiles(10);
+		createImgHolder(14);
 		//Index 0 = nothing
 		loadTile(TOP_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_t_edge)); //Index 1
 		loadTile(BOTTOM_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_b_edge)); //Index 2
@@ -57,8 +62,11 @@ public class MapView extends TileView{
 		loadTile(TOP_RIGHT_CORNER, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_tr_corner)); //Index 6
 		loadTile(BOTTOM_LEFT_CORNER, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_bl_corner)); //Index 7
 		loadTile(BOTTOM_RIGHT_CORNER, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_br_corner)); //Index 8
-		loadTile(NO_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_no_edge)); //Index 9
-		
+		loadTile(TOP_LEFT_INSIDE_CORNER, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_tl_inside_corner)); //Index 9
+		loadTile(TOP_RIGHT_INSIDE_CORNER, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_tr_inside_corner)); //Index 10
+		loadTile(BOTTOM_LEFT_INSIDE_CORNER, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_bl_inside_corner)); //Index 11
+		loadTile(BOTTOM_RIGHT_INSIDE_CORNER, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_br_inside_corner)); //Index 12
+		loadTile(NO_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_no_edge)); //Index 13
 	}
 	
 	
@@ -129,5 +137,6 @@ public class MapView extends TileView{
             }
         }
         MapView.this.invalidate();
+        setMode(RUNNING);
     }
 }

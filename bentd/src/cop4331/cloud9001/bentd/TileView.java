@@ -37,7 +37,7 @@ public class TileView extends View{
      * A two-dimensional array of integers in which the number represents the
      * index of the tile that should be drawn at that locations
      */
-    private int[][] map_grid;
+    public static int[][] map_grid = new int[Y_TILE_COUNT][X_TILE_COUNT];
 
     private final Paint paintbrush = new Paint();
 
@@ -73,27 +73,13 @@ public class TileView extends View{
      * Rests the internal array of Bitmaps used for drawing tiles, and
      * sets the maximum index of tiles to be inserted
      */
-    
-    public void resetTiles(int tilecount) {
+    public void createImgHolder(int tilecount) {
     	tile_imgs = new Bitmap[tilecount];
-    }
-
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-    	x_offset = ((w - (tile_width * X_TILE_COUNT)) / 2);
-    	y_offset = ((h - (tile_height * Y_TILE_COUNT)) / 2);
-
-        map_grid = new int[Y_TILE_COUNT][X_TILE_COUNT];
-        clearTiles();
     }
 
     /**
      * Function to set the specified Drawable as the tile for a particular
      * integer key.
-     * 
-     * @param key
-     * @param tile
      */
     public void loadTile(int key, Drawable tile) {
         Bitmap bitmap = Bitmap.createBitmap(tile_width, tile_height, Bitmap.Config.ARGB_8888);
@@ -122,7 +108,7 @@ public class TileView extends View{
                     canvas.drawBitmap(tile_imgs[map_grid[y][x]], 
                     		x_offset + x * tile_width,
                     		y_offset + y * tile_height,
-                    		null);
+                    		paintbrush);
                 }
             }
         }
