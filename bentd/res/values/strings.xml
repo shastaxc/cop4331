@@ -10,5 +10,12 @@
     <string name="currency_icon">Currency Icon</string>
     <string name="wave_icon">Wave Icon</string>
     <string name="clock_icon">Clock Icon</string>
+    <string name="mode_pause">Paused</string>
+    <string name="mode_ready">Tap screen to begin</string>
+    <string name="mode_defeat">Defeat</string>
+    <string name="mode_victory">Victory</string>
+    <string name="dollar_sign">$</string>
+    <string name="health">Health</string>
+    <string name="default_text">text</string>
 
 </resources>
