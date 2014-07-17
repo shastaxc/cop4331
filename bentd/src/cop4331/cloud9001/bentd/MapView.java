@@ -49,7 +49,7 @@ public class MapView extends TileView{
     }
 	
 	public void initializeMap(){
-		setFocusable(false);
+		setFocusable(true);
 		Resources r = this.getContext().getResources();
 		
 		createImgHolder(14);
@@ -105,8 +105,8 @@ public class MapView extends TileView{
         int previous_mode = game_state;
         game_state = new_mode;
 
-        if (new_mode == RUNNING && previous_mode != RUNNING) {
-            event_text.setVisibility(View.GONE);
+        if (new_mode == RUNNING & previous_mode != RUNNING) {
+            event_text.setVisibility(View.INVISIBLE);
             return;
         }
 
@@ -138,9 +138,5 @@ public class MapView extends TileView{
         }
         MapView.this.invalidate();
         setMode(RUNNING);
-    }
-    
-    public int getState(){
-    	return this.game_state;
     }
 }
