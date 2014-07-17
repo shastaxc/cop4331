@@ -61,22 +61,33 @@ public class GameInstance extends Activity {
 	
 	//Global on click listener
     final OnClickListener global_on_click_listener = new OnClickListener() {
+<<<<<<< HEAD
         @Override
 		public void onClick(final View v) {
     		switch(v.getId()){
     			case R.id.resume_btn:
     				pauseBtnClick();
+=======
+        public void onClick(final View v) {
+        	if(basic_map_view.getState() == MapView.PAUSE){
+        		basic_map_view.setMode(MapView.RUNNING);
+        	}
+        	else{
+        		switch(v.getId()){
+    			case R.id.pause_btn:
+    				basic_map_view.setMode(MapView.PAUSE);
+>>>>>>> origin/v1.1
     				break;
     			case R.id.new_game_btn:
     				settingsBtnClick();
     				break;
-    		}
+    			case cop4331.cloud9001.bentd.R.id.event_textview:
+    				basic_map_view.setMode(MapView.RUNNING);
+    				break;
+        		}
+        	}
         }
     };
-    
-    private static void pauseBtnClick(){
-    	//game_state = basic_map_view.setMode(MapView.PAUSE);
-    }
     
     private static void settingsBtnClick(){
     	
