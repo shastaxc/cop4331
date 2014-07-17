@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#1BCC38"
+    android:orientation="vertical"
     tools:context="${packageName}.${activityClass}" >
 
     <!-- Stats Bar UI -->
@@ -113,14 +113,20 @@
 
    	</RelativeLayout>
    	<!-- End Stats UI -->
-
+	
    	<!-- Map View -->
    	<cop4331.cloud9001.bentd.MapView
 		android:id="@+id/map"
 		android:layout_width="match_parent"
        	android:layout_height="match_parent"
     />
-	
+   	<!--  End Map View -->
+	<cop4331.cloud9001.bentd.GameView 
+	    android:id="@+id/game"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	/>"
+   	
    	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
@@ -137,5 +143,4 @@
 			android:textSize="30sp"
 		/>
    	</LinearLayout>
-
 </FrameLayout>

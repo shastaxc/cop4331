@@ -10,6 +10,7 @@ import android.widget.TextView;
 public class GameInstance extends Activity {
 
 	private MapView basic_map_view;
+	private GameView game_view;
 	//Used to restore saved game
     private static String CAPSULE_KEY = "map-view";
     
@@ -22,6 +23,8 @@ public class GameInstance extends Activity {
 		basic_map_view = (MapView) findViewById(cop4331.cloud9001.bentd.R.id.map);
         basic_map_view.setEventText((TextView) findViewById(cop4331.cloud9001.bentd.R.id.event_textview));
         basic_map_view.setMapGrid(0);
+        
+        game_view = (GameView) findViewById(cop4331.cloud9001.bentd.R.id.game);
         
         /*
         if (savedInstanceState == null) {
@@ -58,7 +61,8 @@ public class GameInstance extends Activity {
 	
 	//Global on click listener
     final OnClickListener global_on_click_listener = new OnClickListener() {
-        public void onClick(final View v) {
+        @Override
+		public void onClick(final View v) {
     		switch(v.getId()){
     			case R.id.resume_btn:
     				pauseBtnClick();

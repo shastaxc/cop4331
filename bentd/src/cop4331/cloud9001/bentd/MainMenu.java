@@ -28,7 +28,8 @@ public class MainMenu extends Activity{
 	
 	//Global on click listener
     final OnClickListener globalOnClickListener = new OnClickListener() {
-        public void onClick(final View v) {
+        @Override
+		public void onClick(final View v) {
         	// TODO Auto-generated method stub
     		switch(v.getId()){
     			case R.id.resume_btn:
