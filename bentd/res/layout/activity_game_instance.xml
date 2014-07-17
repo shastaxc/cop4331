@@ -6,7 +6,14 @@
     android:background="#1BCC38"
     tools:context="${packageName}.${activityClass}" >
 
-    <!-- Stats Bar UI -->
+   	<!-- Map View -->
+   	<cop4331.cloud9001.bentd.MapView
+		android:id="@+id/map"
+		android:layout_width="match_parent"
+       	android:layout_height="match_parent"
+    />
+   	
+   	<!-- Stats Bar UI -->
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,7 +26,7 @@
         	android:layout_height="25dp"
         	android:layout_marginRight="5dp"
     	    android:layout_centerVertical="true"
-        	android:background="@drawable/pause_icon" 
+        	android:background="@drawable/pause_btn_selector" 
         />
         <Button
 	        android:id="@+id/settings_btn"
@@ -28,7 +35,7 @@
         	android:layout_marginRight="10dp"
     	    android:layout_centerVertical="true"
     	    android:layout_toRightOf="@+id/pause_btn"
-        	android:background="@drawable/settings_icon" 
+        	android:background="@drawable/settings_btn_selector" 
         />
     	<ImageView
 	        android:id="@+id/currency_img"
@@ -113,17 +120,12 @@
 
    	</RelativeLayout>
    	<!-- End Stats UI -->
-
-   	<!-- Map View -->
-   	<cop4331.cloud9001.bentd.MapView
-		android:id="@+id/map"
-		android:layout_width="match_parent"
-       	android:layout_height="match_parent"
-    />
 	
    	<LinearLayout
+   	    android:id="@+id/textview_layout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:clickable="false"
 		android:gravity="center">
 		<!-- Display messages in game -->		
 		<TextView
@@ -135,6 +137,7 @@
 			android:background="#FFA500"
 			android:textColor="#FFFFFF"
 			android:textSize="30sp"
+			android:clickable="true"
 		/>
    	</LinearLayout>
 
