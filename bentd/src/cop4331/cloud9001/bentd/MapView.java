@@ -13,11 +13,13 @@ public class MapView extends TileView{
     public static final int PAUSE = 0; //Index to reference game state
     public static final int READY = 1; //Index to reference game state
     public static final int RUNNING = 2; //Index to reference game state
-    public static final int DEFEAT = 3; //Index to reference game state
-    public static final int VICTORY = 4; //Index to reference game state
+    public static final int FAST_FORWARD = 3; //Index to reference game state
+    public static final int DEFEAT = 4; //Index to reference game state
+    public static final int VICTORY = 5; //Index to reference game state
     
     private static TextView event_text; //Display various messages to user
     
+    private static final int ALL_EDGE = 0;
     private static final int TOP_EDGE = 1; //Index to reference drawable
     private static final int BOTTOM_EDGE = 2; //Index to reference drawable
     private static final int LEFT_EDGE = 3; //Index to reference drawable
@@ -53,7 +55,7 @@ public class MapView extends TileView{
 		Resources r = this.getContext().getResources();
 		
 		createImgHolder(14);
-		//Index 0 = nothing
+		loadTile(ALL_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_all_edge)); //Index 0
 		loadTile(TOP_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_t_edge)); //Index 1
 		loadTile(BOTTOM_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_b_edge)); //Index 2
 		loadTile(LEFT_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_l_edge)); //Index 3
@@ -105,16 +107,13 @@ public class MapView extends TileView{
         int previous_mode = game_state;
         game_state = new_mode;
 
-        if (new_mode == RUNNING & previous_mode != RUNNING) {
+        if ((new_mode == RUNNING && previous_mode != RUNNING) || (new_mode == PAUSE)) {
             event_text.setVisibility(View.INVISIBLE);
             return;
         }
 
         Resources r = getContext().getResources();
         CharSequence str = "";
-        if (new_mode == PAUSE) {
-            str = r.getText(cop4331.cloud9001.bentd.R.string.mode_pause); //"Paused"
-        }
         if (new_mode == READY) {
             str = r.getText(cop4331.cloud9001.bentd.R.string.mode_ready); //"Tap screen to begin"
         }
@@ -127,6 +126,10 @@ public class MapView extends TileView{
 
         event_text.setText(str);
         event_text.setVisibility(View.VISIBLE);
+    }
+    
+    public int getMode(){
+    	return game_state;
     }
     
     public void setMapGrid(int map_number){

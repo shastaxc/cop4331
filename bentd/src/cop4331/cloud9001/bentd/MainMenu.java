@@ -21,24 +21,17 @@ public class MainMenu extends Activity{
 		
 		Button new_game_btn = (Button)findViewById(R.id.new_game_btn);
 		new_game_btn.setOnClickListener(globalOnClickListener);
-		
-		Button settings_btn = (Button)findViewById(R.id.settings_btn);
-		settings_btn.setOnClickListener(globalOnClickListener);
 	}
 	
 	//Global on click listener
     final OnClickListener globalOnClickListener = new OnClickListener() {
         public void onClick(final View v) {
-        	// TODO Auto-generated method stub
     		switch(v.getId()){
     			case R.id.resume_btn:
     				resumeBtnClick();
     				break;
     			case R.id.new_game_btn:
     				newGameBtnClick();
-    				break;
-    			case R.id.settings_btn:
-    				settingsBtnClick();
     				break;
     		}
         }
