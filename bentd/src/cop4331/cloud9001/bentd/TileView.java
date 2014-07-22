@@ -104,7 +104,7 @@ public class TileView extends View{
         super.onDraw(canvas);
         for (int y = 0; y < Y_TILE_COUNT; y++) {
             for (int x = 0; x < X_TILE_COUNT; x++) {
-                if (map_grid[y][x] > 0) {
+                if (map_grid[y][x] >= 0) {
                     canvas.drawBitmap(tile_imgs[map_grid[y][x]], 
                     		x_offset + x * tile_width,
                     		y_offset + y * tile_height,

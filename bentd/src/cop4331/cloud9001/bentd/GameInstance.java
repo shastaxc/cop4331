@@ -33,7 +33,7 @@ public class GameInstance extends Activity {
 		
 		//Load map
 		basic_map_view = (MapView) findViewById(cop4331.cloud9001.bentd.R.id.map);
-        basic_map_view.setEventText((TextView) findViewById(cop4331.cloud9001.bentd.R.id.event_textview));
+        basic_map_view.setEventText((TextView) findViewById(cop4331.cloud9001.bentd.R.id.event_textview), (LinearLayout) findViewById(R.id.text_layout));
         basic_map_view.setMapGrid(0);
         basic_map_view.setMode(MapView.READY);
 		

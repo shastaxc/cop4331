@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MapView extends TileView{
@@ -18,8 +19,9 @@ public class MapView extends TileView{
     public static final int VICTORY = 5; //Index to reference game state
     
     private static TextView event_text; //Display various messages to user
+    private static LinearLayout event_text_layout; //Layout for the event text
     
-    private static final int ALL_EDGE = 0;
+    private static final int ALL_EDGE = 0; //Index to reference drawable
     private static final int TOP_EDGE = 1; //Index to reference drawable
     private static final int BOTTOM_EDGE = 2; //Index to reference drawable
     private static final int LEFT_EDGE = 3; //Index to reference drawable
@@ -51,7 +53,7 @@ public class MapView extends TileView{
     }
 	
 	public void initializeMap(){
-		setFocusable(true);
+		setFocusable(false);
 		Resources r = this.getContext().getResources();
 		
 		createImgHolder(14);
@@ -99,8 +101,9 @@ public class MapView extends TileView{
         //mSnakeTrail = coordArrayToArrayList(capsule.getIntArray("mSnakeTrail"));
     }
     
-    public void setEventText(TextView newView) {
+    public void setEventText(TextView newView, LinearLayout newLayout) {
         event_text = newView;
+        event_text_layout = newLayout;
     }
     
     public void setMode(int new_mode) {
@@ -108,7 +111,8 @@ public class MapView extends TileView{
         game_state = new_mode;
 
         if ((new_mode == RUNNING && previous_mode != RUNNING) || (new_mode == PAUSE)) {
-            event_text.setVisibility(View.INVISIBLE);
+            event_text.setVisibility(View.GONE);
+            event_text_layout.setVisibility(View.GONE);
             return;
         }
 
@@ -126,6 +130,7 @@ public class MapView extends TileView{
 
         event_text.setText(str);
         event_text.setVisibility(View.VISIBLE);
+        event_text_layout.setVisibility(View.VISIBLE);
     }
     
     public int getMode(){
