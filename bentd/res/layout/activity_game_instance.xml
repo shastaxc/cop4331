@@ -22,7 +22,7 @@
 	</LinearLayout>
 	
 	<!-- Game View -->
-    <LinearLayout
+    <FrameLayout
 		android:layout_width="match_parent"
        	android:layout_height="match_parent"
        	android:id="@+id/gameview_layout"
@@ -34,7 +34,7 @@
 	    	android:layout_height="match_parent"
        		android:clickable="true"
 		/>
-	</LinearLayout>
+	</FrameLayout>
 	
    	<!-- Popup Text -->
    	<LinearLayout

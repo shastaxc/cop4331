@@ -20,14 +20,6 @@ public class Tower {
         //height = bmp.getHeight();
         //width = bmp.getWidth();
 	}
-	public Tower(GameView gameView, Bitmap bmp, int x, int y) {
-        this.gameView=gameView;
-        this.bmp=bmp;
-        this.x = x;
-        this.y = y;
-        //height = bmp.getHeight();
-        //width = bmp.getWidth();
-	}
 	
 	public int getx() {
 		return x;

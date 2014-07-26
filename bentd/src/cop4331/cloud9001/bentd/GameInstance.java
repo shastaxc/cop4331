@@ -3,6 +3,7 @@ package cop4331.cloud9001.bentd;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 public class GameInstance extends Activity {
 
+	protected static Context app_context;
 	protected static MapView basic_map_view;
 	private GameView game_view;
 	protected static String CAPSULE_KEY = "map-view"; //Used to restore saved game
@@ -30,6 +32,7 @@ public class GameInstance extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game_instance);
+		app_context = getApplicationContext();
 		
 		//Load map
 		basic_map_view = (MapView) findViewById(cop4331.cloud9001.bentd.R.id.map);
@@ -38,6 +41,8 @@ public class GameInstance extends Activity {
         basic_map_view.setMode(MapView.READY);
 		
         game_view = (GameView) findViewById(cop4331.cloud9001.bentd.R.id.game);
+        
+        
         
         /*
         if (savedInstanceState == null) {
@@ -56,9 +61,9 @@ public class GameInstance extends Activity {
             }
         }
 		*/
-		//Load Stats UI
         text_layout = (LinearLayout) findViewById(R.id.text_layout);
 		text_layout.setOnClickListener(global_on_click_listener);
+		//Load Stats UI
         stats_bar_layout = (RelativeLayout) findViewById(R.id.stats_bar_layout);
         stats_bar_layout.setOnClickListener(global_on_click_listener);
         currency_textview = (TextView) findViewById(R.id.currency_textview);

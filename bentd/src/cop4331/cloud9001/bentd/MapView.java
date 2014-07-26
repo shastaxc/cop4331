@@ -1,10 +1,13 @@
 package cop4331.cloud9001.bentd;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -72,6 +75,8 @@ public class MapView extends TileView{
 		loadTile(BOTTOM_LEFT_INSIDE_CORNER, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_bl_inside_corner)); //Index 11
 		loadTile(BOTTOM_RIGHT_INSIDE_CORNER, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_br_inside_corner)); //Index 12
 		loadTile(NO_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_no_edge)); //Index 13
+		loadTile(TOWER_SITE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.tower_site)); //Index 14
+		
 	}
 	
 	
