@@ -35,6 +35,7 @@ public class MapView extends TileView{
     private static final int BOTTOM_LEFT_INSIDE_CORNER = 11; //Index to reference drawable
     private static final int BOTTOM_RIGHT_INSIDE_CORNER = 12; //Index to reference drawable
     private static final int NO_EDGE = 13; //Index to reference drawable
+    private static final int TOWER_SITE = 14; //Index to reference drawable
 	
 	//Various constructors using standard View constructor syntax
     public MapView(Context context) {
@@ -56,7 +57,7 @@ public class MapView extends TileView{
 		setFocusable(false);
 		Resources r = this.getContext().getResources();
 		
-		createImgHolder(14);
+		createImgHolder(15);
 		loadTile(ALL_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_all_edge)); //Index 0
 		loadTile(TOP_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_t_edge)); //Index 1
 		loadTile(BOTTOM_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_b_edge)); //Index 2

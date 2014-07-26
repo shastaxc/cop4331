@@ -12,6 +12,7 @@
 		android:layout_width="match_parent"
        	android:layout_height="match_parent"
        	android:id="@+id/mapview_layout"
+       	android:clickable="true"
    	>
 		<cop4331.cloud9001.bentd.MapView
 			android:id="@+id/map"
@@ -25,6 +26,7 @@
 		android:layout_width="match_parent"
        	android:layout_height="match_parent"
        	android:id="@+id/gameview_layout"
+       	android:clickable="false"
    	>
 		<cop4331.cloud9001.bentd.GameView 
 		    android:id="@+id/game"
@@ -61,6 +63,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/stats_bg"
         android:padding="5dp"
+        android:clickable="true"
     >
 
         <Button

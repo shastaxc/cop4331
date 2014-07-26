@@ -257,7 +257,8 @@ int drawable pause_menu_bg 0x7f02006c
 int drawable play_icon 0x7f02006d
 int drawable settings_icon 0x7f02006e
 int drawable stats_bg 0x7f02006f
-int drawable wave_icon 0x7f020070
+int drawable tower_site 0x7f020070
+int drawable wave_icon 0x7f020071
 int id action_bar 0x7f05001c
 int id action_bar_activity_content 0x7f050015
 int id action_bar_container 0x7f05001b
