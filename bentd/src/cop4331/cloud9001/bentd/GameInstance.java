@@ -1,9 +1,9 @@
 package cop4331.cloud9001.bentd;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
@@ -13,12 +13,14 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+//import android.os.AsyncTask;
 
 public class GameInstance extends Activity {
 
 	protected static Context app_context;
 	protected static MapView basic_map_view;
-	private GameView game_view;
+	//protected static GameInstance giReference;
+	protected GameView game_view;
 	protected static String CAPSULE_KEY = "map-view"; //Used to restore saved game
 	protected static Button pause_btn;
 	protected static Button forward_btn;
@@ -29,7 +31,9 @@ public class GameInstance extends Activity {
 	protected static LinearLayout text_layout;
 	protected static RelativeLayout stats_bar_layout;
 	protected static AlertDialog dialog;
-    
+	//private Handler mHandler = new Handler();
+    //private boolean running = true;
+	private updater gameUpdater;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,7 +47,11 @@ public class GameInstance extends Activity {
         basic_map_view.setMode(MapView.READY);
 		
         
+		//gameUpdater.setRunning(true);
         
+        
+        
+        //game_view.setMapGrid(0);
         
         /*
         if (savedInstanceState == null) {
@@ -62,29 +70,110 @@ public class GameInstance extends Activity {
             }
         }
 		*/
+		//Load Stats UI
         text_layout = (LinearLayout) findViewById(R.id.text_layout);
 		text_layout.setOnClickListener(global_on_click_listener);
-		//Load Stats UI
         stats_bar_layout = (RelativeLayout) findViewById(R.id.stats_bar_layout);
         stats_bar_layout.setOnClickListener(global_on_click_listener);
         currency_textview = (TextView) findViewById(R.id.currency_textview);
-        currency_textview.setText("0000");
+        currency_textview.setText("9999");
+        //currency_textview.
         life_textview = (TextView) findViewById(R.id.life_textview);
-        life_textview.setText("100");
+        life_textview.setText("999");
         wave_textview = (TextView) findViewById(R.id.wave_textview);
-        wave_textview.setText("0/8");
+        wave_textview.setText("9/9");
         time_remaining_textview = (TextView) findViewById(R.id.time_remaining_textview);
-        time_remaining_textview.setText("02:00");
+        time_remaining_textview.setText("99:99");
 		pause_btn = (Button)findViewById(R.id.pause_btn);
 		pause_btn.setOnClickListener(global_on_click_listener);
 		forward_btn = (Button)findViewById(R.id.fast_forward_btn);
 		forward_btn.setOnClickListener(global_on_click_listener);
 		
-
-        game_view = (GameView) findViewById(cop4331.cloud9001.bentd.R.id.game);
 		
+		game_view = (GameView) findViewById(cop4331.cloud9001.bentd.R.id.game);
+		//gameUpdater = new updater();
+		//game_view.setGameLoopThread(gameUpdater);
+		//gameUpdater.setRunning(true);
+		//gameUpdater.start();
 	}
-	
+	/*private Runnable runnable = new Runnable(){
+		public void run(){
+			//int currency = game_view.money;
+			while(true){
+				currency_textview.setText(""+game_view.money);
+				try {
+					wait(300);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}
+	};*/
+	private class updater extends Thread{
+	    private boolean running = false;
+	    private long lastUpdate = 0;
+	    public void setRunning(boolean run) {
+            running = run;
+	    }
+      	@SuppressLint("WrongCall") 
+      	@Override
+      	public void run() {
+      		//while (running) {
+      			if(System.currentTimeMillis() - lastUpdate > 10000){
+      				lastUpdate = System.currentTimeMillis();
+      				GameInstance.currency_textview.setText(game_view.money);
+      			}
+      		//}
+      		
+   		}
+   	 }
+			
+	protected static String currencyToString(int n){
+		String str = Integer.toString(n);
+		switch(str.length()){
+		case 0:
+			str = "0000";
+			break;
+		case 1:
+			str = "000"+str;
+			break;
+		case 2:
+			str = "00"+str;
+			break;
+		case 3:
+			str = "0"+str;
+			break;
+		default:
+			break;
+		}
+			
+		return str;
+	}
+	private static String timeToString(long timeInMili){
+		long minutes = timeInMili/60000;
+		long seconds = (timeInMili%60000)/1000;
+		if(minutes>10){
+			if(seconds>10)
+				return ""+minutes+":"+seconds;
+			else
+				return ""+minutes+":"+"0"+seconds;
+		}
+		else{
+			if(seconds>10)
+				return "0"+minutes+":"+seconds;
+			else
+				return "0"+minutes+":"+"0"+seconds;
+		}
+	}
+	protected static void modifyStatBar(int currency){
+        currency_textview.setText(currencyToString(currency));
+        currency_textview.postInvalidate();
+        //life_textview.setText(Integer.toString(lifeRemaining));
+        //wave_textview.setText(""+currWave+"/"+maxWaves+"");
+        //time_remaining_textview.setText(timeToString(timeRemaining));
+	}
 	//Global on click listener
     final OnClickListener global_on_click_listener = new OnClickListener() {
         public void onClick(final View v) {
@@ -160,7 +249,6 @@ public class GameInstance extends Activity {
     		// Button will not function in this mode
     	}
     }
-    
     private void createPauseMenu(){
 
     	DialogFragment pause_frag = PauseDialogFragment.newInstance(R.string.mode_pause);

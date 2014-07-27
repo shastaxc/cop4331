@@ -1,7 +1,6 @@
 package cop4331.cloud9001.bentd;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,7 +20,7 @@ public class MainMenu extends Activity{
 		
 		Button new_game_btn = (Button)findViewById(R.id.new_game_btn);
 		new_game_btn.setOnClickListener(globalOnClickListener);
-
+	
 		Button high_scores_btn = (Button)findViewById(R.id.high_scores_btn);
 		high_scores_btn.setOnClickListener(globalOnClickListener);
 	}

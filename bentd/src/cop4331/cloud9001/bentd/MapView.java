@@ -1,13 +1,10 @@
 package cop4331.cloud9001.bentd;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -43,7 +40,7 @@ public class MapView extends TileView{
     private static final int CASTLE_MID_LEFT = 16; //Index to reference drawable
     private static final int CASTLE_MID_RIGHT = 17; //Index to reference drawable
     private static final int CASTLE_RIGHT = 18; //Index to reference drawable
-	
+    
 	//Various constructors using standard View constructor syntax
     public MapView(Context context) {
         super(context);
@@ -60,7 +57,7 @@ public class MapView extends TileView{
         initializeMap();
     }
 	
-	public void initializeMap(){
+    public void initializeMap(){
 		setFocusable(false);
 		Resources r = this.getContext().getResources();
 		
@@ -127,7 +124,6 @@ public class MapView extends TileView{
         if ((new_mode == RUNNING && previous_mode != RUNNING) || (new_mode == PAUSE)) {
             event_text.setVisibility(View.GONE);
             event_text_layout.setVisibility(View.GONE);
-    		//GameInstance.pause_btn.setBackgroundResource(R.drawable.pause_icon);
             return;
         }
 
@@ -162,7 +158,6 @@ public class MapView extends TileView{
         MapView.this.invalidate();
         setMode(RUNNING);
     }
-    
     public void startNewWave(int wave_number){
     	long start_time = System.currentTimeMillis();
     	event_text.setText("Wave " + wave_number);
