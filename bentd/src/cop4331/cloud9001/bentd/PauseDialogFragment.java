@@ -41,13 +41,13 @@ public class PauseDialogFragment extends DialogFragment{
         		        FragmentManager fragmentManager=getFragmentManager();
         		        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
         		        fragmentTransaction.add(R.id.game_frame,score_frag)
-        		        					.addToBackStack("In-Game Scoreboard")
+        		        					.addToBackStack("in-game-scoreboard")
         		        					.commit();
         				break;
         			}
         		}
         	})
-            .create();
+        	.create();
     }
     
     @Override

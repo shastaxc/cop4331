@@ -42,7 +42,6 @@ public class GameInstance extends Activity {
         basic_map_view.setMapGrid(0);
         basic_map_view.setMode(MapView.READY);
 		
-        game_view = (GameView) findViewById(cop4331.cloud9001.bentd.R.id.game);
         
         
         
@@ -81,6 +80,9 @@ public class GameInstance extends Activity {
 		forward_btn = (Button)findViewById(R.id.fast_forward_btn);
 		forward_btn.setOnClickListener(global_on_click_listener);
 		
+
+        game_view = (GameView) findViewById(cop4331.cloud9001.bentd.R.id.game);
+		
 	}
 	
 	//Global on click listener
@@ -113,9 +115,7 @@ public class GameInstance extends Activity {
         	pause_btn.setBackgroundResource(R.drawable.pause_icon);
     	}
     	else if(basic_map_view.getMode() == MapView.READY){
-    		basic_map_view.setMode(MapView.PAUSE);
-        	pause_btn.setBackgroundResource(R.drawable.play_icon);
-        	createPauseMenu();
+    		// Button will not function in this mode
     	}
     	else if(basic_map_view.getMode() == MapView.RUNNING){
         	basic_map_view.setMode(MapView.PAUSE);
@@ -162,9 +162,12 @@ public class GameInstance extends Activity {
     }
     
     private void createPauseMenu(){
-    	DialogFragment newFragment = PauseDialogFragment.newInstance(
-                R.string.mode_pause);
-        newFragment.show(getFragmentManager(), "dialog");
+
+    	DialogFragment pause_frag = PauseDialogFragment.newInstance(R.string.mode_pause);
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.addToBackStack("pause-menu");
+    	pause_frag.show(getFragmentManager(), "dialog");
+        
     }
 
     @Override
@@ -175,6 +178,10 @@ public class GameInstance extends Activity {
 
 	@Override
 	public void onBackPressed(){
+		/*if(getFragmentManager().findFragmentByTag("in-game-scoreboard").isVisible()){
+			System.out.println("works");
+		}*/
+		//Also do a pauseBtnClick() call if pausemenu is active
 		if(GameView.popup_active){
 			GameView.popup_window.dismiss();
     		GameView.popup_active = false;

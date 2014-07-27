@@ -54,10 +54,9 @@ public class MainMenu extends Activity{
     
     private void viewHighScores(){
     	ScoreBoardFragment score_frag = new ScoreBoardFragment();
-        FragmentManager fragmentManager=getFragmentManager();
-        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.main_frame,score_frag)
-        					.addToBackStack("Main Menu Scoreboard")
+        					.addToBackStack("main-menu-scoreboard")
         					.commit();
     }
 }

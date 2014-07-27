@@ -127,6 +127,7 @@ public class MapView extends TileView{
         if ((new_mode == RUNNING && previous_mode != RUNNING) || (new_mode == PAUSE)) {
             event_text.setVisibility(View.GONE);
             event_text_layout.setVisibility(View.GONE);
+    		//GameInstance.pause_btn.setBackgroundResource(R.drawable.pause_icon);
             return;
         }
 
@@ -160,5 +161,16 @@ public class MapView extends TileView{
         }
         MapView.this.invalidate();
         setMode(RUNNING);
+    }
+    
+    public void startNewWave(int wave_number){
+    	long start_time = System.currentTimeMillis();
+    	event_text.setText("Wave " + wave_number);
+    	event_text.setVisibility(View.VISIBLE);
+    	event_text_layout.setVisibility(View.VISIBLE);
+    	if(System.currentTimeMillis()-start_time > 1000){
+    		event_text.setVisibility(View.GONE);
+    		event_text_layout.setVisibility(View.GONE);
+    	}
     }
 }
