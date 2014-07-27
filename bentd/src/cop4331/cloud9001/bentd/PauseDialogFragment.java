@@ -3,6 +3,8 @@ package cop4331.cloud9001.bentd;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
@@ -35,7 +37,12 @@ public class PauseDialogFragment extends DialogFragment{
         	    		GameInstance.pause_btn.setBackgroundResource(R.drawable.pause_icon);
         				break;
         			case 1: //If View High Scores pressed
-
+        				ScoreBoardFragment score_frag = new ScoreBoardFragment();
+        		        FragmentManager fragmentManager=getFragmentManager();
+        		        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
+        		        fragmentTransaction.add(R.id.game_frame,score_frag)
+        		        					.addToBackStack("In-Game Scoreboard")
+        		        					.commit();
         				break;
         			}
         		}
