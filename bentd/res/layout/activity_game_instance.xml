@@ -1,127 +1,40 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:background="#1BCC38"
     tools:context="${packageName}.${activityClass}" >
 
-    <!-- Stats Bar UI -->
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-    	android:padding="5dp"
-    	android:background="@drawable/stats_bg" >
-        
-        <Button
-	        android:id="@+id/pause_btn"
-        	android:layout_width="25dp"
-        	android:layout_height="25dp"
-        	android:layout_marginRight="5dp"
-    	    android:layout_centerVertical="true"
-        	android:background="@drawable/pause_icon" 
-        />
-        <Button
-	        android:id="@+id/settings_btn"
-        	android:layout_width="25dp"
-        	android:layout_height="25dp"
-        	android:layout_marginRight="10dp"
-    	    android:layout_centerVertical="true"
-    	    android:layout_toRightOf="@+id/pause_btn"
-        	android:background="@drawable/settings_icon" 
-        />
-    	<ImageView
-	        android:id="@+id/currency_img"
-        	android:layout_width="15dp"
-        	android:layout_height="15dp"
-        	android:layout_marginRight="3dp"
-        	android:contentDescription="@string/currency_icon"
-    	    android:layout_centerVertical="true"
-    	    android:layout_toRightOf="@+id/settings_btn"
-        	android:src="@drawable/currency_icon"
-        	android:text="@string/dollar_sign" 
-        />
-    	<TextView
-    	    android:id="@+id/currency_textview"
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content"
-    	    android:layout_centerVertical="true"
-    	    android:layout_toRightOf="@+id/currency_img"
-    	    android:textSize="15sp"
-    	    android:textColor="#000000" 
-    	/>
-    	<ImageView
-	        android:id="@+id/life_img"
-        	android:layout_width="15dp"
-        	android:layout_height="15dp"
-        	android:layout_marginLeft="5dp"
-        	android:layout_marginRight="3dp"
-        	android:contentDescription="@string/health"
-    	    android:layout_centerVertical="true"
-    	    android:layout_toRightOf="@+id/currency_textview"
-        	android:src="@drawable/heart_icon" 
-        />
-    	<TextView
-    	    android:id="@+id/life_textview"
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content"
-    	    android:layout_centerVertical="true"
-    	    android:layout_toRightOf="@+id/life_img"
-    	    android:textSize="15sp"
-    	    android:textColor="#000000" 
-    	/>
-    	<ImageView
-	        android:id="@+id/wave_img"
-        	android:layout_width="15dp"
-        	android:layout_height="15dp"
-    	    android:layout_toRightOf="@+id/life_textview"
-        	android:layout_marginLeft="5dp"
-        	android:layout_marginRight="3dp"
-    	    android:layout_centerVertical="true"
-        	android:contentDescription="@string/wave_icon"
-        	android:src="@drawable/wave_icon" 
-        />
-    	<TextView
-    	    android:id="@+id/wave_textview"
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content"
-    	    android:layout_centerVertical="true"
-    	    android:layout_toRightOf="@+id/wave_img"
-    	    android:textSize="15sp"
-    	    android:textColor="#000000" 
-    	/>
-    	<ImageView
-	        android:id="@+id/time_remaining_img"
-        	android:layout_width="15dp"
-        	android:layout_height="15dp"
-    	    android:layout_toRightOf="@+id/wave_textview"
-        	android:layout_marginLeft="5dp"
-        	android:layout_marginRight="3dp"
-        	android:contentDescription="@string/clock_icon"
-    	    android:layout_centerVertical="true"
-        	android:src="@drawable/clock_icon" 
-        />
-    	<TextView
-    	    android:id="@+id/time_remaining_textview"
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content"
-    	    android:layout_centerVertical="true"
-    	    android:layout_toRightOf="@+id/time_remaining_img"
-    	    android:textSize="15sp"
-    	    android:textColor="#000000" 
-    	/>
-
-   	</RelativeLayout>
-   	<!-- End Stats UI -->
-
    	<!-- Map View -->
-   	<cop4331.cloud9001.bentd.MapView
-		android:id="@+id/map"
+   	<LinearLayout
 		android:layout_width="match_parent"
        	android:layout_height="match_parent"
-    />
+       	android:id="@+id/mapview_layout">
+		<cop4331.cloud9001.bentd.MapView
+			android:id="@+id/map"
+			android:layout_width="match_parent"
+       		android:layout_height="match_parent"
+    	/>
+	</LinearLayout>
 	
+	<!-- Game View -->
+    <LinearLayout
+		android:layout_width="match_parent"
+       	android:layout_height="match_parent"
+       	android:id="@+id/gameview_layout">
+		<cop4331.cloud9001.bentd.GameView 
+		    android:id="@+id/game"
+	    	android:layout_width="match_parent"
+	    	android:layout_height="match_parent"
+       		android:clickable="true"
+		/>
+	</LinearLayout>
+	
+   	<!-- Popup Text -->
    	<LinearLayout
+        android:id="@+id/text_layout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:gravity="center">
@@ -132,10 +45,119 @@
 			android:visibility="visible"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:background="#FFA500"
-			android:textColor="#FFFFFF"
+        	android:background="@drawable/stats_bg"
+        	android:padding="10dp"
+			android:textColor="#000000"
 			android:textSize="30sp"
 		/>
    	</LinearLayout>
+	
+   	<!-- Stats Bar UI -->
+	    <RelativeLayout
+	        android:id="@+id/stats_bar_layout"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/stats_bg"
+	        android:padding="5dp"
+	    >
+	
+	        <Button
+	            android:id="@+id/pause_btn"
+	            android:layout_width="25dp"
+	            android:layout_height="25dp"
+	            android:layout_centerVertical="true"
+	            android:layout_marginRight="5dp"
+	            android:background="@drawable/pause_icon" />
+	
+	        <Button
+	            android:id="@+id/fast_forward_btn"
+	            android:layout_width="25dp"
+	            android:layout_height="25dp"
+	            android:layout_centerVertical="true"
+	            android:layout_marginRight="10dp"
+	            android:layout_toRightOf="@+id/pause_btn"
+	            android:background="@drawable/fast_forward_icon" />
+	
+	        <ImageView
+	            android:id="@+id/currency_img"
+	            android:layout_width="15dp"
+	            android:layout_height="15dp"
+	            android:layout_centerVertical="true"
+	            android:layout_marginRight="3dp"
+	            android:layout_toRightOf="@+id/fast_forward_btn"
+	            android:contentDescription="@string/currency_icon"
+	            android:src="@drawable/currency_icon"
+	            android:text="@string/dollar_sign" />
+	
+	        <TextView
+	            android:id="@+id/currency_textview"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerVertical="true"
+	            android:layout_toRightOf="@+id/currency_img"
+	            android:textColor="#000000"
+	            android:textSize="15sp" />
+	
+	        <ImageView
+	            android:id="@+id/life_img"
+	            android:layout_width="15dp"
+	            android:layout_height="15dp"
+	            android:layout_centerVertical="true"
+	            android:layout_marginLeft="5dp"
+	            android:layout_marginRight="3dp"
+	            android:layout_toRightOf="@+id/currency_textview"
+	            android:contentDescription="@string/health"
+	            android:src="@drawable/heart_icon" />
+	
+	        <TextView
+	            android:id="@+id/life_textview"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerVertical="true"
+	            android:layout_toRightOf="@+id/life_img"
+	            android:textColor="#000000"
+	            android:textSize="15sp" />
+	
+	        <ImageView
+	            android:id="@+id/wave_img"
+	            android:layout_width="15dp"
+	            android:layout_height="15dp"
+	            android:layout_centerVertical="true"
+	            android:layout_marginLeft="5dp"
+	            android:layout_marginRight="3dp"
+	            android:layout_toRightOf="@+id/life_textview"
+	            android:contentDescription="@string/wave_icon"
+	            android:src="@drawable/wave_icon" />
+	
+	        <TextView
+	            android:id="@+id/wave_textview"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerVertical="true"
+	            android:layout_toRightOf="@+id/wave_img"
+	            android:textColor="#000000"
+	            android:textSize="15sp" />
+	
+	        <ImageView
+	            android:id="@+id/time_remaining_img"
+	            android:layout_width="15dp"
+	            android:layout_height="15dp"
+	            android:layout_centerVertical="true"
+	            android:layout_marginLeft="5dp"
+	            android:layout_marginRight="3dp"
+	            android:layout_toRightOf="@+id/wave_textview"
+	            android:contentDescription="@string/clock_icon"
+	            android:src="@drawable/clock_icon" />
+	
+	        <TextView
+	            android:id="@+id/time_remaining_textview"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerVertical="true"
+	            android:layout_toRightOf="@+id/time_remaining_img"
+	            android:textColor="#000000"
+	            android:textSize="15sp" />
+	    </RelativeLayout>
+    
 
 </FrameLayout>

@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MapView extends TileView{
@@ -13,11 +14,14 @@ public class MapView extends TileView{
     public static final int PAUSE = 0; //Index to reference game state
     public static final int READY = 1; //Index to reference game state
     public static final int RUNNING = 2; //Index to reference game state
-    public static final int DEFEAT = 3; //Index to reference game state
-    public static final int VICTORY = 4; //Index to reference game state
+    public static final int FAST_FORWARD = 3; //Index to reference game state
+    public static final int DEFEAT = 4; //Index to reference game state
+    public static final int VICTORY = 5; //Index to reference game state
     
     private static TextView event_text; //Display various messages to user
+    private static LinearLayout event_text_layout; //Layout for the event text
     
+    private static final int ALL_EDGE = 0; //Index to reference drawable
     private static final int TOP_EDGE = 1; //Index to reference drawable
     private static final int BOTTOM_EDGE = 2; //Index to reference drawable
     private static final int LEFT_EDGE = 3; //Index to reference drawable
@@ -49,11 +53,11 @@ public class MapView extends TileView{
     }
 	
 	public void initializeMap(){
-		setFocusable(true);
+		setFocusable(false);
 		Resources r = this.getContext().getResources();
 		
 		createImgHolder(14);
-		//Index 0 = nothing
+		loadTile(ALL_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_all_edge)); //Index 0
 		loadTile(TOP_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_t_edge)); //Index 1
 		loadTile(BOTTOM_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_b_edge)); //Index 2
 		loadTile(LEFT_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_l_edge)); //Index 3
@@ -97,24 +101,23 @@ public class MapView extends TileView{
         //mSnakeTrail = coordArrayToArrayList(capsule.getIntArray("mSnakeTrail"));
     }
     
-    public void setEventText(TextView newView) {
+    public void setEventText(TextView newView, LinearLayout newLayout) {
         event_text = newView;
+        event_text_layout = newLayout;
     }
     
     public void setMode(int new_mode) {
         int previous_mode = game_state;
         game_state = new_mode;
 
-        if (new_mode == RUNNING & previous_mode != RUNNING) {
-            event_text.setVisibility(View.INVISIBLE);
+        if ((new_mode == RUNNING && previous_mode != RUNNING) || (new_mode == PAUSE)) {
+            event_text.setVisibility(View.GONE);
+            event_text_layout.setVisibility(View.GONE);
             return;
         }
 
         Resources r = getContext().getResources();
         CharSequence str = "";
-        if (new_mode == PAUSE) {
-            str = r.getText(cop4331.cloud9001.bentd.R.string.mode_pause); //"Paused"
-        }
         if (new_mode == READY) {
             str = r.getText(cop4331.cloud9001.bentd.R.string.mode_ready); //"Tap screen to begin"
         }
@@ -127,6 +130,11 @@ public class MapView extends TileView{
 
         event_text.setText(str);
         event_text.setVisibility(View.VISIBLE);
+        event_text_layout.setVisibility(View.VISIBLE);
+    }
+    
+    public int getMode(){
+    	return game_state;
     }
     
     public void setMapGrid(int map_number){
