@@ -26,6 +26,10 @@ import android.widget.PopupWindow;
 @SuppressLint("WrongCall") 
 public class GameView extends SurfaceView {
     private Bitmap bmp;
+	private final Bitmap tower1 = BitmapFactory.decodeResource(getResources(),  R.drawable.tower_archer);
+	private final Bitmap tower2 = BitmapFactory.decodeResource(getResources(),  R.drawable.tower_ninja);
+	private final Bitmap tower3 = BitmapFactory.decodeResource(getResources(),  R.drawable.tower_shrine);
+	private final Bitmap tower4 = BitmapFactory.decodeResource(getResources(),  R.drawable.tower_ballista_idle);
     private SurfaceHolder holder;
     private GameLoopThread gameLoopThread;
     private ArrayList<Enemy> Enemies;
@@ -34,10 +38,10 @@ public class GameView extends SurfaceView {
     private ImageButton tower2_btn;
     private ImageButton tower3_btn;
     private ImageButton tower4_btn;
-    private MotionEvent touch_event;
-    boolean popup_active = false;
-    int touch_x;
-    int touch_y;
+    protected static PopupWindow popup_window;
+    protected static boolean popup_active = false;
+    private int touch_x;
+    private int touch_y;
     
     private long lastClick;
     public GameView(Context context) {
@@ -100,37 +104,71 @@ public class GameView extends SurfaceView {
     }
 	@Override
 	public boolean onTouchEvent(MotionEvent event){
-		if(popup_active == false){
+		if(popup_active == false || !popup_window.isShowing()){ //If popup window is not already showing, create & display it
 			touch_x = (int)event.getX();
 			touch_y = (int)event.getY();
-			touch_event = event;
-			popup_active = true;
-			final Bitmap bmp = BitmapFactory.decodeResource(getResources(),  R.drawable.ic_launcher);
+			popup_active = true;	
 			LayoutInflater layoutInflater = (LayoutInflater)GameInstance.app_context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);  
 		    View popupView = layoutInflater.inflate(R.layout.tower_select_popup, (ViewGroup) findViewById(R.layout.activity_game_instance));
-		    	final PopupWindow popupWindow = new PopupWindow(popupView, 
+		    popup_window = new PopupWindow(popupView, 
 		    			LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-			    popupWindow.setBackgroundDrawable(new BitmapDrawable(null,""));
-			    popupWindow.setFocusable(true);
-			    popupWindow.update();
+		    popup_window.setBackgroundDrawable(new BitmapDrawable(null,""));
+		    popup_window.setFocusable(true);
+		    popup_window.update();
+		    popup_window.showAtLocation(this, Gravity.NO_GRAVITY, touch_x, touch_y);
+		    
+		    
+		    popup_window.setTouchInterceptor(new OnTouchListener() { // or whatever you want
+		        @Override
+		        public boolean onTouch(View v, MotionEvent event)
+		        {
+		            if(event.getAction() == MotionEvent.ACTION_OUTSIDE)
+		            {
+		            	popup_window.dismiss();
+		            	popup_active = false;
+		            	return true;
+		            }
+		            return false;
+		        }
 
-	            popupWindow.showAtLocation(this, Gravity.NO_GRAVITY, touch_x, touch_y);
+		    });
 	            
-		    	tower1_btn = (ImageButton) popupView.findViewById(R.id.image_button_1);
-		        tower2_btn = (ImageButton) popupView.findViewById(R.id.image_button_2);
-		        tower3_btn = (ImageButton) popupView.findViewById(R.id.image_button_3);
-		        tower4_btn = (ImageButton) popupView.findViewById(R.id.image_button_4);
-
-		        tower1_btn.setOnClickListener(new OnClickListener() {
-			        public void onClick(View v) {
-						Towers.add(new Tower(bmp,touch_x,touch_y));
-						popupWindow.dismiss();
-						popup_active = false;
-			        }
-			    });
-		        //tower2_btn.setOnClickListener(popup_click_listener);
-		        //tower3_btn.setOnClickListener(popup_click_listener);
-		        //tower4_btn.setOnClickListener(popup_click_listener);
+		    tower1_btn = (ImageButton) popupView.findViewById(R.id.image_button_1);
+		    tower2_btn = (ImageButton) popupView.findViewById(R.id.image_button_2);
+		    tower3_btn = (ImageButton) popupView.findViewById(R.id.image_button_3);
+		    tower4_btn = (ImageButton) popupView.findViewById(R.id.image_button_4);
+		    tower1_btn.setOnClickListener(new OnClickListener() {
+		    	@Override
+		    	public void onClick(View v) {
+		    		Towers.add(new Tower(tower1,touch_x,touch_y));
+		    		popup_window.dismiss();
+		    		popup_active = false;
+			    }
+			});
+		    tower2_btn.setOnClickListener(new OnClickListener() {
+		    	@Override
+		    	public void onClick(View v) {
+		    		Towers.add(new Tower(tower2,touch_x,touch_y));
+		    		popup_window.dismiss();
+		    		popup_active = false;
+			    }
+			});
+		    tower3_btn.setOnClickListener(new OnClickListener() {
+		    	@Override
+		    	public void onClick(View v) {
+		    		Towers.add(new Tower(tower3,touch_x,touch_y));
+		    		popup_window.dismiss();
+		    		popup_active = false;
+			    }
+			});
+		    tower4_btn.setOnClickListener(new OnClickListener() {
+		    	@Override
+		    	public void onClick(View v) {
+		    		Towers.add(new Tower(tower4,touch_x,touch_y));
+		    		popup_window.dismiss();
+		    		popup_active = false;
+			    }
+			});
 		    	
 		             
 			/*if (System.currentTimeMillis() - lastClick > 500) {
@@ -139,9 +177,9 @@ public class GameView extends SurfaceView {
 				Towers.add(new Tower(bmp,(int)event.getX(),(int)event.getY()));
 				
 			}*/
-				return true;
+			return true;
 		}
-		else{
+		else{ //If popup window already showing, do nothing
 			return false;
 		}
 	}

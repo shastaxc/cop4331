@@ -170,4 +170,15 @@ public class GameInstance extends Activity {
         //Store the game state
         outState.putBundle(CAPSULE_KEY, basic_map_view.saveState());
     }
+
+	@Override
+	public void onBackPressed(){
+		if(GameView.popup_active){
+			GameView.popup_window.dismiss();
+    		GameView.popup_active = false;
+		}
+		else{
+			super.onBackPressed();
+		}
+	}
 }

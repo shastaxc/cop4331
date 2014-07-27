@@ -18,7 +18,7 @@
     	    android:layout_height="30dp"
     	    android:layout_margin="1dp"
     	    android:contentDescription="A"
-    	    android:src="@drawable/ic_launcher" />
+    	    android:src="@drawable/tower_archer" />
     	<ImageButton
     	    android:id="@+id/image_button_2"
     	    android:layout_width="30dp"
@@ -26,7 +26,7 @@
     	    android:layout_toRightOf="@+id/image_button_1"
     	    android:layout_margin="1dp"
     	    android:contentDescription="B"
-    	    android:src="@drawable/ic_launcher" />
+    	    android:src="@drawable/tower_ninja" />
 	   	<ImageButton
     	    android:id="@+id/image_button_3"
     	    android:layout_width="30dp"
@@ -35,7 +35,7 @@
     	    android:layout_below="@+id/image_button_1"
     	    android:layout_margin="1dp"
     	    android:contentDescription="C"
-    	    android:src="@drawable/ic_launcher" />
+    	    android:src="@drawable/tower_shrine" />
     	<ImageButton
     	    android:id="@+id/image_button_4"
     	    android:layout_width="30dp"
@@ -44,6 +44,6 @@
     	    android:layout_toRightOf="@+id/image_button_3"
     	    android:layout_margin="1dp"
     	    android:contentDescription="D"
-    	    android:src="@drawable/ic_launcher" />
+    	    android:src="@drawable/tower_ballista_idle" />
     </RelativeLayout>
 </LinearLayout>

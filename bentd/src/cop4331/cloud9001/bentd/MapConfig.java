@@ -17,9 +17,13 @@ public class MapConfig {
     private static final int BOTTOM_RIGHT_INSIDE_CORNER = 12; //Index to reference drawable
     private static final int NO_EDGE = 13; //Index to reference drawable
     private static final int TOWER_SITE = 14; //Index to reference drawable
+    private static final int CASTLE_LEFT = 15; //Index to reference drawable
+    private static final int CASTLE_MID_LEFT = 16; //Index to reference drawable
+    private static final int CASTLE_MID_RIGHT = 17; //Index to reference drawable
+    private static final int CASTLE_RIGHT = 18; //Index to reference drawable
   	 */
 	private static int[][] map0 = new int[][]{
-    		{ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0}, //               Base
+    		{ 0,  0,  0,  0,  0,  0, 15, 16, 17, 18}, //               Base
     		{14, 14, 14, 14,  0,  0, 14,  3,  4, 14}, //               Wall
     		{ 1,  1,  6, 14,  0,  0, 14,  3,  4, 14}, // ____           | |
     		{ 2, 11,  4, 14, 14, 14, 14,  3,  4, 14}, // __  |          | |
