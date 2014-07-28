@@ -3,14 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:layout_marginRight="100dp"
-    android:layout_marginLeft="100dp"
-    android:background="#FFFFFF"
+    android:background="#80FFFFFF"
+    android:gravity="center"
 >
+	<View
+	    android:layout_width="0dp"
+	    android:layout_height="match_parent"
+	    android:layout_weight=".30"
+	/>
 	<TextView
-	    android:layout_width="wrap_content"
+	    android:layout_width="0dp"
 	    android:layout_height="wrap_content"
-	    android:textSize="15sp"
+	    android:layout_weight=".20"
+	    android:textSize="25sp"
 	    android:ems="3"
     	android:textStyle="bold"
     	android:textColor="#000000"
@@ -23,9 +28,12 @@
 	/>
     
 	<TextView 
-	    android:layout_width="wrap_content"
+	    android:layout_width="0dp"
 	    android:layout_height="wrap_content"
-	    android:textSize="15sp"
+	    android:layout_weight=".50"
+		android:paddingRight="30dp"
+	    android:gravity="right"
+	    android:textSize="25sp"
     	android:textColor="#000000"
     	android:text="test"
     	android:layout_marginTop="1dp"

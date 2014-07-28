@@ -11,6 +11,7 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,11 +27,14 @@ import android.widget.PopupWindow;
 
 @SuppressLint({ "WrongCall", "ClickableViewAccessibility", "DrawAllocation" }) 
 public class GameView extends SurfaceView {
-    private Bitmap bmp;
     private final Bitmap tower1 = BitmapFactory.decodeResource(getResources(),  R.drawable.tower_archer);
 	private final Bitmap tower2 = BitmapFactory.decodeResource(getResources(),  R.drawable.tower_ninja);
 	private final Bitmap tower3 = BitmapFactory.decodeResource(getResources(),  R.drawable.tower_shrine);
 	private final Bitmap tower4 = BitmapFactory.decodeResource(getResources(),  R.drawable.tower_ballista_idle);
+	private final Bitmap enemyOni = BitmapFactory.decodeResource(getResources(),  R.drawable.enemy_oni);
+	private final Bitmap enemyImp = BitmapFactory.decodeResource(getResources(), R.drawable.enemy_imp);
+	private final Bitmap enemyKitsune = BitmapFactory.decodeResource(getResources(), R.drawable.enemy_kitsune);
+	private final Bitmap bossOroshi = BitmapFactory.decodeResource(getResources(), R.drawable.enemy_oroshi_a);
     private SurfaceHolder holder;
     private GameLoopThread gameLoopThread; //Periodic call for GameView.onDraw();
     protected ArrayList<Enemy> Enemies; //Enemies on screen
@@ -50,11 +54,11 @@ public class GameView extends SurfaceView {
     /*
      * Stats for stats bar
      */
-    protected int money = 0;
-    protected int score = 0;
-    protected int health = 0;
-    protected int currentWave = 0;
-    protected int maxWaves = 0;
+    protected static int money = 0;
+    protected static int score = 0;
+    protected static int health = 0;
+    protected static int currentWave = 0;
+    protected static int maxWaves = 0;
     /*
      * Waves
      */
@@ -163,79 +167,80 @@ public class GameView extends SurfaceView {
     }
     @Override
     protected void onDraw(Canvas canvas) {
-    	//Update Wave
-    	//GameInstance.currency_textview.setText("1234");
-    	long timeRemaining = System.currentTimeMillis() - startOfWaveInMiliseconds;
-    	if(!spawnedFirstWave){
-    		spawnedFirstWave = true;
-    		for(int i=0;i<level.EnemiesPerWave[currentWave];i++)
-				Enemies.add(new Enemy(this,fieldOfBattle,0));
-    		startOfWaveInMiliseconds = System.currentTimeMillis();
-    	}
-    	if(timeRemaining < level.timePerWave){
-    		//UPDATE STATUS BAR
-    		//GameInstance.modifyStatBar(money);
-    	}
-    	else{//Wave is done, Spawn Next one
-    		currentWave++;
-    		if(currentWave < maxWaves)
-    			for(int i=0;i<level.EnemiesPerWave[currentWave];i++)
+        	//Update Wave
+        	//GameInstance.currency_textview.setText("1234");
+        	long timeRemaining = System.currentTimeMillis() - startOfWaveInMiliseconds;
+        	if(!spawnedFirstWave){
+        		spawnedFirstWave = true;
+        		for(int i=0;i<level.EnemiesPerWave[currentWave];i++)
     				Enemies.add(new Enemy(this,fieldOfBattle,0));
-    		startOfWaveInMiliseconds = System.currentTimeMillis();
-    	}
-    	/*
-    	 * DRAWING AND ENTITY UPDATES
-    	 */
-		canvas.drawColor(0, PorterDuff.Mode.CLEAR);
-		//TOWER TARGETING AND FIRING
-		for(Tower t: Towers){
-		   //Needs a target
-		   if(t.target == null){
-			   //Finds the closest enemy for attacking
-			   Enemy e = Enemy.nearestEnemy(Enemies,t.getx(),t.gety());
-			   if(e == null)
-				   break;
-			   else
-				   //Fires at enemy
-				   if(System.currentTimeMillis() - t.lastFired > t.fireSpeed ){
-					   t.target = e;
-					   t.fire(this);
-				   }
-		   }
-		   //Has a target
-		   else{
-			   //Fires at enemy
-			   if(System.currentTimeMillis() - t.lastFired > t.fireSpeed && t.Bullets.size() < t.MAX_BULLETS){
-				   t.fire(this);
-			   }
-		   }
-		}
-		//TOWER AND BULLET UPDATES / DRAW
-    	for(Tower t: Towers){
-    		t.onDraw(canvas);
-    		for(Bullet b: t.Bullets)
-    			b.onDraw(canvas);
-    	}
-    	//ENEMY UPDATES
-    	for(int i=0;i<Enemies.size();i++){
-    		if(Enemies.get(i).health < 0){
-    			for(Tower t: Towers){
-    				if(t.target == Enemies.get(i)){
-    					t.Bullets.clear();
-    					t.target = null;
-    				}
-    			}
-    			money+=Enemies.get(i).bounty;
-    			score+=Enemies.get(i).bounty;
-    			Enemies.remove(i--);	
-    			
+        		startOfWaveInMiliseconds = System.currentTimeMillis();
+        	}
+        	if(timeRemaining < level.timePerWave){
+        		//UPDATE STATUS BAR
+        		
+        		//GameInstance.modifyStatBar(money);
+        	}
+        	else{//Wave is done, Spawn Next one
+        		currentWave++;
+        		if(currentWave < maxWaves-1)
+        			for(int i=0;i<level.EnemiesPerWave[currentWave];i++)
+        				Enemies.add(new Enemy(this,fieldOfBattle,0));
+        		startOfWaveInMiliseconds = System.currentTimeMillis();
+        	}
+        	/*
+        	 * DRAWING AND ENTITY UPDATES
+        	 */
+    		canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+    		//TOWER TARGETING AND FIRING
+    		for(Tower t: Towers){
+    		   //Needs a target
+    		   if(t.target == null){
+    			   //Finds the closest enemy for attacking
+    			   Enemy e = Enemy.nearestEnemy(Enemies,t.getx(),t.gety());
+    			   if(e == null)
+    				   break;
+    			   else
+    				   //Fires at enemy
+    				   if(System.currentTimeMillis() - t.lastFired > t.fireSpeed ){
+    					   t.target = e;
+    					   t.fire(this);
+    				   }
+    		   }
+    		   //Has a target
+    		   else{
+    			   //Fires at enemy
+    			   if(System.currentTimeMillis() - t.lastFired > t.fireSpeed && t.Bullets.size() < t.MAX_BULLETS){
+    				   t.fire(this);
+    			   }
+    		   }
     		}
-    	}
-    	//ENEMY DRAW
-    	for(int i=0;i<Enemies.size();i++){
-    		Enemy e = Enemies.get(i);
-    		e.onDraw(canvas);
-    	}
+    		//TOWER AND BULLET UPDATES / DRAW
+        	for(Tower t: Towers){
+        		t.onDraw(canvas);
+        		for(Bullet b: t.Bullets)
+        			b.onDraw(canvas);
+        	}
+        	//ENEMY UPDATES
+        	for(int i=0;i<Enemies.size();i++){
+        		if(Enemies.get(i).health < 0){
+        			for(Tower t: Towers){
+        				if(t.target == Enemies.get(i)){
+        					t.Bullets.clear();
+        					t.target = null;
+        				}
+        			}
+        			money+=Enemies.get(i).bounty;
+        			score+=Enemies.get(i).bounty;
+        			Enemies.remove(i--);	
+        			
+        		}
+        	}
+        	//ENEMY DRAW
+        	for(int i=0;i<Enemies.size();i++){
+        		Enemy e = Enemies.get(i);
+        		e.onDraw(canvas);
+        	}
     }
 	
 	@Override
@@ -246,6 +251,13 @@ public class GameView extends SurfaceView {
 		if(popup_active == false || !popup_window.isShowing()){ //If popup window is not already showing, create & display it
 			touch_x = (int)event.getX();
 			touch_y = (int)event.getY();
+			touch_x = wash(touch_x,(GameInstance.game_view.getWidth()/MapView.X_TILE_COUNT));
+			touch_y = wash(touch_y,(GameInstance.game_view.getHeight()/MapView.Y_TILE_COUNT));
+			if(!validPos(touch_x,touch_y))
+				return false;
+			for(Tower t: Towers)
+				if(t.getx() == touch_x && t.gety() == touch_y)
+					return false;
 			popup_active = true;	
 			LayoutInflater layoutInflater = (LayoutInflater)GameInstance.app_context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);  
 		    View popupView = layoutInflater.inflate(R.layout.tower_select_popup, (ViewGroup) findViewById(R.layout.activity_game_instance));
@@ -336,9 +348,9 @@ public class GameView extends SurfaceView {
 		int gridX = (x/gridWidth);
 		int gridY = (y/gridHeight);
 		
-		if(fieldOfBattle[gridY][gridX] != 0)
+		if(fieldOfBattle[gridY][gridX] != 14)
 			return false;
-		//Check UP
+		/*/Check UP
 		if(gridY > 0 && fieldOfBattle[gridY-1][gridX] >0)
 			return true;
 		//Check LEFT
@@ -349,8 +361,8 @@ public class GameView extends SurfaceView {
 			return true;
 		//Check DOWN
 		if(gridY < (fieldOfBattle.length-1) && fieldOfBattle[gridY+1][gridX] >0)
-			return true;
-		return false;
+			return true;*/
+		return true;
 	}
 	public int wash(int x,int max){
 		return (x/max) * max;

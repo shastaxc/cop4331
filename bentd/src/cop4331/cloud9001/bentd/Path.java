@@ -94,8 +94,11 @@ public class Path {
 						i--;
 						break;
 					}
-					if(i<0 || map[i][j] >= 15)
+					if(i<0 || map[i][j] >= 15){
+						yPts.add(i*gridH);
+						xPts.add(j*gridW);
 						break;
+					}
 				}
 				i=map.length;
 			}

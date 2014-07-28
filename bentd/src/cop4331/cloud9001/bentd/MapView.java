@@ -11,7 +11,7 @@ import android.widget.TextView;
 public class MapView extends TileView{
 
 	private int game_state = READY; //State of the game
-    public static final int PAUSE = 0; //Index to reference game state
+    public static final int PAUSED = 0; //Index to reference game state
     public static final int READY = 1; //Index to reference game state
     public static final int RUNNING = 2; //Index to reference game state
     public static final int FAST_FORWARD = 3; //Index to reference game state
@@ -102,7 +102,7 @@ public class MapView extends TileView{
     
     //Restores game state that was saved
     public void restoreState(Bundle capsule) {
-        setMode(PAUSE);
+        setMode(PAUSED);
 
         //mAppleList = coordArrayToArrayList(capsule.getIntArray("mAppleList"));
         //mDirection = capsule.getInt("mDirection");
@@ -121,7 +121,7 @@ public class MapView extends TileView{
         int previous_mode = game_state;
         game_state = new_mode;
 
-        if ((new_mode == RUNNING && previous_mode != RUNNING) || (new_mode == PAUSE)) {
+        if ((new_mode == RUNNING && previous_mode != RUNNING) || (new_mode == PAUSED)) {
             event_text.setVisibility(View.GONE);
             event_text_layout.setVisibility(View.GONE);
             return;
@@ -134,9 +134,11 @@ public class MapView extends TileView{
         }
         if (new_mode == DEFEAT) {
             str = r.getString(cop4331.cloud9001.bentd.R.string.mode_defeat); //"Defeat"
+            //Save score
         }
         if (new_mode == VICTORY) {
             str = r.getString(cop4331.cloud9001.bentd.R.string.mode_victory); //"Victory"
+            //Save score
         }
 
         event_text.setText(str);

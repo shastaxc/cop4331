@@ -1,8 +1,5 @@
 package cop4331.cloud9001.bentd;
 
-import java.util.ArrayList;
-
-import android.util.Log;
 
 public class MapConfig {
 	/*

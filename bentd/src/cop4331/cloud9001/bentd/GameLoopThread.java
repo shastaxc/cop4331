@@ -3,6 +3,7 @@ package cop4331.cloud9001.bentd;
 
 import android.annotation.SuppressLint;
 import android.graphics.Canvas;
+import android.os.Message;
 
 public class GameLoopThread extends Thread {
        private GameView view;
@@ -20,18 +21,28 @@ public class GameLoopThread extends Thread {
        @Override
        public void run() {
     	   while (running) {
+    		   Message msg = new Message();
+    		   String textToChange = GameInstance.currencyToString(view.money);
+    		   msg.obj = textToChange;
+    		   GameInstance.mHandler.sendMessage(msg);
     		   Canvas c = null;
     		   if(System.currentTimeMillis() - LastDraw > (60/TARGET_FPS_INVERSE) *1000){
 		           try {
-		        	   c = view.getHolder().lockCanvas();
-		               synchronized (view.getHolder()) {
-		            	   view.onDraw(c);
+		        	   if(GameInstance.basic_map_view.getMode() == MapView.PAUSED || GameInstance.basic_map_view.getMode() == MapView.READY){
+		        		   //Do nothing if game is paused or ready
+		        	   }
+		        	   else{ //Else update normally
+		        		   c = view.getHolder().lockCanvas();
+		        		   synchronized (view.getHolder()) {
+		        			   view.onDraw(c);
+		        		   }
+		        	   }
+		           }
+		           finally{
+		        	   if (c != null) {
+		        		   view.getHolder().unlockCanvasAndPost(c);
 		               }
-		               }finally {
-		            	   if (c != null) {
-		            		   view.getHolder().unlockCanvasAndPost(c);
-		                   }
-		               }
+		           }
     		   }
     	   }
        }

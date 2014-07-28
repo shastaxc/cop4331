@@ -1,31 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
-    android:background="@drawable/score_board_bg"
+    android:background="#85333333"
+    android:clickable="true"
 >
-
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/score_board_bg"
+    android:layout_margin="10dp"
+    android:clickable="true"
+>
     <TextView
-        android:id="@+id/current_score"
+        android:id="@+id/high_score_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
+        android:textSize="30sp"
+        android:textStyle="bold"
         android:textColor="#000000"
         android:text="High Scores"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+	/>
+    <LinearLayout
+        android:id="@+id/current_score_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/high_score_text"
+        android:orientation="horizontal"
+        >
+        <TextView
+        	android:id="@+id/current_score_label"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:textSize="25sp"
+        	android:text="Current Score   "
+        	android:textColor="#000000"
+        />
+        <TextView
+        	android:id="@+id/current_score"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:textSize="25sp"
+        	android:text="0000"
+        	android:textColor="#000000"
+        />
+    </LinearLayout>
 	<ListView
        	android:id="@+id/score_list"
        	android:layout_width="match_parent"
        	android:layout_height="wrap_content"
        	android:divider="#000000"
        	android:dividerHeight="1dp"
+       	android:paddingTop="5dp"
        	android:paddingBottom="15dp"
        	android:paddingLeft="15dp"
        	android:paddingRight="15dp"
-        android:layout_below="@+id/current_score"
+        android:layout_below="@+id/current_score_layout"
     />
         
 </RelativeLayout>
+</LinearLayout>

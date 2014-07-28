@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#85333333"
+    android:clickable="true"
+	android:gravity="center"
+>
+	<View
+	    android:layout_width="0dp"
+	    android:layout_height="match_parent"
+	    android:layout_weight=".15"
+	/>
+	<RelativeLayout
+	    android:layout_width="0dp"
+	    android:layout_height="wrap_content"
+	    android:clickable="true"
+	    android:layout_weight=".70"
+	    android:paddingTop="3dp"
+	    android:paddingLeft="10dp"
+	    android:paddingRight="10dp"
+	    android:paddingBottom="10dp"
+	    android:background="@drawable/pause_menu_bg"
+	>
+		<TextView
+		    android:id="@+id/pause_menu_title"
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:gravity="center"
+        	android:layout_marginBottom="10dp"
+        	android:textSize="30sp"
+        	android:textColor="#000000"
+        	android:text="PAUSED"
+        	android:textStyle="bold"
+		/>
+		<Button
+        	android:id="@+id/resume_from_pause"
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:layout_margin="1dp"
+        	android:textSize="30sp"
+        	android:text="Resume Game"
+        	android:layout_below="@+id/pause_menu_title"
+        	android:background="@drawable/button_bg_selector"
+        	android:textColor="#FFFFFF"
+		/>
+		<Button
+        	android:id="@+id/high_score_from_pause"
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:layout_margin="1dp"
+        	android:textSize="30sp"
+        	android:text="View High Scores"
+        	android:layout_below="@+id/resume_from_pause"
+        	android:background="@drawable/button_bg_selector"
+        	android:textColor="#FFFFFF"
+		/>
+	</RelativeLayout>
+	<View
+	    android:layout_width="0dp"
+	    android:layout_height="match_parent"
+	    android:layout_weight=".15"
+	/>
+</LinearLayout>

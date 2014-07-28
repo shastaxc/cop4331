@@ -28,7 +28,11 @@
 	        android:layout_alignParentTop="true"
 	        android:layout_marginTop="50dp"
 	        android:layout_marginRight="20dp"
-	        android:text="@string/resume_btn_txt" />
+	        android:textSize="20dp"
+	        android:text="@string/resume_btn_txt"
+        	android:background="@drawable/button_bg_selector"
+        	android:textColor="#FFFFFF"
+        />
 		
 	    <Button
 	        android:id="@+id/new_game_btn"
@@ -36,7 +40,11 @@
 	        android:layout_height="wrap_content"
 	        android:layout_below="@+id/resume_btn"
 	        android:layout_marginRight="20dp"
-	        android:text="@string/new_game_btn_txt" />
+	        android:textSize="20dp"
+	        android:text="@string/new_game_btn_txt"
+        	android:background="@drawable/button_bg_selector"
+        	android:textColor="#FFFFFF"
+        />
 	    
 	    <Button
 	        android:id="@+id/high_scores_btn"
@@ -44,8 +52,11 @@
 	        android:layout_height="wrap_content"
 	        android:layout_below="@+id/new_game_btn"
 	        android:layout_marginRight="20dp"
+	        android:textSize="20dp"
 	        android:text="High Scores"
-	    />
+        	android:background="@drawable/button_bg_selector"
+        	android:textColor="#FFFFFF"
+        />
 
     </RelativeLayout>
 
