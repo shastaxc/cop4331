@@ -1,9 +1,14 @@
 package cop4331.cloud9001.bentd;
 
-import android.annotation.SuppressLint;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
@@ -18,7 +23,7 @@ import android.widget.TextView;
 //import android.os.AsyncTask;
 
 public class GameInstance extends Activity {
-
+	protected static FragmentManager fragman;
 	protected static Context app_context;
 	protected static MapView basic_map_view;
 	protected static GameView game_view;
@@ -136,22 +141,15 @@ public class GameInstance extends Activity {
 				return "0"+minutes+":"+"0"+seconds;
 		}
 	}
-	protected static void modifyStatBar(int currency){
-        currency_textview.setText(currencyToString(currency));
-        currency_textview.postInvalidate();
-        //life_textview.setText(Integer.toString(lifeRemaining));
-        //wave_textview.setText(""+currWave+"/"+maxWaves+"");
-        //time_remaining_textview.setText(timeToString(timeRemaining));
-	}
 	//Global on click listener
     final OnClickListener global_on_click_listener = new OnClickListener() {
         public void onClick(final View v) {
     		switch(v.getId()){
     			case R.id.pause_btn:
-    				pauseBtnClick();
+    				pause();
     				break;
     			case R.id.fast_forward_btn:
-    				forwardBtnClick();
+    				fastForward();
     				break;
     			case R.id.text_layout:
     				if(basic_map_view.getMode() == MapView.READY){
@@ -167,8 +165,8 @@ public class GameInstance extends Activity {
         }
     };
     
-    private void pauseBtnClick(){
-    	if(basic_map_view.getMode() == MapView.PAUSE){
+    protected static void pause(){
+    	if(basic_map_view.getMode() == MapView.PAUSED){
     		basic_map_view.setMode(MapView.RUNNING);
         	pause_btn.setBackgroundResource(R.drawable.pause_icon);
     	}
@@ -176,12 +174,12 @@ public class GameInstance extends Activity {
     		// Button will not function in this mode
     	}
     	else if(basic_map_view.getMode() == MapView.RUNNING){
-        	basic_map_view.setMode(MapView.PAUSE);
+        	basic_map_view.setMode(MapView.PAUSED);
         	pause_btn.setBackgroundResource(R.drawable.play_icon);
         	createPauseMenu();
     	}
     	else if(basic_map_view.getMode() == MapView.FAST_FORWARD){
-    		basic_map_view.setMode(MapView.PAUSE);
+    		basic_map_view.setMode(MapView.PAUSED);
         	pause_btn.setBackgroundResource(R.drawable.play_icon);
     		forward_btn.setBackgroundResource(R.drawable.fast_forward_icon);
         	createPauseMenu();
@@ -195,8 +193,8 @@ public class GameInstance extends Activity {
     	}
     }
     
-    private void forwardBtnClick(){
-    	if(basic_map_view.getMode() == MapView.PAUSE){
+    protected static void fastForward(){
+    	if(basic_map_view.getMode() == MapView.PAUSED){
     		// Button will not function in this mode
     	}
     	else if(basic_map_view.getMode() == MapView.READY){
@@ -218,33 +216,82 @@ public class GameInstance extends Activity {
     		// Button will not function in this mode
     	}
     }
-    private void createPauseMenu(){
-
-    	DialogFragment pause_frag = PauseDialogFragment.newInstance(R.string.mode_pause);
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.addToBackStack("pause-menu");
-    	pause_frag.show(getFragmentManager(), "dialog");
-        
+    protected static void createPauseMenu(){
+		PauseMenuFragment pause_frag = new PauseMenuFragment();
+	    FragmentTransaction fragmentTransaction = fragman.beginTransaction();
+	    fragmentTransaction.add(R.id.game_frame,pause_frag, "pause-menu")
+	    					.addToBackStack("pause-menu")
+	     					.commit();
     }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        //Store the game state
-        outState.putBundle(CAPSULE_KEY, basic_map_view.saveState());
+    
+    protected static ArrayList<Score> getHighScores(){
+		ArrayList<Score> high_scores = new ArrayList<Score>(20);
+		try{
+			FileInputStream in = app_context.openFileInput("highscores.txt");
+		    InputStreamReader inputStreamReader = new InputStreamReader(in);
+		    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+		    String line;
+		    
+		    String[] parts = new String[40];
+		    while ((line = bufferedReader.readLine()) != null) {
+		        parts = line.split(" ");
+		    }
+		    for(int i = 1; i <= parts.length; i+=2){
+		    	high_scores.add(new Score(parts[i], parts[i-1]));
+		    }
+		}
+		catch(IOException e){
+			//
+		}
+	    return high_scores;
+	}
+    
+    protected static void rewriteHighScores(int your_score){
+    	
     }
 
 	@Override
 	public void onBackPressed(){
-		/*if(getFragmentManager().findFragmentByTag("in-game-scoreboard").isVisible()){
-			System.out.println("works");
-		}*/
-		//Also do a pauseBtnClick() call if pausemenu is active
-		if(GameView.popup_active){
+		if(fragman.findFragmentByTag("in-game-scoreboard") != null){
+			if(fragman.findFragmentByTag("in-game-scoreboard").isVisible()){
+				fragman.popBackStack("in-game-scoreboard", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+			}
+		}
+		else if(fragman.findFragmentByTag("pause-menu") != null){
+			if(fragman.findFragmentByTag("pause-menu").isVisible()){
+				fragman.popBackStack("pause-menu", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+				pause();
+			}
+		}
+		else if(GameView.popup_active){
 			GameView.popup_window.dismiss();
     		GameView.popup_active = false;
 		}
+    	else if(basic_map_view.getMode() == MapView.READY){
+    		basic_map_view.setMode(MapView.RUNNING);
+    	}
 		else{
 			super.onBackPressed();
+        	basic_map_view.setMode(MapView.PAUSED);
+        	pause_btn.setBackgroundResource(R.drawable.play_icon);
+        	createPauseMenu();
 		}
 	}
+	
+    @Override
+    public void onSaveInstanceState(Bundle out_state) {
+        //Save fields and timers
+    	//Example: 
+    	out_state.putInt("score", GameView.money);
+    	
+    	super.onSaveInstanceState(out_state); //Super constructor saves views
+    }
+    
+    @Override
+    public void onRestoreInstanceState(Bundle saved_instance_state){
+    	super.onRestoreInstanceState(saved_instance_state); //Super constructor restores views
+    	
+    	//Now restore saved fields and timers
+    	GameView.money = saved_instance_state.getInt("score");
+    }
 }

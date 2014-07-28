@@ -1,6 +1,7 @@
 package cop4331.cloud9001.bentd;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
@@ -43,11 +44,14 @@ public class MainMenu extends Activity{
     };
     
     private void resumeBtnClick(){
-    	
+		Intent intent = new Intent(this, cop4331.cloud9001.bentd.GameInstance.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+	    startActivity(intent);
     }
 
     private void newGameBtnClick(){
 		Intent intent = new Intent(this, cop4331.cloud9001.bentd.GameInstance.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	    startActivity(intent);
     }
     
@@ -58,4 +62,16 @@ public class MainMenu extends Activity{
         					.addToBackStack("main-menu-scoreboard")
         					.commit();
     }
+
+	@Override
+	public void onBackPressed(){
+		if(getFragmentManager().findFragmentByTag("main-menu-scoreboard") != null){
+			if(getFragmentManager().findFragmentByTag("main-menu-scoreboard").isVisible()){
+				getFragmentManager().popBackStack("main-menu-scoreboard", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+			}
+		}
+		else{
+			super.onBackPressed();
+		}
+	}
 }

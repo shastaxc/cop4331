@@ -64,7 +64,7 @@ public class GameView extends SurfaceView {
     /*
      * Stats for stats bar
      */
-    protected int money = 0;
+    protected static int money = 0;
     protected int score = 0;
     protected int health = 0;
     protected int currentWave = 0;
@@ -117,25 +117,6 @@ public class GameView extends SurfaceView {
                              int width, int height) {
                 }
         	});
-        
-        /****************************************
-        text_layout = (LinearLayout) findViewById(R.id.text_layout);
-		//text_layout.setOnClickListener(global_on_click_listener);
-        stats_bar_layout = (RelativeLayout) findViewById(R.id.stats_bar_layout);
-        //stats_bar_layout.setOnClickListener(GameInstance.global_on_click_listener);
-        currency_textview = (TextView) findViewById(R.id.currency_textview);
-        currency_textview.setText("9999");
-        life_textview = (TextView) findViewById(R.id.life_textview);
-        life_textview.setText("999");
-        wave_textview = (TextView) findViewById(R.id.wave_textview);
-        wave_textview.setText("9/9");
-        time_remaining_textview = (TextView) findViewById(R.id.time_remaining_textview);
-        time_remaining_textview.setText("99:99");
-		pause_btn = (Button)findViewById(R.id.pause_btn);
-		//pause_btn.setOnClickListener(global_on_click_listener);
-		forward_btn = (Button)findViewById(R.id.fast_forward_btn);
-		//forward_btn.setOnClickListener(global_on_click_listener);
-        /*****************************************/
         initializeLevel(0);
     }
     public void initializeLevel(int levelSelected){
