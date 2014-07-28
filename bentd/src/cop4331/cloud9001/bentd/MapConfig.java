@@ -1,5 +1,8 @@
 package cop4331.cloud9001.bentd;
 
+import java.util.ArrayList;
+
+import android.util.Log;
 
 public class MapConfig {
 	/*
@@ -72,21 +75,7 @@ public class MapConfig {
 			health = 100;
 			EnemiesPerWave = new int[maxWaves];
 			for(int i=0;i<maxWaves;i++)
-				EnemiesPerWave[i] = i+2;
-				
-			//enemyPath = new Path(map0, gv);
-			//Log.i("MapConfig_24",enemyPath.toString());
-			
-			
-			//Pre gen won't work i have no clue why
-			//EnemiesPerWave = new ArrayList<ArrayList<Enemy>>();
-			/*for(int i=0;i<maxWaves;i++){
-				ArrayList<Enemy> combatants = new ArrayList<Enemy>();
-				for(int j=0;j<1;j++){
-					combatants.add(new Enemy(gv,fieldOfBattle,0));
-				}
-				EnemiesPerWave.add(combatants);
-			}*/
+				EnemiesPerWave[i] = 5+i;
 			break;
 			default:
 				break;

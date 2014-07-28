@@ -134,11 +134,9 @@ public class MapView extends TileView{
         }
         if (new_mode == DEFEAT) {
             str = r.getString(cop4331.cloud9001.bentd.R.string.mode_defeat); //"Defeat"
-            //Save score
         }
         if (new_mode == VICTORY) {
             str = r.getString(cop4331.cloud9001.bentd.R.string.mode_victory); //"Victory"
-            //Save score
         }
 
         event_text.setText(str);

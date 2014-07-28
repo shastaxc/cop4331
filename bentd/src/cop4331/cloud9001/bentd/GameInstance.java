@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -18,15 +18,16 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 //import android.os.AsyncTask;
 
 public class GameInstance extends Activity {
-
 	protected static FragmentManager fragman;
 	protected static Context app_context;
 	protected static MapView basic_map_view;
 	protected static GameView game_view;
+	protected static String CAPSULE_KEY = "map-view"; //Used to restore saved game
 	protected static Button pause_btn;
 	protected static Button forward_btn;
 	protected static TextView currency_textview;
@@ -34,25 +35,41 @@ public class GameInstance extends Activity {
 	protected static TextView wave_textview;
 	protected static TextView time_remaining_textview;
 	protected static LinearLayout text_layout;
-	//private Handler mHandler = new Handler();
-    //private boolean running = true;
-	private updater gameUpdater;
+	protected static RelativeLayout stats_bar_layout;
+	protected static AlertDialog dialog;
 	@Override
-	protected void onCreate(Bundle saved_instance_state) {
-		super.onCreate(saved_instance_state);
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game_instance);
 		app_context = getApplicationContext();
-		fragman = getFragmentManager();
-
+		
 		//Load map
 		basic_map_view = (MapView) findViewById(cop4331.cloud9001.bentd.R.id.map);
         basic_map_view.setEventText((TextView) findViewById(cop4331.cloud9001.bentd.R.id.event_textview), (LinearLayout) findViewById(R.id.text_layout));
         basic_map_view.setMapGrid(0);
         basic_map_view.setMode(MapView.READY);
-		
+        /*
+        if (savedInstanceState == null) {
+        	MapConfig.createMapGrid(0);
+            // No save state, set up new game
+        	basic_map_view.initializeMap();
+        	basic_map_view.setMode(MapView.READY);
+        }
+        else {
+            //Save state detected, loading previous data
+            Bundle map = savedInstanceState.getBundle(CAPSULE_KEY);
+            if (map != null) {
+            	basic_map_view.restoreState(map);
+            } else {
+            	basic_map_view.setMode(MapView.PAUSE);
+            }
+        }
+		*/
 		//Load Stats UI
         text_layout = (LinearLayout) findViewById(R.id.text_layout);
 		text_layout.setOnClickListener(global_on_click_listener);
+        stats_bar_layout = (RelativeLayout) findViewById(R.id.stats_bar_layout);
+        stats_bar_layout.setOnClickListener(global_on_click_listener);
         currency_textview = (TextView) findViewById(R.id.currency_textview);
         currency_textview.setText("9999");
         life_textview = (TextView) findViewById(R.id.life_textview);
@@ -66,50 +83,27 @@ public class GameInstance extends Activity {
 		forward_btn = (Button)findViewById(R.id.fast_forward_btn);
 		forward_btn.setOnClickListener(global_on_click_listener);
 		
+		
 		game_view = (GameView) findViewById(cop4331.cloud9001.bentd.R.id.game);
 	}
-	
 	static Handler mHandler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
 			String text = (String)msg.obj;
-			currency_textview.setText(text);
+			currency_textview.setText(text.substring(0,4));
+			life_textview.setText(text.substring(4,7));
+			wave_textview.setText(""+text.substring(7,8)+"/"+text.substring(8,9));
+			time_remaining_textview.setText(text.substring(9,text.length()));
 		}
 	};
-	/*private Runnable runnable = new Runnable(){
-		public void run(){
-			//int currency = game_view.money;
-			while(true){
-				currency_textview.setText(""+game_view.money);
-				try {
-					wait(300);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-		}
-	};*/
-	private class updater extends Thread{
-	    private boolean running = false;
-	    private long lastUpdate = 0;
-	    public void setRunning(boolean run) {
-            running = run;
-	    }
-      	@SuppressLint("WrongCall") 
-      	@Override
-      	public void run() {
-      		//while (running) {
-      			if(System.currentTimeMillis() - lastUpdate > 10000){
-      				lastUpdate = System.currentTimeMillis();
-      				GameInstance.currency_textview.setText(GameView.money);
-      			}
-      		//}
-      		
-   		}
-   	 }
-			
+	protected static String healthToString(int n){
+		if(n>=100)
+			return ""+n;
+		else if(n>10)
+			return "0"+n;
+		else
+			return "00"+n;
+	}
 	protected static String currencyToString(int n){
 		String str = Integer.toString(n);
 		switch(str.length()){
@@ -131,28 +125,21 @@ public class GameInstance extends Activity {
 			
 		return str;
 	}
-	private static String timeToString(long timeInMili){
+	static String timeToString(long timeInMili){
 		long minutes = timeInMili/60000;
 		long seconds = (timeInMili%60000)/1000;
 		if(minutes>10){
-			if(seconds>10)
+			if(seconds>=10)
 				return ""+minutes+":"+seconds;
 			else
 				return ""+minutes+":"+"0"+seconds;
 		}
 		else{
-			if(seconds>10)
+			if(seconds>=10)
 				return "0"+minutes+":"+seconds;
 			else
 				return "0"+minutes+":"+"0"+seconds;
 		}
-	}
-	protected static void modifyStatBar(int currency){
-        currency_textview.setText(currencyToString(currency));
-        currency_textview.postInvalidate();
-        //life_textview.setText(Integer.toString(lifeRemaining));
-        //wave_textview.setText(""+currWave+"/"+maxWaves+"");
-        //time_remaining_textview.setText(timeToString(timeRemaining));
 	}
 	//Global on click listener
     final OnClickListener global_on_click_listener = new OnClickListener() {

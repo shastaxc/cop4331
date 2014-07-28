@@ -14,10 +14,13 @@ public class Tower {
 	private GameView gameView;
     private Bitmap bmp;
     protected int MAX_BULLETS = 5;
+    
     private int strength = 5;
-    protected long lastFired = 0;
+    protected int range = 50;
     protected long fireSpeed = 1000;//Time in ms between each shot
-    protected int bulletSpeed = 10;
+    protected int bulletSpeed = 20;
+    
+    protected long lastFired = 0;
     protected ArrayList<Bullet> Bullets;
     protected Enemy target = null;
     /******
@@ -40,6 +43,22 @@ public class Tower {
         Bullets = new ArrayList<Bullet>();
 	}
 	
+	public Tower(Bitmap tower1, int touch_x, int touch_y, int i) {
+		this.bmp = tower1;
+		this.x = touch_x;
+		this.y = touch_y;
+		Bullets = new ArrayList<Bullet>();
+		switch(i){
+		case 1:
+			strength = 3;
+			range = 100;
+			fireSpeed = 1000;
+			bulletSpeed = 50;
+			break;
+		default:
+			break;
+		}
+	}
 	public int getx() {
 		return x;
 	}
