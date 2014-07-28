@@ -41,13 +41,13 @@ public class Bullet {
 			float diffY = targetY - posY;
 			
 			if(diffX < 0)
-				posX-=velocity;
+				posX-=speed;
 			else if(diffX >0)
-				posX+=velocity;
+				posX+=speed;
 			if(diffY <0)
-				posY-=velocity;
+				posY-=speed;
 			else if(diffY >0)
-				posY+=velocity;
+				posY+=speed;
 			
 			if(distance(posX,targetX,posY,targetY)+target.radius+radius < velocity){
 				target.health -= stoppingPower;
@@ -66,7 +66,7 @@ public class Bullet {
 		}*/
 	}
 	public void onDraw(Canvas canvas){
-		update();
+		//update();
 		canvas.drawCircle(posX,posY,10, paint);
 	}
 }

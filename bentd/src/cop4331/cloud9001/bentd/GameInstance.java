@@ -4,25 +4,24 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
-import android.graphics.Canvas;
-//import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+//import android.os.AsyncTask;
 
 public class GameInstance extends Activity {
 
+	protected static Context app_context;
 	protected static MapView basic_map_view;
-	//protected static GameInstance giReference;
-	protected GameView game_view;
+	protected static GameView game_view;
 	protected static String CAPSULE_KEY = "map-view"; //Used to restore saved game
 	protected static Button pause_btn;
 	protected static Button forward_btn;
@@ -33,27 +32,17 @@ public class GameInstance extends Activity {
 	protected static LinearLayout text_layout;
 	protected static RelativeLayout stats_bar_layout;
 	protected static AlertDialog dialog;
-	//private Handler mHandler = new Handler();
-    //private boolean running = true;
-	private updater gameUpdater;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game_instance);
+		app_context = getApplicationContext();
 		
 		//Load map
 		basic_map_view = (MapView) findViewById(cop4331.cloud9001.bentd.R.id.map);
         basic_map_view.setEventText((TextView) findViewById(cop4331.cloud9001.bentd.R.id.event_textview), (LinearLayout) findViewById(R.id.text_layout));
         basic_map_view.setMapGrid(0);
         basic_map_view.setMode(MapView.READY);
-		
-        
-		//gameUpdater.setRunning(true);
-        
-        
-        
-        //game_view.setMapGrid(0);
-        
         /*
         if (savedInstanceState == null) {
         	MapConfig.createMapGrid(0);
@@ -78,7 +67,6 @@ public class GameInstance extends Activity {
         stats_bar_layout.setOnClickListener(global_on_click_listener);
         currency_textview = (TextView) findViewById(R.id.currency_textview);
         currency_textview.setText("9999");
-        //currency_textview.
         life_textview = (TextView) findViewById(R.id.life_textview);
         life_textview.setText("999");
         wave_textview = (TextView) findViewById(R.id.wave_textview);
@@ -92,45 +80,25 @@ public class GameInstance extends Activity {
 		
 		
 		game_view = (GameView) findViewById(cop4331.cloud9001.bentd.R.id.game);
-		//gameUpdater = new updater();
-		//game_view.setGameLoopThread(gameUpdater);
-		//gameUpdater.setRunning(true);
-		//gameUpdater.start();
 	}
-	/*private Runnable runnable = new Runnable(){
-		public void run(){
-			//int currency = game_view.money;
-			while(true){
-				currency_textview.setText(""+game_view.money);
-				try {
-					wait(300);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
+	static Handler mHandler = new Handler(){
+		@Override
+		public void handleMessage(Message msg){
+			String text = (String)msg.obj;
+			currency_textview.setText(text.substring(0,4));
+			life_textview.setText(text.substring(4,7));
+			wave_textview.setText(""+text.substring(7,8)+"/"+text.substring(8,9));
+			time_remaining_textview.setText(text.substring(9,text.length()));
 		}
-	};*/
-	private class updater extends Thread{
-	    private boolean running = false;
-	    private long lastUpdate = 0;
-	    public void setRunning(boolean run) {
-            running = run;
-	    }
-      	@SuppressLint("WrongCall") 
-      	@Override
-      	public void run() {
-      		//while (running) {
-      			if(System.currentTimeMillis() - lastUpdate > 10000){
-      				lastUpdate = System.currentTimeMillis();
-      				GameInstance.currency_textview.setText(game_view.money);
-      			}
-      		//}
-      		
-   		}
-   	 }
-			
+	};
+	protected static String healthToString(int n){
+		if(n>=100)
+			return ""+n;
+		else if(n>10)
+			return "0"+n;
+		else
+			return "00"+n;
+	}
 	protected static String currencyToString(int n){
 		String str = Integer.toString(n);
 		switch(str.length()){
@@ -152,17 +120,17 @@ public class GameInstance extends Activity {
 			
 		return str;
 	}
-	private static String timeToString(long timeInMili){
+	static String timeToString(long timeInMili){
 		long minutes = timeInMili/60000;
 		long seconds = (timeInMili%60000)/1000;
 		if(minutes>10){
-			if(seconds>10)
+			if(seconds>=10)
 				return ""+minutes+":"+seconds;
 			else
 				return ""+minutes+":"+"0"+seconds;
 		}
 		else{
-			if(seconds>10)
+			if(seconds>=10)
 				return "0"+minutes+":"+seconds;
 			else
 				return "0"+minutes+":"+"0"+seconds;
@@ -205,9 +173,7 @@ public class GameInstance extends Activity {
         	pause_btn.setBackgroundResource(R.drawable.pause_icon);
     	}
     	else if(basic_map_view.getMode() == MapView.READY){
-    		basic_map_view.setMode(MapView.PAUSE);
-        	pause_btn.setBackgroundResource(R.drawable.play_icon);
-        	createPauseMenu();
+    		// Button will not function in this mode
     	}
     	else if(basic_map_view.getMode() == MapView.RUNNING){
         	basic_map_view.setMode(MapView.PAUSE);
@@ -252,11 +218,13 @@ public class GameInstance extends Activity {
     		// Button will not function in this mode
     	}
     }
-    
     private void createPauseMenu(){
-    	DialogFragment newFragment = PauseDialogFragment.newInstance(
-                R.string.mode_pause);
-        newFragment.show(getFragmentManager(), "dialog");
+
+    	DialogFragment pause_frag = PauseDialogFragment.newInstance(R.string.mode_pause);
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.addToBackStack("pause-menu");
+    	pause_frag.show(getFragmentManager(), "dialog");
+        
     }
 
     @Override
@@ -264,4 +232,19 @@ public class GameInstance extends Activity {
         //Store the game state
         outState.putBundle(CAPSULE_KEY, basic_map_view.saveState());
     }
+
+	@Override
+	public void onBackPressed(){
+		/*if(getFragmentManager().findFragmentByTag("in-game-scoreboard").isVisible()){
+			System.out.println("works");
+		}*/
+		//Also do a pauseBtnClick() call if pausemenu is active
+		if(GameView.popup_active){
+			GameView.popup_window.dismiss();
+    		GameView.popup_active = false;
+		}
+		else{
+			super.onBackPressed();
+		}
+	}
 }

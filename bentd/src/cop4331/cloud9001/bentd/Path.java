@@ -57,7 +57,7 @@ public class Path {
 		int gridW = gv.getWidth()/map[0].length;
 		
 		for(int i=0;i<map.length;i++){
-			if(map[i][0] > 0){
+			if(map[i][0] > 0 && map[i][0]<14){
 				yPts.add(i*gridH);
 				xPts.add(0);
 				int j=1;
@@ -94,8 +94,11 @@ public class Path {
 						i--;
 						break;
 					}
-					if(i<0)
+					if(i<0 || map[i][j] >= 15){
+						yPts.add(i*gridH);
+						xPts.add(j*gridW);
 						break;
+					}
 				}
 				i=map.length;
 			}

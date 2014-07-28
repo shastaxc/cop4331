@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.util.Log;
 
 public class Enemy {
 	private int[] DIRECTION_TO_ANIMATION_MAP = {3,1,0,2};
@@ -18,6 +19,7 @@ public class Enemy {
 	private int direction = 0;//0 up,1 right, 2 down, 3 left
     private int xSpeed = 3;
     private int ySpeed = 3;
+    protected int strength = 5;
     protected int health = 10;
     protected int radius = 5;
     protected int hitCenterX = 0;
@@ -30,7 +32,7 @@ public class Enemy {
     private int width;
     private int height;
    
-    public Enemy(GameView gameView, Bitmap bmp) {
+    /*public Enemy(GameView gameView, Bitmap bmp) {
           //this.gameView=gameView;
           this.bmp=bmp;
           width = bmp.getWidth() / BMP_COLUMNS;
@@ -48,7 +50,7 @@ public class Enemy {
         path = new Path(fieldOfBattle,gameView);
         x = path.nextX();
         y = path.nextY();
-	}
+	}*/
     public Enemy(GameView gameView, int[][] fieldOfBattle,int id){
     	//this.bmp=bmp;
     	this.bmp = getEnemyBmp(gameView,id);
@@ -56,18 +58,19 @@ public class Enemy {
     	case 0:
     		hitCenterX = (int)((this.bmp.getWidth())/6);
     		hitCenterY = (int)((this.bmp.getHeight())/8);
+    		Random rnd = new Random();
+    		xSpeed += rnd.nextInt(8)+2;
+    		ySpeed += rnd.nextInt(8)+2;
+    		Log.i("enemy", xSpeed+" "+ySpeed);
     		break;
-    		default:
-    			Random rnd = new Random();
-    			xSpeed += rnd.nextInt(3);
-    			ySpeed += rnd.nextInt(3);
-    			break;
+    	default:
+    		break;
     	}
     	
         width = bmp.getWidth() / BMP_COLUMNS;
         height = bmp.getHeight() / BMP_ROWS;
         path = new Path(fieldOfBattle,gameView);
-        //Log.i("Enemy_56", path.toString());
+        
         x = path.nextX();
         y = path.nextY();
     }
@@ -106,7 +109,7 @@ public class Enemy {
     	}
     	
     }
-	private void update() {
+	public void update() {
     	if(!path.done()){
     		updateDirection(path);
     		if(direction == 0){
@@ -159,7 +162,7 @@ public class Enemy {
     }
     @SuppressLint("DrawAllocation") 
     public void onDraw(Canvas canvas) {
-          update();
+          //update();
           int srcX = currentFrame * width;
           int srcY = 1 * height;
           Rect src = new Rect(srcX, srcY, srcX + width, srcY+height);
@@ -169,7 +172,7 @@ public class Enemy {
     private static int distance(Enemy e, int x, int y){
     	return (int)(Math.sqrt((e.x-x)*(e.x-x)+(e.y-y)*(e.y-y)));
     }
-	public static Enemy nearestEnemy(ArrayList<Enemy> Enemies, int X, int Y) {
+	public static Enemy nearestEnemy(ArrayList<Enemy> Enemies, int X, int Y, int range) {
 		if(Enemies.size() <= 0)
 			return null;
 		Enemy victim = Enemies.get(0);
@@ -177,6 +180,8 @@ public class Enemy {
 			if(distance(e,X,Y) < distance(victim,X,Y))
 				victim = e;
 		}
+		if(distance(victim,X,Y) > range)
+			return null;
 		return victim;
 	}
 }

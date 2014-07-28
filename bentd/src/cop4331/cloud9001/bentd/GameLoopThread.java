@@ -3,6 +3,7 @@ package cop4331.cloud9001.bentd;
 
 import android.annotation.SuppressLint;
 import android.graphics.Canvas;
+import android.os.Message;
 
 public class GameLoopThread extends Thread {
        private GameView view;
@@ -20,8 +21,30 @@ public class GameLoopThread extends Thread {
        @Override
        public void run() {
     	   while (running) {
+       		   //Drawinng
     		   Canvas c = null;
     		   if(System.currentTimeMillis() - LastDraw > (60/TARGET_FPS_INVERSE) *1000){
+    			   Message msg = new Message();
+        		   //Currency
+    			   view.updateGame();
+           		   String textToChange = GameInstance.currencyToString(view.money)
+           				   +GameInstance.healthToString(view.health)+(1+view.currentWave)+view.maxWaves
+           				   +GameInstance.timeToString((long)(view.level.timePerWave - (System.currentTimeMillis() 
+           						   - view.startOfWaveInMiliseconds)));
+           		   msg.obj = textToChange;
+           		   GameInstance.mHandler.sendMessage(msg);
+           		   //Health
+           		   //textToChange = "2"+view.health;
+           		   //msg.obj = textToChange;
+           		   //GameInstance.mHandler.sendMessage(msg);
+           		   /*//Wave
+           		   textToChange = "3"+view.currentWave+view.maxWaves;
+           		   msg.obj = textToChange;
+           		   GameInstance.mHandler.sendMessage(msg);
+           		   //Time
+           		   textToChange = "4"+GameInstance.timeToString((long)(System.currentTimeMillis() - view.startOfWaveInMiliseconds));
+           		   msg.obj = textToChange;
+           		   GameInstance.mHandler.sendMessage(msg);*/
 		           try {
 		        	   c = view.getHolder().lockCanvas();
 		               synchronized (view.getHolder()) {

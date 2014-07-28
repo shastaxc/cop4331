@@ -1,36 +1,63 @@
 package cop4331.cloud9001.bentd;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
-//import android.R;
-import cop4331.cloud9001.bentd.R;
 import android.annotation.SuppressLint;
+import android.app.ActionBar.LayoutParams;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.PopupWindow;
+//import android.R;
 //import android.view.View;
-import android.widget.TextView;
 
 @SuppressLint({ "WrongCall", "ClickableViewAccessibility", "DrawAllocation" }) 
 public class GameView extends SurfaceView {
     private Bitmap bmp;
+    /*
+     * Towers
+     */
+    private final Bitmap tower1 = BitmapFactory.decodeResource(getResources(),  R.drawable.tower_archer);//50g
+	private final Bitmap tower2 = BitmapFactory.decodeResource(getResources(),  R.drawable.tower_ninja);//75g
+	private final Bitmap tower3 = BitmapFactory.decodeResource(getResources(),  R.drawable.tower_shrine);//100g
+	private final Bitmap tower4 = BitmapFactory.decodeResource(getResources(),  R.drawable.tower_ballista_idle);//200g
+	/*
+	 * Enemies
+	 */
+	private final Bitmap enemyOni = BitmapFactory.decodeResource(getResources(),  R.drawable.enemy_oni);
+	private final Bitmap enemyImp = BitmapFactory.decodeResource(getResources(), R.drawable.enemy_imp);
+	private final Bitmap enemyKitsune = BitmapFactory.decodeResource(getResources(), R.drawable.enemy_kitsune);
+	private final Bitmap bossOroshi = BitmapFactory.decodeResource(getResources(), R.drawable.enemy_oroshi_a);
+	/*
+	 * View Variables
+	 */
     private SurfaceHolder holder;
     private GameLoopThread gameLoopThread; //Periodic call for GameView.onDraw();
     protected ArrayList<Enemy> Enemies; //Enemies on screen
     protected ArrayList<Tower> Towers; //Towers on screen
+    private ImageButton tower1_btn;
+    private ImageButton tower2_btn;
+    private ImageButton tower3_btn;
+    private ImageButton tower4_btn;
     protected MapConfig level;
+    protected static PopupWindow popup_window;
+    protected static boolean popup_active = false;
+    private int touch_x;
+    private int touch_y;
     private Path p;
     private long lastClick = 0; //Time between tower clicks
     protected int[][] fieldOfBattle; //mapconfig file
@@ -46,19 +73,8 @@ public class GameView extends SurfaceView {
      * Waves
      */
     protected boolean spawnedFirstWave = false;
+    protected boolean begin = true;
     protected long startOfWaveInMiliseconds = 0;
-    
-    /*
-     * STATS BAR
-     *
-    protected static Button pause_btn;
-	protected static Button forward_btn;
-	protected static TextView currency_textview;
-	protected static TextView life_textview;
-	protected static TextView wave_textview;
-	protected static TextView time_remaining_textview;
-	protected static LinearLayout text_layout;
-	protected static RelativeLayout stats_bar_layout;*/
     /*
      * CONSTRUCTORS
      */
@@ -145,41 +161,34 @@ public class GameView extends SurfaceView {
 	 *     5) Update Enemy positions
 	 *     6) COMING SOON: Wave update and status bar timer.
 	 */
-    protected void onDraw2(Canvas canvas){
-    	money++;
-    }
-    @Override
-    protected void onDraw(Canvas canvas) {
+    protected void updateGame(){
     	//Update Wave
-    	//GameInstance.currency_textview.setText("1234");
     	long timeRemaining = System.currentTimeMillis() - startOfWaveInMiliseconds;
-    	if(!spawnedFirstWave){
+    	if(!spawnedFirstWave && begin){
     		spawnedFirstWave = true;
     		for(int i=0;i<level.EnemiesPerWave[currentWave];i++)
 				Enemies.add(new Enemy(this,fieldOfBattle,0));
     		startOfWaveInMiliseconds = System.currentTimeMillis();
     	}
-    	if(timeRemaining < level.timePerWave){
-    		//UPDATE STATUS BAR
-    		//GameInstance.modifyStatBar(money);
-    	}
-    	else{//Wave is done, Spawn Next one
+    	if(begin && (timeRemaining > level.timePerWave || Enemies.size() == 0)){//Wave is done, Spawn Next one
     		currentWave++;
-    		if(currentWave < maxWaves)
+    		if(currentWave < maxWaves-1)
     			for(int i=0;i<level.EnemiesPerWave[currentWave];i++)
     				Enemies.add(new Enemy(this,fieldOfBattle,0));
     		startOfWaveInMiliseconds = System.currentTimeMillis();
     	}
+    	if(currentWave == maxWaves){
+    		gameLoopThread.setRunning(false);
+    	}
     	/*
-    	 * DRAWING AND ENTITY UPDATES
+    	 * ENTITY UPDATES
     	 */
-		canvas.drawColor(0, PorterDuff.Mode.CLEAR);
-		//TOWER TARGETING AND FIRING
+		//TOWER TARGETING
 		for(Tower t: Towers){
 		   //Needs a target
 		   if(t.target == null){
-			   //Finds the closest enemy for attacking
-			   Enemy e = Enemy.nearestEnemy(Enemies,t.getx(),t.gety());
+			   //Finds at the closest enemy
+			   Enemy e = Enemy.nearestEnemy(Enemies,t.getx(),t.gety(),t.range);
 			   if(e == null)
 				   break;
 			   else
@@ -198,11 +207,9 @@ public class GameView extends SurfaceView {
 		   }
 		}
 		//TOWER AND BULLET UPDATES / DRAW
-    	for(Tower t: Towers){
-    		t.onDraw(canvas);
-    		for(Bullet b: t.Bullets)
-    			b.onDraw(canvas);
-    	}
+    	for(Tower t: Towers)
+    		for(int i=0;i<t.Bullets.size();i++)
+    			t.Bullets.get(i).update();
     	//ENEMY UPDATES
     	for(int i=0;i<Enemies.size();i++){
     		if(Enemies.get(i).health < 0){
@@ -215,14 +222,36 @@ public class GameView extends SurfaceView {
     			money+=Enemies.get(i).bounty;
     			score+=Enemies.get(i).bounty;
     			Enemies.remove(i--);	
-    			
     		}
     	}
     	//ENEMY DRAW
     	for(int i=0;i<Enemies.size();i++){
     		Enemy e = Enemies.get(i);
-    		e.onDraw(canvas);
+    		if(wash(e.y,(GameInstance.game_view.getHeight()/MapView.Y_TILE_COUNT)) <=0 
+    				&& wash(e.x,(GameInstance.game_view.getWidth()/MapView.X_TILE_COUNT))>=8){
+    			health-=e.strength;
+    			Enemies.remove(i--);
+    		}
+    		else
+    			e.update();
+    		
     	}
+    }
+    @Override
+    protected void onDraw(Canvas canvas) {
+    	/*
+    	 * DRAWING AND ENTITY UPDATES
+    	 */
+		canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+		//TOWER AND BULLET DRAW
+    	for(Tower t: Towers){
+    		t.onDraw(canvas);
+    		for(int i=0;i<t.Bullets.size();i++)
+    			t.Bullets.get(i).onDraw(canvas);
+    	}
+    	//ENEMY DRAW
+    	for(int i=0;i<Enemies.size();i++)
+    			Enemies.get(i).onDraw(canvas);
     }
 	
 	@Override
@@ -230,24 +259,95 @@ public class GameView extends SurfaceView {
 	 * When the screen is tapped, the view checks if a tower can be placed.
 	 */
 	public boolean onTouchEvent(MotionEvent event){
-		if (System.currentTimeMillis() - lastClick > 500) {
-			lastClick = System.currentTimeMillis();
-			Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.towerdefault);
-			int x = wash((int)event.getX(),bmp.getWidth());
-			int y = wash((int)event.getY(),bmp.getHeight());
-			boolean empty = true, valid = false;
-			if(validPos(x,y)){
-				valid = true;
-				for(Tower t: Towers){
-					if(t.getx()==x && t.gety()==y)
-						empty = false;	
-				}
-			}
-			if(empty && valid)
-				Towers.add(new Tower(bmp,x,y));
-			//Enemies.add(new Enemy(this, fieldOfBattle,0));
+		if(popup_active == false || !popup_window.isShowing()){ //If popup window is not already showing, create & display it
+			touch_x = (int)event.getX();
+			touch_y = (int)event.getY();
+			touch_x = wash(touch_x,(GameInstance.game_view.getWidth()/MapView.X_TILE_COUNT));
+			touch_y = wash(touch_y,(GameInstance.game_view.getHeight()/MapView.Y_TILE_COUNT));
+			if(!validPos(touch_x,touch_y))
+				return false;
+			for(Tower t: Towers)
+				if(t.getx() == touch_x && t.gety() == touch_y)
+					return false;
+			popup_active = true;	
+			LayoutInflater layoutInflater = (LayoutInflater)GameInstance.app_context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);  
+		    View popupView = layoutInflater.inflate(R.layout.tower_select_popup, (ViewGroup) findViewById(R.layout.activity_game_instance));
+		    popup_window = new PopupWindow(popupView, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		    popup_window.setBackgroundDrawable(new BitmapDrawable(null,""));
+		    popup_window.setFocusable(true);
+		    popup_window.update();
+		    popup_window.showAtLocation(this, Gravity.NO_GRAVITY, touch_x, touch_y);
+		    
+		    
+		    popup_window.setTouchInterceptor(new OnTouchListener() { // or whatever you want
+		        @Override
+		        public boolean onTouch(View v, MotionEvent event)
+		        {
+		            if(event.getAction() == MotionEvent.ACTION_OUTSIDE)
+		            {
+		            	popup_window.dismiss();
+		            	popup_active = false;
+		            	return true;
+		            }
+		            return false;
+		        }
+
+		    });
+	            
+		    tower1_btn = (ImageButton) popupView.findViewById(R.id.image_button_1);
+		    tower2_btn = (ImageButton) popupView.findViewById(R.id.image_button_2);
+		    tower3_btn = (ImageButton) popupView.findViewById(R.id.image_button_3);
+		    tower4_btn = (ImageButton) popupView.findViewById(R.id.image_button_4);
+		    tower1_btn.setOnClickListener(new OnClickListener() {
+		    	@Override
+		    	public void onClick(View v) {
+		    		if(money>=50){
+		    			money-=50;
+		    			Towers.add(new Tower(tower1,touch_x,touch_y,1));
+		    		}
+		    		popup_window.dismiss();
+		    		popup_active = false;
+			    }
+			});
+		    tower2_btn.setOnClickListener(new OnClickListener() {
+		    	@Override
+		    	public void onClick(View v) {
+		    		if(money>=75){
+		    			money-=75;
+		    			Towers.add(new Tower(tower2,touch_x,touch_y));
+		    		}
+		    		popup_window.dismiss();
+		    		popup_active = false;
+			    }
+			});
+		    tower3_btn.setOnClickListener(new OnClickListener() {
+		    	@Override
+		    	public void onClick(View v) {
+		    		if(money>=100){
+		    			money-=100;
+		    			Towers.add(new Tower(tower3,touch_x,touch_y));
+		    		}
+		    		popup_window.dismiss();
+		    		popup_active = false;
+			    }
+			});
+		    tower4_btn.setOnClickListener(new OnClickListener() {
+		    	@Override
+		    	public void onClick(View v) {
+		    		if(money>=200){
+		    			money-=200;
+		    			Towers.add(new Tower(tower4,touch_x,touch_y));
+		    		}
+		    		
+		    		popup_window.dismiss();
+		    		popup_active = false;
+			    }
+			});
+			return true;
 		}
-		return true;
+		else{ //If popup window already showing, do nothing
+			return false;
+		}
 	}
 	/***
 	 * Decides whether or not a tower can be placed down,
@@ -264,21 +364,9 @@ public class GameView extends SurfaceView {
 		int gridX = (x/gridWidth);
 		int gridY = (y/gridHeight);
 		
-		if(fieldOfBattle[gridY][gridX] != 0)
+		if(fieldOfBattle[gridY][gridX] != 14)
 			return false;
-		//Check UP
-		if(gridY > 0 && fieldOfBattle[gridY-1][gridX] >0)
-			return true;
-		//Check LEFT
-		if(gridX > 0 && fieldOfBattle[gridY][gridX-1] >0)
-			return true;
-		//Check RIGHT
-		if(gridX < (fieldOfBattle[0].length-1) && fieldOfBattle[gridY][gridX+1] >0)
-			return true;
-		//Check DOWN
-		if(gridY < (fieldOfBattle.length-1) && fieldOfBattle[gridY+1][gridX] >0)
-			return true;
-		return false;
+		return true;
 	}
 	public int wash(int x,int max){
 		return (x/max) * max;

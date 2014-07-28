@@ -35,7 +35,12 @@ public class MapView extends TileView{
     private static final int BOTTOM_LEFT_INSIDE_CORNER = 11; //Index to reference drawable
     private static final int BOTTOM_RIGHT_INSIDE_CORNER = 12; //Index to reference drawable
     private static final int NO_EDGE = 13; //Index to reference drawable
-	
+    private static final int TOWER_SITE = 14; //Index to reference drawable
+    private static final int CASTLE_LEFT = 15; //Index to reference drawable
+    private static final int CASTLE_MID_LEFT = 16; //Index to reference drawable
+    private static final int CASTLE_MID_RIGHT = 17; //Index to reference drawable
+    private static final int CASTLE_RIGHT = 18; //Index to reference drawable
+    
 	//Various constructors using standard View constructor syntax
     public MapView(Context context) {
         super(context);
@@ -52,11 +57,11 @@ public class MapView extends TileView{
         initializeMap();
     }
 	
-	public void initializeMap(){
+    public void initializeMap(){
 		setFocusable(false);
 		Resources r = this.getContext().getResources();
 		
-		createImgHolder(14);
+		createImgHolder(19);
 		loadTile(ALL_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_all_edge)); //Index 0
 		loadTile(TOP_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_t_edge)); //Index 1
 		loadTile(BOTTOM_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_b_edge)); //Index 2
@@ -71,6 +76,12 @@ public class MapView extends TileView{
 		loadTile(BOTTOM_LEFT_INSIDE_CORNER, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_bl_inside_corner)); //Index 11
 		loadTile(BOTTOM_RIGHT_INSIDE_CORNER, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_br_inside_corner)); //Index 12
 		loadTile(NO_EDGE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.path_no_edge)); //Index 13
+		loadTile(TOWER_SITE, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.tower_site)); //Index 14
+		loadTile(CASTLE_LEFT, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.tower_castle_a)); //Index 15
+		loadTile(CASTLE_MID_LEFT, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.tower_castle_b)); //Index 16
+		loadTile(CASTLE_MID_RIGHT, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.tower_castle_c)); //Index 17
+		loadTile(CASTLE_RIGHT, r.getDrawable(cop4331.cloud9001.bentd.R.drawable.tower_castle_d)); //Index 18
+		
 	}
 	
 	
@@ -146,5 +157,15 @@ public class MapView extends TileView{
         }
         MapView.this.invalidate();
         setMode(RUNNING);
+    }
+    public void startNewWave(int wave_number){
+    	long start_time = System.currentTimeMillis();
+    	event_text.setText("Wave " + wave_number);
+    	event_text.setVisibility(View.VISIBLE);
+    	event_text_layout.setVisibility(View.VISIBLE);
+    	if(System.currentTimeMillis()-start_time > 1000){
+    		event_text.setVisibility(View.GONE);
+    		event_text_layout.setVisibility(View.GONE);
+    	}
     }
 }
