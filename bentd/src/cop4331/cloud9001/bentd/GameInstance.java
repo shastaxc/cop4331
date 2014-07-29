@@ -12,6 +12,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -25,6 +26,7 @@ public class GameInstance extends Activity {
 	protected static Context app_context;
 	protected static MapView basic_map_view;
 	protected static GameView game_view;
+	protected static String CAPSULE_KEY = "map-view"; //Used to restore saved game
 	protected static Button pause_btn;
 	protected static Button forward_btn;
 	protected static TextView currency_textview;
@@ -95,7 +97,6 @@ public class GameInstance extends Activity {
 			
 			game_view = (GameView) findViewById(cop4331.cloud9001.bentd.R.id.game);
 		}
-		
 	}
 	static Handler mHandler = new Handler(){
 		@Override
@@ -107,7 +108,17 @@ public class GameInstance extends Activity {
 			time_remaining_textview.setText(text.substring(9,text.length()));
 		}
 	};
-	
+	static Handler endHandler = new Handler(){
+		@Override
+		public void handleMessage(Message msg){
+			String text = (String)msg.obj;
+			if(text.compareTo("VICTORY") == 0)
+				basic_map_view.setMode(MapView.VICTORY);
+			else if(text.compareTo("DEFEAT")==0)
+				basic_map_view.setMode(MapView.DEFEAT);
+			Log.i("why","crashing");
+		}
+	};
 	protected static String healthToString(int n){
 		if(n>=100)
 			return ""+n;
@@ -181,30 +192,27 @@ public class GameInstance extends Activity {
     	if(basic_map_view.getMode() == MapView.PAUSED){
     		basic_map_view.setMode(MapView.RUNNING);
         	pause_btn.setBackgroundResource(R.drawable.pause_icon);
-        	//game_view.setZOrderOnTop(true);
     	}
     	else if(basic_map_view.getMode() == MapView.READY){
-        	//game_view.setZOrderOnTop(false);
+    		// Button will not function in this mode
     	}
     	else if(basic_map_view.getMode() == MapView.RUNNING){
         	basic_map_view.setMode(MapView.PAUSED);
         	pause_btn.setBackgroundResource(R.drawable.play_icon);
-        	//game_view.setZOrderOnTop(false);
         	createPauseMenu();
     	}
     	else if(basic_map_view.getMode() == MapView.FAST_FORWARD){
     		basic_map_view.setMode(MapView.PAUSED);
         	pause_btn.setBackgroundResource(R.drawable.play_icon);
     		forward_btn.setBackgroundResource(R.drawable.fast_forward_icon);
-        	//game_view.setZOrderOnTop(true);
         	createPauseMenu();
     		
     	}
     	else if(basic_map_view.getMode() == MapView.DEFEAT){
-        	//game_view.setZOrderOnTop(false);
+    		// Button will not function in this mode
     	}
     	else if(basic_map_view.getMode() == MapView.VICTORY){
-        	//game_view.setZOrderOnTop(false);
+    		// Button will not function in this mode
     	}
     }
     
@@ -238,8 +246,6 @@ public class GameInstance extends Activity {
 	    					.addToBackStack("pause-menu")
 	     					.commit();
     }
-
-
     protected static void writeSaveData(){
     	try{
 
@@ -268,11 +274,6 @@ public class GameInstance extends Activity {
     		
     	}
     }
-	
-	protected void loadPreferences(){
-		
-	}
-	
 	@Override
 	public void onBackPressed(){
 		if(fragman.findFragmentByTag("in-game-scoreboard") != null){
@@ -296,6 +297,13 @@ public class GameInstance extends Activity {
 		else{
 			super.onBackPressed();
 		}
+	}
+	protected void savePreferences(){
+		
+	}
+	
+	protected void loadPreferences(){
+		
 	}
 	
 	@Override

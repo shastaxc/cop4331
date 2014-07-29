@@ -75,7 +75,7 @@ public class MapConfig {
 			health = 100;
 			EnemiesPerWave = new int[maxWaves];
 			for(int i=0;i<maxWaves;i++)
-				EnemiesPerWave[i] = 5*i+5;
+				EnemiesPerWave[i] = 5*(i+1);
 			break;
 			default:
 				break;
@@ -91,20 +91,6 @@ public class MapConfig {
 			EnemiesPerWave = new int[maxWaves];
 			for(int i=0;i<maxWaves;i++)
 				EnemiesPerWave[i] = i+2;
-				
-			//enemyPath = new Path(map0, gv);
-			//Log.i("MapConfig_24",enemyPath.toString());
-			
-			
-			//Pre gen won't work i have no clue why
-			//EnemiesPerWave = new ArrayList<ArrayList<Enemy>>();
-			/*for(int i=0;i<maxWaves;i++){
-				ArrayList<Enemy> combatants = new ArrayList<Enemy>();
-				for(int j=0;j<1;j++){
-					combatants.add(new Enemy(gv,fieldOfBattle,0));
-				}
-				EnemiesPerWave.add(combatants);
-			}*/
 			break;
 			default:
 				break;

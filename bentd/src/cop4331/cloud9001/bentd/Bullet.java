@@ -2,8 +2,6 @@ package cop4331.cloud9001.bentd;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 
 public class Bullet {
@@ -15,32 +13,20 @@ public class Bullet {
 	protected int velocity;
 	protected boolean destroyed = false;
 	protected Paint paint;
-	private Bitmap bmp;
-	private Bitmap rotatedBmp;
-	private float rotation = 180;
+	private Bitmap bmp[];
+	private int currentFrame = 0;
 	private long birth = System.currentTimeMillis();
 	
-	public Bullet(Enemy e, int x, int y, int strength, int bulletSpeed, Bitmap arrow) {
-		bmp = arrow;
-		rotatedBmp = RotateBitmap(bmp,rotation);
+	public Bullet(Enemy e, int x, int y, int strength, int bulletSpeed, Bitmap[] bmpArr) {
+		bmp = bmpArr;
 		target = e;
 		posX = x;
 		posY = y;
-		radius = 0;//arrow.getWidth();
 		stoppingPower = strength;
 		velocity = bulletSpeed;
-		paint = new Paint();
-		paint.setColor(Color.BLACK);
-		paint.setStrokeWidth(5);
-		paint.setStyle(Paint.Style.STROKE);
 	}
 	public int distance(int x1, int x2, int y1, int y2){
-		return (int)Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-1));
-	}
-	private static Bitmap RotateBitmap(Bitmap source, float angle){
-		Matrix matrix = new Matrix();
-		matrix.postRotate(angle);
-		return Bitmap.createBitmap(source, 0, 0, source.getWidth(),source.getHeight(),matrix,true);
+		return (int)Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
 	}
 	public void update(){
 		int speed = (int)Math.sqrt(velocity);
@@ -48,21 +34,18 @@ public class Bullet {
 		int targetY = target.y+target.hitCenterY;
 		float diffX = targetX - posX;
 		float diffY = targetY - posY;
-		if(rotation ==0){
-			rotation = (float)(Math.acos(diffY/diffX)*(180/Math.PI));
-			rotation = rotation/90 *90;
-			rotatedBmp = RotateBitmap(bmp,rotation);
-		}
-		if(distance(posX,targetX,posY+(bmp.getHeight()/2),targetY) < target.radius){
+
+		if(!destroyed && hitDetection(targetX-target.radius,targetX+target.radius,targetY-target.radius,targetY+target.radius,
+				posX,posX,posY,posY)){
 			target.health -= stoppingPower;
 			destroyed = true;
 		}
 		else{
 			if(diffX < 0){
-				if(diffX < speed)
-					posX -= diffX;
+				if(Math.abs(diffX) < speed)
+					posX -= Math.abs(diffX);
 				else
-					posX-=speed;
+					posX -= speed;
 			}
 			else if(diffX >0){
 				if(diffX < speed)
@@ -71,8 +54,8 @@ public class Bullet {
 					posX += speed;
 			}
 			if(diffY < 0){
-				if(diffY < speed)
-					posY -= diffY;
+				if(Math.abs(diffY) < speed)
+					posY -= Math.abs(diffY);
 				else
 					posY-=speed;
 			}
@@ -82,18 +65,54 @@ public class Bullet {
 				else
 					posY += speed;
 			}
-			if(distance(posX,targetX,posY,targetY) < target.radius){
+			
+			if(hitDetection(targetX-target.radius,targetX+target.radius,targetY-target.radius,targetY+target.radius,
+					posX,posX,posY,posY) && !destroyed){
 				target.health -= stoppingPower;
 				destroyed = true;
 			}
+		}
+		//ROTATION
+		if(diffX == 0){
+			if(diffY > 0)
+				currentFrame = 0;
+			else
+				currentFrame = 4;
+		}
+		else if(diffY == 0){
+			if(diffX > 0)
+				currentFrame = 2;
+			else
+				currentFrame = 6;
+		}
+		else{
+			if(diffX < 0 && diffY < 0)
+				currentFrame = 1;
+			else if(diffX > 0 && diffY >0)
+				currentFrame = 3;
+			else if(diffX>0 && diffY <0)
+				currentFrame = 7;
+			else
+				currentFrame = 5;
 		}
 	}
 	public void onDraw(Canvas canvas){
 		//update();
 		//canvas.drawCircle(posX,posY,10, paint);
-		canvas.drawBitmap(rotatedBmp, posX,posY, null);
+		canvas.drawBitmap(bmp[currentFrame], posX,posY, null);
 	}
 	public long getLifeSpane(){
 		return (long) (System.currentTimeMillis() - birth);
+	}
+	private boolean hitDetection(int minEnemyX, int maxEnemyX, int minEnemyY, int maxEnemyY,
+			int minBulletX, int maxBulletX, int minBulletY, int maxBulletY){
+		return ((minBulletX <= maxEnemyX && maxEnemyX <= maxBulletX)|| (minEnemyX <= maxBulletX && maxBulletX <= maxEnemyX))
+				&&((minBulletY <= maxEnemyY && maxEnemyY <= maxBulletY)|| (minEnemyY <= maxBulletY && maxBulletY <= maxEnemyY));
+	}
+	public void speedUP() {
+		velocity *= 2;
+	}
+	public void slowDown() {
+		velocity /= 2;
 	}
 }

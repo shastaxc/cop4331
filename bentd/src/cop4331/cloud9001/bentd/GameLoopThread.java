@@ -22,32 +22,30 @@ public class GameLoopThread extends Thread {
        public void run() {
     	   while (running) {
     		   if(GameInstance.basic_map_view.getMode() == MapView.PAUSED || GameInstance.basic_map_view.getMode() == MapView.READY){
-    			   //
+    			   Canvas c = null;
+    			   try {
+		        	   c = view.getHolder().lockCanvas();
+		               synchronized (view.getHolder()) {
+		            	   view.onDrawClear(c);
+		               }
+		               }finally {
+		            	   if (c != null) {
+		            		   view.getHolder().unlockCanvasAndPost(c);
+		                   }
+		               }
     		   }
     		   else{
-           		   //Drawing
-        		   Canvas c = null;
+	       		   //Drawinng
+	    		   Canvas c = null;
 	    		   if(System.currentTimeMillis() - LastDraw > (60/TARGET_FPS) *1000){
 	    			   Message msg = new Message();
 	        		   //Currency
 	           		   String textToChange = GameInstance.currencyToString(view.money)
-	           				   +GameInstance.healthToString(view.health)+(1+view.currentWave)+view.maxWaves
+	           				   +GameInstance.healthToString(view.health)+(view.currentWave)+view.maxWaves
 	           				   +GameInstance.timeToString((long)(view.level.timePerWave - (System.currentTimeMillis() 
 	           						   - view.startOfWaveInMiliseconds)));
 	           		   msg.obj = textToChange;
 	           		   GameInstance.mHandler.sendMessage(msg);
-               		   //Health
-               		   //textToChange = "2"+view.health;
-               		   //msg.obj = textToChange;
-               		   //GameInstance.mHandler.sendMessage(msg);
-               		   /*//Wave
-               		   textToChange = "3"+view.currentWave+view.maxWaves;
-               		   msg.obj = textToChange;
-               		   GameInstance.mHandler.sendMessage(msg);
-               		   //Time
-               		   textToChange = "4"+GameInstance.timeToString((long)(System.currentTimeMillis() - view.startOfWaveInMiliseconds));
-               		   msg.obj = textToChange;
-               		   GameInstance.mHandler.sendMessage(msg);*/
 			           view.updateGame();
 			           try {
 			        	   c = view.getHolder().lockCanvas();

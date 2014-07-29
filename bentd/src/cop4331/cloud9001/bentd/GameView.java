@@ -1,6 +1,7 @@
 package cop4331.cloud9001.bentd;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;
@@ -11,6 +12,8 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,14 +39,21 @@ public class GameView extends SurfaceView {
 	/*
 	 * Enemies
 	 */
-	private final Bitmap enemyOni = BitmapFactory.decodeResource(getResources(),  R.drawable.enemy_oni);
+	private final Bitmap enemyOgre = BitmapFactory.decodeResource(getResources(),  R.drawable.enemy_oni);
 	private final Bitmap enemyImp = BitmapFactory.decodeResource(getResources(), R.drawable.enemy_imp);
 	private final Bitmap enemyKitsune = BitmapFactory.decodeResource(getResources(), R.drawable.enemy_kitsune);
-	private final Bitmap bossOroshi = BitmapFactory.decodeResource(getResources(), R.drawable.enemy_oroshi_a);
+	private final Bitmap bossOroshi = BitmapFactory.decodeResource(getResources(), R.drawable.enemy_oroshi);
 	/*
 	 * Bullets
 	 */
-	private final Bitmap arrow = BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_arrow);
+	private final Bitmap arrow[] = {BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_arrow_u),
+			BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_arrow_ru),
+			BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_arrow_r),
+			BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_arrow_rd),
+			BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_arrow_d),
+			BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_arrow_ld),
+			BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_arrow_l),
+			BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_arrow_lu)};
 	private final Bitmap caltrops = BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_caltrops);
 	private final Bitmap fireBallA = BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_fireball_a);
 	private final Bitmap fireBallB = BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_fireball_b);
@@ -52,8 +62,9 @@ public class GameView extends SurfaceView {
 	 */
     private SurfaceHolder holder;
     protected GameLoopThread gameLoopThread; //Periodic call for GameView.onDraw();
-    protected ArrayList<Enemy> Enemies; //Enemies on screen
-    protected ArrayList<Tower> Towers; //Towers on screen
+    protected static ArrayList<Enemy> Enemies; //Enemies on screen
+    protected static ArrayList<Tower> Towers; //Towers on screen
+
     protected MapConfig level;
     protected static PopupWindow popup_window;
     protected static boolean popup_active = false;
@@ -65,7 +76,7 @@ public class GameView extends SurfaceView {
     /*
      * Stats for stats bar
      */
-    protected int money = 0;
+    protected static int money = 0;
     protected int score = 0;
     protected int health = 0;
     protected int currentWave = 0;
@@ -73,9 +84,12 @@ public class GameView extends SurfaceView {
     /*
      * Waves
      */
-    protected boolean spawnedFirstWave = false;
-    protected boolean begin = true;
-    protected long startOfWaveInMiliseconds = 0;
+    protected boolean spawnedWave = false;
+    protected boolean spawnSubWave1 = false;
+    protected boolean spawnSubWave2 = false;
+    protected static long startOfWaveInMiliseconds = 0;
+	protected static boolean fast = false;
+	protected static boolean slow = true;
     /*
      * CONSTRUCTORS
      */
@@ -93,7 +107,7 @@ public class GameView extends SurfaceView {
     }
     public void initializeGameView(Context context){
     	gameLoopThread = new GameLoopThread(this);
-    	this.setZOrderOnTop(true);
+    	setZOrderOnTop(true);
         holder = getHolder();
         holder.setFormat(PixelFormat.TRANSPARENT);
         holder.addCallback(new SurfaceHolder.Callback() {
@@ -146,21 +160,143 @@ public class GameView extends SurfaceView {
     protected void updateGame(){
     	//Update Wave
     	long timeRemaining = System.currentTimeMillis() - startOfWaveInMiliseconds;
-    	if(!spawnedFirstWave && begin){
-    		spawnedFirstWave = true;
+    	if(timeRemaining > level.timePerWave){
+    		spawnedWave = false;
+    		spawnSubWave1 = false;
+    		spawnSubWave2 = false;
+    	}
+    	if(!spawnedWave && currentWave == 0){
+    		spawnedWave = true;
     		for(int i=0;i<level.EnemiesPerWave[currentWave];i++)
-				Enemies.add(new Enemy(this,fieldOfBattle,1));
+				Enemies.add(new Enemy(this,fieldOfBattle,1,enemyImp));
     		startOfWaveInMiliseconds = System.currentTimeMillis();
-    	}
-    	if(begin && (timeRemaining > level.timePerWave || Enemies.size() == 0)){//Wave is done, Spawn Next one
     		currentWave++;
-    		if(currentWave < maxWaves-1)
-    			for(int i=0;i<level.EnemiesPerWave[currentWave];i++)
-    				Enemies.add(new Enemy(this,fieldOfBattle,1));
-    		startOfWaveInMiliseconds = System.currentTimeMillis();
+    		if(fast){
+    			for(Enemy e: Enemies)
+    				e.speedUP();
+    		}
     	}
-    	if(currentWave == maxWaves){
+    	else if(!spawnedWave&& currentWave == 1){
+    		spawnedWave = true;
+    		for(int i=0;i<level.EnemiesPerWave[currentWave]-1;i++)
+    			Enemies.add(new Enemy(this,fieldOfBattle,1,enemyImp));
+    		Enemies.add(new Enemy(this,fieldOfBattle,3, enemyOgre));
+    		startOfWaveInMiliseconds = System.currentTimeMillis();
+    		currentWave++;
+    		if(fast){
+    			for(Enemy e: Enemies)
+    				e.speedUP();
+    		}
+    	}
+    	else if(!spawnedWave && currentWave ==2){
+    		for(int i=0;i<level.EnemiesPerWave[currentWave]-3;i++)
+    			Enemies.add(new Enemy(this,fieldOfBattle,1,enemyImp));
+    		Enemies.add(new Enemy(this,fieldOfBattle,2, enemyKitsune));
+    		Enemies.add(new Enemy(this,fieldOfBattle,3, enemyOgre));
+    		Enemies.add(new Enemy(this,fieldOfBattle,3, enemyOgre));
+    		startOfWaveInMiliseconds = System.currentTimeMillis();
+    		spawnedWave = true;
+    		currentWave++;
+    		if(fast){
+    			for(Enemy e: Enemies)
+    				e.speedUP();
+    		}
+    	}
+    	else if(!spawnedWave && currentWave == (maxWaves -1)){
+    		currentWave++;
+    		spawnedWave = true;
+    		Enemies.add(new Enemy(this,fieldOfBattle,5,bossOroshi));
+    		startOfWaveInMiliseconds = System.currentTimeMillis();
+    		if(fast){
+    			for(Enemy e: Enemies)
+    				e.speedUP();
+    		}
+    	}
+    	else if(!spawnedWave&& currentWave < (maxWaves-1)){
+    		startOfWaveInMiliseconds = System.currentTimeMillis();
+    		int spawnMax = level.EnemiesPerWave[currentWave]/2;
+    		Random rnd = new Random();
+    		int chance = 0;
+    		level.EnemiesPerWave[currentWave]-= spawnMax;
+    		for(int i = 0;i<spawnMax;i++){
+    			chance =rnd.nextInt(100);
+    			if(chance <= 10)
+    				Enemies.add(new Enemy(this,fieldOfBattle,2, enemyKitsune));
+    			else if(chance <= 30)
+    				Enemies.add(new Enemy(this,fieldOfBattle,3, enemyOgre));
+    			else
+    				Enemies.add(new Enemy(this,fieldOfBattle,1,enemyImp));
+    		}
+    		if(fast){
+    			for(Enemy e: Enemies)
+    				e.speedUP();
+    		}
+    		currentWave++;
+    	}
+    	else if(timeRemaining < 2*level.timePerWave/3 && currentWave > 2&& currentWave < maxWaves-1 && spawnSubWave1){
+    		//SUB WAVE 1
+    		int spawnMax = level.EnemiesPerWave[currentWave]/2;
+    		level.EnemiesPerWave[currentWave]-= spawnMax;
+    		Random rnd = new Random();
+    		int chance = 0;
+    		level.EnemiesPerWave[currentWave]-= spawnMax;
+    		for(int i = 0;i<spawnMax;i++){
+    			chance =rnd.nextInt(100);
+    			if(chance <= 10)
+    				Enemies.add(new Enemy(this,fieldOfBattle,2, enemyKitsune));
+    			else if(chance <= 30)
+    				Enemies.add(new Enemy(this,fieldOfBattle,3, enemyOgre));
+    			else
+    				Enemies.add(new Enemy(this,fieldOfBattle,1,enemyImp));
+    		}
+    	}
+    	else if(timeRemaining < level.timePerWave/3 && currentWave > 2&& currentWave < maxWaves-1 && spawnSubWave2){
+    		//SUB WAVE 2
+    		int spawnMax = level.EnemiesPerWave[currentWave];
+    		Random rnd = new Random();
+    		int chance = 0;
+    		level.EnemiesPerWave[currentWave]-= spawnMax;
+    		for(int i = 0;i<spawnMax;i++){
+    			chance =rnd.nextInt(100);
+    			if(chance <= 10)
+    				Enemies.add(new Enemy(this,fieldOfBattle,2, enemyKitsune));
+    			else if(chance <= 30)
+    				Enemies.add(new Enemy(this,fieldOfBattle,3, enemyOgre));
+    			else
+    				Enemies.add(new Enemy(this,fieldOfBattle,1,enemyImp));
+    		}
+    	}
+    	
+    	//ENDING CONDITIONS
+    	if(currentWave >= maxWaves && Enemies.size()==0 && health >0){
+    		currentWave = maxWaves;
+    		//gameLoopThread.setRunning(false);
+    		//SEND VICTORY MESSAGE TO GAME INSTANCE
     		gameLoopThread.setRunning(false);
+    		try {
+				gameLoopThread.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		Message msg = new Message();
+    		String textToChange = "VICTORY";
+    		msg.obj = textToChange;
+    		GameInstance.mHandler.sendMessage(msg);
+    	}
+    	else if(health < 0){
+    		//SEND DEFEAT MESSAGE TO GAME INSTANCE
+    		gameLoopThread.setRunning(false);
+    		try {
+				gameLoopThread.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		Message msg = new Message();
+    		String textToChange = "DEFEAT";
+    		msg.obj = textToChange;
+    		GameInstance.mHandler.sendMessage(msg);
     	}
     	/*
     	 * ENTITY UPDATES
@@ -170,7 +306,7 @@ public class GameView extends SurfaceView {
 		   //Needs a target
 		   if(t.target == null){
 			   //Finds at the closest enemy
-			   Enemy e = Enemy.nearestEnemy(Enemies,t.getx(),t.gety(),t.range);
+			   Enemy e = Enemy.nearestEnemy(Enemies,t.getx()+t.centerX,t.gety()+t.centerY,t.range);
 			   if(e == null)
 				   break;
 			   else
@@ -191,12 +327,15 @@ public class GameView extends SurfaceView {
 		   }
 		}
 		//TOWER AND BULLET UPDATES / DRAW
-    	for(Tower t: Towers)
+    	for(Tower t: Towers){
     		for(int i=0;i<t.Bullets.size();i++){
     			t.Bullets.get(i).update();
-    			if(t.Bullets.get(i).getLifeSpane() > 5000)
+    			if(t.Bullets.get(i).getLifeSpane() > 5000){
+    				t.target = null;
     				t.Bullets.remove(i--);
+    			}
     		}
+    	}
     	//ENEMY UPDATES
     	for(int i=0;i<Enemies.size();i++){
     		if(Enemies.get(i).health < 0){
@@ -222,6 +361,37 @@ public class GameView extends SurfaceView {
     		}		
     	}
     }
+    static Handler ffHandler = new Handler(){
+    	@Override
+		public void handleMessage(Message msg){
+			String text = (String)msg.obj;
+			if(text.compareTo("fast")==0){
+				if(Enemies.size() == 0){
+					startOfWaveInMiliseconds = 0;
+				}
+				else if(!fast){
+					//SPEED EVERYTHING UP IN towers and enemies
+					for(Tower t: Towers)
+						t.speedUP();
+					for(Enemy e: Enemies)
+						e.speedUP();
+				}
+				fast = true;
+				slow = false;
+			}
+			else if(text.compareTo("slow")==0){
+				if(!slow){
+					//SLOW EVERYTHING DOWN IN tower and enemies
+					for(Tower t: Towers)
+						t.slowDown();
+					for(Enemy e: Enemies)
+						e.slowDown();
+				}
+				fast = false;
+				slow = true;
+			}
+		}
+    };
     @Override
     protected void onDraw(Canvas canvas) {
     	/*
@@ -238,7 +408,9 @@ public class GameView extends SurfaceView {
     	for(int i=0;i<Enemies.size();i++)
     			Enemies.get(i).onDraw(canvas);
     }
-	
+	protected void onDrawClear(Canvas canvas){
+		canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+	}
 	@Override
 	/***
 	 * When the screen is tapped, the view checks if a tower can be placed.
@@ -365,35 +537,4 @@ public class GameView extends SurfaceView {
             }
         }
     }
-	
-	protected int getMoney(){
-		return this.money;
-	}
-	protected void setMoney(int m){
-		this.money = m;
-	}
-	protected int getScore(){
-		return this.score;
-	}
-	protected void setScore(int m){
-		this.score = m;
-	}
-	protected int getHealth(){
-		return this.health;
-	}
-	protected void setHealth(int m){
-		this.health = m;
-	}
-	protected int getCurrentWave(){
-		return this.currentWave;
-	}
-	protected void setCurrentWave(int m){
-		this.currentWave = m;
-	}
-	protected int getMaxWaves(){
-		return this.maxWaves;
-	}
-	protected void setMaxWaves(int m){
-		this.maxWaves = m;
-	}
 }

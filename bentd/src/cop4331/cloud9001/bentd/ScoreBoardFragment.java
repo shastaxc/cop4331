@@ -51,10 +51,9 @@ public class ScoreBoardFragment extends Fragment{
 	private void updateCurrentScore(){
 		if(GameInstance.basic_map_view != null && GameInstance.game_view != null){ //If scoreboard was called from pause menu
 			if(GameInstance.basic_map_view.getMode() == MapView.PAUSED){
-				current_score.setText(Integer.toString(GameInstance.game_view.getScore()));
+				current_score.setText(Integer.toString(GameView.money));
 			}
 		}
-		//TODO: game activity may be on pause or stopped, but game info saved in file. Read score from file.
 		else{ //If scoreboard was called from main menu
 			current_score_label.setVisibility(View.INVISIBLE); //Hide text "current score"
 			current_score.setVisibility(View.INVISIBLE); //Hide current score
