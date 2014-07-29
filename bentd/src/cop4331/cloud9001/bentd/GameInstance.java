@@ -1,15 +1,5 @@
 package cop4331.cloud9001.bentd;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
@@ -49,9 +39,7 @@ public class GameInstance extends Activity {
 		setContentView(R.layout.activity_game_instance);
 		app_context = getApplicationContext();
 		fragman = getFragmentManager();
-		obj = this;
 		System.out.println("onCreate");
-		
 		//Load map
 		basic_map_view = (MapView) findViewById(cop4331.cloud9001.bentd.R.id.map);
         basic_map_view.setEventText((TextView) findViewById(cop4331.cloud9001.bentd.R.id.event_textview), (LinearLayout) findViewById(R.id.text_layout));
@@ -219,8 +207,15 @@ public class GameInstance extends Activity {
 	    					.addToBackStack("pause-menu")
 	     					.commit();
     }
-    
 
+	protected void savePreferences(){
+		
+	}
+	
+	protected void loadPreferences(){
+		
+	}
+	
 	@Override
 	public void onBackPressed(){
 		if(fragman.findFragmentByTag("in-game-scoreboard") != null){
@@ -247,14 +242,6 @@ public class GameInstance extends Activity {
         	pause_btn.setBackgroundResource(R.drawable.play_icon);
         	createPauseMenu();
 		}
-	}
-	
-	protected void savePreferences(){
-		
-	}
-	
-	protected void loadPreferences(){
-		
 	}
 	
 	@Override
