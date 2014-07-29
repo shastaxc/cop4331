@@ -35,6 +35,7 @@ public class GameInstance extends Activity {
 	protected static RelativeLayout stats_bar_layout;
 	protected static AlertDialog dialog;
 	protected static String SAVE_FILE = "save_data.txt";
+	protected static boolean endless = false;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -42,30 +43,58 @@ public class GameInstance extends Activity {
 		app_context = getApplicationContext();
 		fragman = getFragmentManager();
 		System.out.println("onCreate");
-		//Load map
-		basic_map_view = (MapView) findViewById(cop4331.cloud9001.bentd.R.id.map);
-        basic_map_view.setEventText((TextView) findViewById(cop4331.cloud9001.bentd.R.id.event_textview), (LinearLayout) findViewById(R.id.text_layout));
-        basic_map_view.setMapGrid(0);
-        basic_map_view.setMode(MapView.READY);
-		//Load Stats UI
-        text_layout = (LinearLayout) findViewById(R.id.text_layout);
-		text_layout.setOnClickListener(global_on_click_listener);
-        stats_bar_layout = (RelativeLayout) findViewById(R.id.stats_bar_layout);
-        stats_bar_layout.setOnClickListener(global_on_click_listener);
-        currency_textview = (TextView) findViewById(R.id.currency_textview);
-        currency_textview.setText("0000");
-        life_textview = (TextView) findViewById(R.id.life_textview);
-        life_textview.setText("100");
-        wave_textview = (TextView) findViewById(R.id.wave_textview);
-        wave_textview.setText("8/8");
-        time_remaining_textview = (TextView) findViewById(R.id.time_remaining_textview);
-        time_remaining_textview.setText("02:00");
-		pause_btn = (Button)findViewById(R.id.pause_btn);
-		pause_btn.setOnClickListener(global_on_click_listener);
-		forward_btn = (Button)findViewById(R.id.fast_forward_btn);
-		forward_btn.setOnClickListener(global_on_click_listener);
 		
-		game_view = (GameView) findViewById(cop4331.cloud9001.bentd.R.id.game);
+		Bundle b = getIntent().getBundleExtra("android.intent.extra.INTENT");
+		endless = b.getBoolean("endless");
+		
+		if(endless){
+			//Load map
+			basic_map_view = (MapView) findViewById(cop4331.cloud9001.bentd.R.id.map);
+	        basic_map_view.setEventText((TextView) findViewById(cop4331.cloud9001.bentd.R.id.event_textview), (LinearLayout) findViewById(R.id.text_layout));
+	        basic_map_view.setMapGrid(1);
+	        basic_map_view.setMode(MapView.READY);
+			//Load Stats UI
+	        text_layout = (LinearLayout) findViewById(R.id.text_layout);
+			text_layout.setOnClickListener(global_on_click_listener);
+	        currency_textview = (TextView) findViewById(R.id.currency_textview);
+	        currency_textview.setText("0000");
+	        life_textview = (TextView) findViewById(R.id.life_textview);
+	        life_textview.setText("100");
+	        wave_textview = (TextView) findViewById(R.id.wave_textview);
+	        wave_textview.setText("8/8");
+	        time_remaining_textview = (TextView) findViewById(R.id.time_remaining_textview);
+	        time_remaining_textview.setText("02:00");
+			pause_btn = (Button)findViewById(R.id.pause_btn);
+			pause_btn.setOnClickListener(global_on_click_listener);
+			forward_btn = (Button)findViewById(R.id.fast_forward_btn);
+			forward_btn.setOnClickListener(global_on_click_listener);
+			
+			game_view = (GameView) findViewById(cop4331.cloud9001.bentd.R.id.game);
+		}
+		else{
+			//Load map
+			basic_map_view = (MapView) findViewById(cop4331.cloud9001.bentd.R.id.map);
+	        basic_map_view.setEventText((TextView) findViewById(cop4331.cloud9001.bentd.R.id.event_textview), (LinearLayout) findViewById(R.id.text_layout));
+	        basic_map_view.setMapGrid(0);
+	        basic_map_view.setMode(MapView.READY);
+			//Load Stats UI
+	        text_layout = (LinearLayout) findViewById(R.id.text_layout);
+			text_layout.setOnClickListener(global_on_click_listener);
+	        currency_textview = (TextView) findViewById(R.id.currency_textview);
+	        currency_textview.setText("0000");
+	        life_textview = (TextView) findViewById(R.id.life_textview);
+	        life_textview.setText("100");
+	        wave_textview = (TextView) findViewById(R.id.wave_textview);
+	        wave_textview.setText("8/8");
+	        time_remaining_textview = (TextView) findViewById(R.id.time_remaining_textview);
+	        time_remaining_textview.setText("02:00");
+			pause_btn = (Button)findViewById(R.id.pause_btn);
+			pause_btn.setOnClickListener(global_on_click_listener);
+			forward_btn = (Button)findViewById(R.id.fast_forward_btn);
+			forward_btn.setOnClickListener(global_on_click_listener);
+			
+			game_view = (GameView) findViewById(cop4331.cloud9001.bentd.R.id.game);
+		}
 		
 	}
 	static Handler mHandler = new Handler(){

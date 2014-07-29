@@ -30,10 +30,13 @@ public class MainMenu extends Activity{
 
 		Button resume_btn = (Button)findViewById(R.id.resume_btn);
 		resume_btn.setOnClickListener(globalOnClickListener);
-		resume_btn.setVisibility(View.INVISIBLE);
+		resume_btn.setVisibility(View.GONE);
 		
 		Button new_game_btn = (Button)findViewById(R.id.new_game_btn);
 		new_game_btn.setOnClickListener(globalOnClickListener);
+
+		Button endless_btn = (Button)findViewById(R.id.endless_btn);
+		endless_btn.setOnClickListener(globalOnClickListener);
 	
 		Button high_scores_btn = (Button)findViewById(R.id.high_scores_btn);
 		high_scores_btn.setOnClickListener(globalOnClickListener);
@@ -48,6 +51,9 @@ public class MainMenu extends Activity{
     				break;
     			case R.id.new_game_btn:
     				newGameBtnClick();
+    				break;
+    			case R.id.endless_btn:
+    				endlessBtnClick();
     				break;
     			case R.id.high_scores_btn:
     				viewHighScores();
@@ -65,6 +71,15 @@ public class MainMenu extends Activity{
     private void newGameBtnClick(){
 		Intent intent = new Intent(MainMenu.this, GameInstance.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	    startActivity(intent);
+    }
+
+    private void endlessBtnClick(){
+    	Bundle b = new Bundle();
+    	b.putBoolean("endless",  true);
+		Intent intent = new Intent(MainMenu.this, GameInstance.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.putExtra("android.intent.extra.INTENT", b);
 	    startActivity(intent);
     }
     
