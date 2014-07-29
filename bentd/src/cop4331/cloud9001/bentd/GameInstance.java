@@ -1,7 +1,9 @@
 package cop4331.cloud9001.bentd;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -37,6 +39,8 @@ public class GameInstance extends Activity {
 	protected static LinearLayout text_layout;
 	protected static RelativeLayout stats_bar_layout;
 	protected static AlertDialog dialog;
+	protected static String HIGH_SCORE_FILE = "highscores.txt";
+	protected static String SAVE_FILE = "save_data.txt";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -247,9 +251,49 @@ public class GameInstance extends Activity {
 	}
     
     protected static void rewriteHighScores(int your_score){
-    	
-    }
+    	try{
+    		ArrayList<Score> high_scores = new ArrayList<Score>(20);
+        	
+			File f = new File(HIGH_SCORE_FILE);
+			if(!f.exists()){
+				//create
+				f.createNewFile();
+			}
 
+        	high_scores = getHighScores();
+        	high_scores = sortHighScores(high_scores);
+        	
+        	FileOutputStream fos = new FileOutputStream(SAVE_FILE);
+        	
+        	String write_string;
+        	
+        	for(int i = 0; i < high_scores.size(); i++){
+        		write_string = "";
+        		write_string += high_scores.get(i).getPlayer();
+        		write_string += " ";
+        		write_string += high_scores.get(i).getScore();
+        		fos.write(write_string.getBytes());
+        	}
+        	
+        	fos.flush();
+        	fos.close();
+    	}
+    	catch(IOException e){
+    		//
+    	}
+    }
+    private static ArrayList<Score> sortHighScores(ArrayList<Score> high_scores){
+    	if(high_scores == null){
+    		return null;
+    	}
+    	
+    	for(int i = 0; i < high_scores.size(); i++){
+    		for(int j = 0; j < high_scores.size(); j++){
+    	    	//Sort highest to lowest
+    		}
+    	}
+    	return high_scores;
+    }
 	@Override
 	public void onBackPressed(){
 		if(fragman.findFragmentByTag("in-game-scoreboard") != null){
@@ -276,6 +320,42 @@ public class GameInstance extends Activity {
         	pause_btn.setBackgroundResource(R.drawable.play_icon);
         	createPauseMenu();
 		}
+	}
+	protected void savePreferences(){
+		
+	}
+	
+	protected void loadPreferences(){
+		
+	}
+	
+	@Override
+	public void onPause(){
+		super.onPause(); //Super constructor saves views
+		System.out.println("onPause");
+    	
+        //Save fields and timers
+    	//out_state.putInt("currency", game_view.getMoney());
+    	/*out_state.putInt("score", GameView.score);
+    	out_state.putInt("health", GameView.health);
+    	out_state.putInt("currentWave", GameView.currentWave);
+    	out_state.putInt("maxWaves", GameView.maxWaves);*/
+	}
+	
+	@Override
+	public void onResume(){
+		super.onResume(); //Super constructor restores views
+		System.out.println("onResume");
+    	
+    	//Now restore saved fields and timers
+    	//pause(); //Don't need to know previous mode because will automatically resume as paused
+    	//game_view.money = saved_instance_state.getInt("currency");
+    	/*GameView.score = saved_instance_state.getInt("score");
+    	GameView.health = saved_instance_state.getInt("health");
+    	GameView.currentWave = saved_instance_state.getInt("currentWave");
+    	GameView.maxWaves = saved_instance_state.getInt("maxWaves");*/
+        //Restore towers
+        //Restore enemies
 	}
 	
     @Override
