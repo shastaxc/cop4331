@@ -71,7 +71,7 @@ public class GameView extends SurfaceView {
     /*
      * Stats for stats bar
      */
-    protected int money = 0;
+    protected static int money = 0;
     protected int score = 0;
     protected int health = 0;
     protected int currentWave = 0;
@@ -99,7 +99,7 @@ public class GameView extends SurfaceView {
     }
     public void initializeGameView(Context context){
     	gameLoopThread = new GameLoopThread(this);
-    	this.setZOrderOnTop(true);
+    	setZOrderOnTop(true);
         holder = getHolder();
         holder.setFormat(PixelFormat.TRANSPARENT);
         holder.addCallback(new SurfaceHolder.Callback() {
@@ -197,12 +197,15 @@ public class GameView extends SurfaceView {
 		   }
 		}
 		//TOWER AND BULLET UPDATES / DRAW
-    	for(Tower t: Towers)
+    	for(Tower t: Towers){
     		for(int i=0;i<t.Bullets.size();i++){
     			t.Bullets.get(i).update();
     			if(t.Bullets.get(i).getLifeSpane() > 5000)
     				t.Bullets.remove(i--);
     		}
+    		if(t.Bullets.size() == 0)
+    			t.target = null;
+    	}
     	//ENEMY UPDATES
     	for(int i=0;i<Enemies.size();i++){
     		if(Enemies.get(i).health < 0){
@@ -370,35 +373,4 @@ public class GameView extends SurfaceView {
             }
         }
     }
-	
-	protected int getMoney(){
-		return this.money;
-	}
-	protected void setMoney(int m){
-		this.money = m;
-	}
-	protected int getScore(){
-		return this.score;
-	}
-	protected void setScore(int m){
-		this.score = m;
-	}
-	protected int getHealth(){
-		return this.health;
-	}
-	protected void setHealth(int m){
-		this.health = m;
-	}
-	protected int getCurrentWave(){
-		return this.currentWave;
-	}
-	protected void setCurrentWave(int m){
-		this.currentWave = m;
-	}
-	protected int getMaxWaves(){
-		return this.maxWaves;
-	}
-	protected void setMaxWaves(int m){
-		this.maxWaves = m;
-	}
 }

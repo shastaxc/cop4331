@@ -4,10 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-<<<<<<< HEAD
-=======
-import java.io.FileReader;
->>>>>>> origin/Dakota-v1.25
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -33,6 +29,7 @@ public class GameInstance extends Activity {
 	protected static Context app_context;
 	protected static MapView basic_map_view;
 	protected static GameView game_view;
+	protected static String CAPSULE_KEY = "map-view"; //Used to restore saved game
 	protected static Button pause_btn;
 	protected static Button forward_btn;
 	protected static TextView currency_textview;
@@ -50,16 +47,28 @@ public class GameInstance extends Activity {
 		setContentView(R.layout.activity_game_instance);
 		app_context = getApplicationContext();
 		fragman = getFragmentManager();
-<<<<<<< HEAD
-=======
-		System.out.println("onCreate");
-		
->>>>>>> origin/Dakota-v1.25
 		//Load map
 		basic_map_view = (MapView) findViewById(cop4331.cloud9001.bentd.R.id.map);
         basic_map_view.setEventText((TextView) findViewById(cop4331.cloud9001.bentd.R.id.event_textview), (LinearLayout) findViewById(R.id.text_layout));
         basic_map_view.setMapGrid(0);
         basic_map_view.setMode(MapView.READY);
+        /*
+        if (savedInstanceState == null) {
+        	MapConfig.createMapGrid(0);
+            // No save state, set up new game
+        	basic_map_view.initializeMap();
+        	basic_map_view.setMode(MapView.READY);
+        }
+        else {
+            //Save state detected, loading previous data
+            Bundle map = savedInstanceState.getBundle(CAPSULE_KEY);
+            if (map != null) {
+            	basic_map_view.restoreState(map);
+            } else {
+            	basic_map_view.setMode(MapView.PAUSE);
+            }
+        }
+		*/
 		//Load Stats UI
         text_layout = (LinearLayout) findViewById(R.id.text_layout);
 		text_layout.setOnClickListener(global_on_click_listener);
@@ -164,30 +173,27 @@ public class GameInstance extends Activity {
     	if(basic_map_view.getMode() == MapView.PAUSED){
     		basic_map_view.setMode(MapView.RUNNING);
         	pause_btn.setBackgroundResource(R.drawable.pause_icon);
-        	//game_view.setZOrderOnTop(true);
     	}
     	else if(basic_map_view.getMode() == MapView.READY){
-        	//game_view.setZOrderOnTop(false);
+    		// Button will not function in this mode
     	}
     	else if(basic_map_view.getMode() == MapView.RUNNING){
         	basic_map_view.setMode(MapView.PAUSED);
         	pause_btn.setBackgroundResource(R.drawable.play_icon);
-        	//game_view.setZOrderOnTop(false);
         	createPauseMenu();
     	}
     	else if(basic_map_view.getMode() == MapView.FAST_FORWARD){
     		basic_map_view.setMode(MapView.PAUSED);
         	pause_btn.setBackgroundResource(R.drawable.play_icon);
     		forward_btn.setBackgroundResource(R.drawable.fast_forward_icon);
-        	//game_view.setZOrderOnTop(true);
         	createPauseMenu();
     		
     	}
     	else if(basic_map_view.getMode() == MapView.DEFEAT){
-        	//game_view.setZOrderOnTop(false);
+    		// Button will not function in this mode
     	}
     	else if(basic_map_view.getMode() == MapView.VICTORY){
-        	//game_view.setZOrderOnTop(false);
+    		// Button will not function in this mode
     	}
     }
     
@@ -225,21 +231,18 @@ public class GameInstance extends Activity {
     protected static ArrayList<Score> getHighScores(){
 		ArrayList<Score> high_scores = new ArrayList<Score>(20);
 		try{
-			File f = new File(HIGH_SCORE_FILE);
-			if(!f.exists()){
-				return high_scores;
-			}
-		    BufferedReader buffered_reader = new BufferedReader(new FileReader(f));
+			FileInputStream in = app_context.openFileInput("highscores.txt");
+		    InputStreamReader inputStreamReader = new InputStreamReader(in);
+		    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 		    String line;
 		    
 		    String[] parts = new String[40];
-		    while ((line = buffered_reader.readLine()) != null) {
+		    while ((line = bufferedReader.readLine()) != null) {
 		        parts = line.split(" ");
 		    }
 		    for(int i = 1; i <= parts.length; i+=2){
 		    	high_scores.add(new Score(parts[i], parts[i-1]));
 		    }
-		    buffered_reader.close();
 		}
 		catch(IOException e){
 			//
@@ -279,10 +282,6 @@ public class GameInstance extends Activity {
     		//
     	}
     }
-<<<<<<< HEAD
-=======
-    
->>>>>>> origin/Dakota-v1.25
     private static ArrayList<Score> sortHighScores(ArrayList<Score> high_scores){
     	if(high_scores == null){
     		return null;
@@ -359,52 +358,20 @@ public class GameInstance extends Activity {
         //Restore enemies
 	}
 	
-	protected void savePreferences(){
-		
-	}
-	
-	protected void loadPreferences(){
-		
-	}
-	
-	@Override
-	public void onPause(){
-		super.onPause(); //Super constructor saves views
-		System.out.println("onPause");
-    	
-        //Save fields and timers
-    	//out_state.putInt("currency", game_view.getMoney());
-    	/*out_state.putInt("score", GameView.score);
-    	out_state.putInt("health", GameView.health);
-    	out_state.putInt("currentWave", GameView.currentWave);
-    	out_state.putInt("maxWaves", GameView.maxWaves);*/
-	}
-	
-	@Override
-	public void onResume(){
-		super.onResume(); //Super constructor restores views
-		System.out.println("onResume");
-    	
-    	//Now restore saved fields and timers
-    	//pause(); //Don't need to know previous mode because will automatically resume as paused
-    	//game_view.money = saved_instance_state.getInt("currency");
-    	/*GameView.score = saved_instance_state.getInt("score");
-    	GameView.health = saved_instance_state.getInt("health");
-    	GameView.currentWave = saved_instance_state.getInt("currentWave");
-    	GameView.maxWaves = saved_instance_state.getInt("maxWaves");*/
-        //Restore towers
-        //Restore enemies
-	}
-	
     @Override
     public void onSaveInstanceState(Bundle out_state) {
-    	super.onSaveInstanceState(out_state);
-		System.out.println("onSaveInstanceState");
+        //Save fields and timers
+    	//Example: 
+    	out_state.putInt("score", GameView.money);
+    	
+    	super.onSaveInstanceState(out_state); //Super constructor saves views
     }
     
     @Override
     public void onRestoreInstanceState(Bundle saved_instance_state){
-    	super.onRestoreInstanceState(saved_instance_state);
-		System.out.println("onRestoreInstanceState");
+    	super.onRestoreInstanceState(saved_instance_state); //Super constructor restores views
+    	
+    	//Now restore saved fields and timers
+    	GameView.money = saved_instance_state.getInt("score");
     }
 }
