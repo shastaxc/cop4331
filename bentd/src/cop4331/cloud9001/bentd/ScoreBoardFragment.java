@@ -1,9 +1,6 @@
 package cop4331.cloud9001.bentd;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import android.app.Fragment;
@@ -28,10 +25,13 @@ public class ScoreBoardFragment extends Fragment{
 		View root_view = inflater.inflate(R.layout.score_board_layout, container, false);
 		
 		current_score = (TextView) root_view.findViewById(R.id.current_score);
+
+
+		//MainMenu.writeNewHighScore(new Score("YOU", "9001"));
+
+		display_list = MainMenu.getHighScores();
 		
-		if(display_list.isEmpty()){
-			display_list = GameInstance.getHighScores();
-		}
+
 		/*display_list.add(new Score("NNN", "3000"));
 		display_list.add(new Score("WVA", "5816"));
 		display_list.add(new Score("GRI", "1873"));
@@ -54,7 +54,7 @@ public class ScoreBoardFragment extends Fragment{
 			}
 		}
 		else{ //If scoreboard was called from main menu
-			current_score.setText("0000"); //Set current score to 0000
+			current_score.setText("0"); //Set current score to 0000
 		}
 	}
 	

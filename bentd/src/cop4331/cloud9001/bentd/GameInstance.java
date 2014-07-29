@@ -47,6 +47,7 @@ public class GameInstance extends Activity {
 		setContentView(R.layout.activity_game_instance);
 		app_context = getApplicationContext();
 		fragman = getFragmentManager();
+		System.out.println("onCreate");
 		//Load map
 		basic_map_view = (MapView) findViewById(cop4331.cloud9001.bentd.R.id.map);
         basic_map_view.setEventText((TextView) findViewById(cop4331.cloud9001.bentd.R.id.event_textview), (LinearLayout) findViewById(R.id.text_layout));
@@ -226,73 +227,6 @@ public class GameInstance extends Activity {
 	    fragmentTransaction.add(R.id.game_frame,pause_frag, "pause-menu")
 	    					.addToBackStack("pause-menu")
 	     					.commit();
-    }
-    
-    protected static ArrayList<Score> getHighScores(){
-		ArrayList<Score> high_scores = new ArrayList<Score>(20);
-		try{
-			FileInputStream in = app_context.openFileInput("highscores.txt");
-		    InputStreamReader inputStreamReader = new InputStreamReader(in);
-		    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-		    String line;
-		    
-		    String[] parts = new String[40];
-		    while ((line = bufferedReader.readLine()) != null) {
-		        parts = line.split(" ");
-		    }
-		    for(int i = 1; i <= parts.length; i+=2){
-		    	high_scores.add(new Score(parts[i], parts[i-1]));
-		    }
-		}
-		catch(IOException e){
-			//
-		}
-	    return high_scores;
-	}
-    
-    protected static void rewriteHighScores(int your_score){
-    	try{
-    		ArrayList<Score> high_scores = new ArrayList<Score>(20);
-        	
-			File f = new File(HIGH_SCORE_FILE);
-			if(!f.exists()){
-				//create
-				f.createNewFile();
-			}
-
-        	high_scores = getHighScores();
-        	high_scores = sortHighScores(high_scores);
-        	
-        	FileOutputStream fos = new FileOutputStream(SAVE_FILE);
-        	
-        	String write_string;
-        	
-        	for(int i = 0; i < high_scores.size(); i++){
-        		write_string = "";
-        		write_string += high_scores.get(i).getPlayer();
-        		write_string += " ";
-        		write_string += high_scores.get(i).getScore();
-        		fos.write(write_string.getBytes());
-        	}
-        	
-        	fos.flush();
-        	fos.close();
-    	}
-    	catch(IOException e){
-    		//
-    	}
-    }
-    private static ArrayList<Score> sortHighScores(ArrayList<Score> high_scores){
-    	if(high_scores == null){
-    		return null;
-    	}
-    	
-    	for(int i = 0; i < high_scores.size(); i++){
-    		for(int j = 0; j < high_scores.size(); j++){
-    	    	//Sort highest to lowest
-    		}
-    	}
-    	return high_scores;
     }
 	@Override
 	public void onBackPressed(){

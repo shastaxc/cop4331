@@ -121,7 +121,7 @@ public class MapView extends TileView{
         int previous_mode = game_state;
         game_state = new_mode;
 
-        if ((new_mode == RUNNING && previous_mode != RUNNING) || (new_mode == PAUSED)) {
+        if ((new_mode == RUNNING && previous_mode != RUNNING) || (new_mode == PAUSED || (new_mode == FAST_FORWARD))) {
             event_text.setVisibility(View.GONE);
             event_text_layout.setVisibility(View.GONE);
             return;
@@ -135,9 +135,11 @@ public class MapView extends TileView{
         }
         if (new_mode == DEFEAT) {
             str = r.getString(cop4331.cloud9001.bentd.R.string.mode_defeat); //"Defeat"
+            MainMenu.writeNewHighScore(new Score("YOU", Integer.toString(GameInstance.game_view.getMoney())));//Save score to highscores.txt file
         }
         if (new_mode == VICTORY) {
             str = r.getString(cop4331.cloud9001.bentd.R.string.mode_victory); //"Victory"
+            MainMenu.writeNewHighScore(new Score("YOU", Integer.toString(GameInstance.game_view.getMoney())));//Save score to highscores.txt file
         }
 
         event_text.setText(str);
