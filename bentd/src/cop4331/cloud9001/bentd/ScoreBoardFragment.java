@@ -1,6 +1,5 @@
 package cop4331.cloud9001.bentd;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import android.app.Fragment;
@@ -17,6 +16,7 @@ public class ScoreBoardFragment extends Fragment{
 	protected ScoreListAdapter adapter_list;
 	protected ListView list;
 	TextView current_score;
+	TextView current_score_label;
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -25,9 +25,10 @@ public class ScoreBoardFragment extends Fragment{
 		View root_view = inflater.inflate(R.layout.score_board_layout, container, false);
 		
 		current_score = (TextView) root_view.findViewById(R.id.current_score);
+		current_score_label = (TextView) root_view.findViewById(R.id.current_score_label);
 
 
-		//MainMenu.writeNewHighScore(new Score("YOU", "9001"));
+		MainMenu.writeNewHighScore(new Score("YOU", "9001"));
 
 		display_list = MainMenu.getHighScores();
 		
@@ -55,7 +56,8 @@ public class ScoreBoardFragment extends Fragment{
 		}
 		//TODO: game activity may be on pause or stopped, but game info saved in file. Read score from file.
 		else{ //If scoreboard was called from main menu
-			current_score.setText("0"); //Set current score to 0000
+			current_score_label.setVisibility(View.INVISIBLE); //Hide text "current score"
+			current_score.setVisibility(View.INVISIBLE); //Hide current score
 		}
 	}
 	

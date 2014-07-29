@@ -121,7 +121,7 @@ public class MapView extends TileView{
         int previous_mode = game_state;
         game_state = new_mode;
 
-        if ((new_mode == RUNNING && previous_mode != RUNNING) || (new_mode == PAUSED || (new_mode == FAST_FORWARD))) {
+        if ((new_mode == RUNNING && previous_mode != RUNNING) || (new_mode == PAUSED) || (new_mode == FAST_FORWARD)) {
             event_text.setVisibility(View.GONE);
             event_text_layout.setVisibility(View.GONE);
             return;

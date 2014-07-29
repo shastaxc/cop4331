@@ -30,6 +30,7 @@ public class MainMenu extends Activity{
 
 		Button resume_btn = (Button)findViewById(R.id.resume_btn);
 		resume_btn.setOnClickListener(globalOnClickListener);
+		resume_btn.setVisibility(View.INVISIBLE);
 		
 		Button new_game_btn = (Button)findViewById(R.id.new_game_btn);
 		new_game_btn.setOnClickListener(globalOnClickListener);
@@ -56,13 +57,13 @@ public class MainMenu extends Activity{
     };
     
     private void resumeBtnClick(){
-		Intent intent = new Intent(this, cop4331.cloud9001.bentd.GameInstance.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		Intent intent = new Intent(MainMenu.this, GameInstance.class);
+		//intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 	    startActivity(intent);
     }
 
     private void newGameBtnClick(){
-		Intent intent = new Intent(this, cop4331.cloud9001.bentd.GameInstance.class);
+		Intent intent = new Intent(MainMenu.this, GameInstance.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	    startActivity(intent);
     }
@@ -173,21 +174,6 @@ public class MainMenu extends Activity{
 			
 		}
 	}
-    
-    protected static void writeSaveData(){
-    	try{
-
-			File f = app_context.getFileStreamPath("save_data.txt");
-        	PrintWriter pw = new PrintWriter(f);
-        	
-                //pw.println(//printstuff);
-        	
-        	pw.close();
-    	}
-    	catch(IOException e){
-    		
-    	}
-    }
 
 	@Override
 	public void onBackPressed(){

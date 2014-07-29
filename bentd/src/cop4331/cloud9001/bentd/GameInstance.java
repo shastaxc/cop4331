@@ -1,5 +1,9 @@
 package cop4331.cloud9001.bentd;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
@@ -18,7 +22,6 @@ import android.widget.TextView;
 
 public class GameInstance extends Activity {
 	protected static FragmentManager fragman;
-	protected static GameInstance obj;
 	protected static Context app_context;
 	protected static MapView basic_map_view;
 	protected static GameView game_view;
@@ -31,7 +34,6 @@ public class GameInstance extends Activity {
 	protected static LinearLayout text_layout;
 	protected static RelativeLayout stats_bar_layout;
 	protected static AlertDialog dialog;
-	protected static String HIGH_SCORE_FILE = "highscores.txt";
 	protected static String SAVE_FILE = "save_data.txt";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -208,9 +210,35 @@ public class GameInstance extends Activity {
 	     					.commit();
     }
 
-	protected void savePreferences(){
-		
-	}
+
+    protected static void writeSaveData(){
+    	try{
+
+			File f = app_context.getFileStreamPath("save_data.txt");
+        	PrintWriter pw = new PrintWriter(f);
+        	
+            pw.println(basic_map_view);
+
+        	/*protected static FragmentManager fragman;
+        	protected static Context app_context;
+        	protected static MapView basic_map_view;
+        	protected static GameView game_view;
+        	protected static Button pause_btn;
+        	protected static Button forward_btn;
+        	protected static TextView currency_textview;
+        	protected static TextView life_textview;
+        	protected static TextView wave_textview;
+        	protected static TextView time_remaining_textview;
+        	protected static LinearLayout text_layout;
+        	protected static RelativeLayout stats_bar_layout;
+        	protected static AlertDialog dialog;*/
+        	
+        	pw.close();
+    	}
+    	catch(IOException e){
+    		
+    	}
+    }
 	
 	protected void loadPreferences(){
 		
@@ -248,6 +276,7 @@ public class GameInstance extends Activity {
 	public void onPause(){
 		super.onPause(); //Super constructor saves views
 		System.out.println("onPause");
+		writeSaveData();
     	
         //Save fields and timers
     	//out_state.putInt("currency", game_view.getMoney());
