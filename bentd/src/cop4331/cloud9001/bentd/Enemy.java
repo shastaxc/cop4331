@@ -9,22 +9,23 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.Log;
+import android.view.View;
 
 public class Enemy {
 	private int[] DIRECTION_TO_ANIMATION_MAP = {3,1,0,2};
-	private static final int BMP_ROWS = 4;
-	private static final int BMP_COLUMNS = 3;
+	private int BMP_ROWS = 4;
+	private int BMP_COLUMNS = 3;
 	protected int x = 0; 
 	protected int y = 0;
 	private int direction = 0;//0 up,1 right, 2 down, 3 left
-    private int xSpeed = 3;
-    private int ySpeed = 3;
-    protected int strength = 5;
-    protected int health = 10;
-    protected int radius = 5;
+    private int xSpeed;
+    private int ySpeed;
+    protected int strength;
+    protected int health;
+    protected int radius;
     protected int hitCenterX = 0;
     protected int hitCenterY = 0;
-    protected int bounty = 10;
+    protected int bounty;
     private Bitmap bmp;
     private Path path;
     
@@ -54,25 +55,47 @@ public class Enemy {
     public Enemy(GameView gameView, int[][] fieldOfBattle,int id){
     	//this.bmp=bmp;
     	this.bmp = getEnemyBmp(gameView,id);
+    	//radius = bmp.getWidth()/4;
+    	
+		Random rnd = new Random();
     	switch(id){
     	case 0:
-    		hitCenterX = (int)((this.bmp.getWidth())/6);
-    		hitCenterY = (int)((this.bmp.getHeight())/8);
-    		Random rnd = new Random();
-    		xSpeed += rnd.nextInt(8)+2;
-    		ySpeed += rnd.nextInt(8)+2;
-    		Log.i("enemy", xSpeed+" "+ySpeed);
+    		BMP_COLUMNS = 3;
+    		BMP_ROWS = 4;
+    		xSpeed = rnd.nextInt(4)+1;
+    		ySpeed = rnd.nextInt(4)+1;
+    		break;
+    	case 1:
+    		BMP_COLUMNS = 3;
+    		BMP_ROWS = 3;
+    		xSpeed = (int) Math.sqrt(rnd.nextInt(11)+5);
+    		ySpeed = xSpeed;
+    		bounty = 5;
+    		strength = 3;
+    		health = 15;
+    		break;
+    	case 2:
+    		BMP_COLUMNS = 3;
+    		BMP_ROWS = 3;
+    		xSpeed = (int) Math.sqrt(rnd.nextInt(20)+8);
+    		ySpeed = xSpeed;
+    		bounty = 15;
+    		strength = 1;
+    		health = 12;
     		break;
     	default:
     		break;
     	}
     	
+    	hitCenterX = (int)((bmp.getWidth())/BMP_COLUMNS)/2;
+		hitCenterY = (int)((bmp.getHeight())/BMP_ROWS)/2;
         width = bmp.getWidth() / BMP_COLUMNS;
         height = bmp.getHeight() / BMP_ROWS;
+        radius = width/2;
         path = new Path(fieldOfBattle,gameView);
-        
         x = path.nextX();
         y = path.nextY();
+        y+= rnd.nextInt(gameView.getHeight()/fieldOfBattle.length);
     }
     private Bitmap getEnemyBmp(GameView gv,int id) {
 		if(id==0)
@@ -132,39 +155,24 @@ public class Enemy {
     			if(x <= path.nextX())
     				path.nextWaypoint();
     		}
-    		/*if(x < path.nextX())
-    			x+=xSpeed;
-    		if(y < path.nextY())
-    			y+=ySpeed;
-    		
-    		if(x >= path.nextX())
-    			path.nextWaypoint();
-    		if( y >= path.nextY())
-    			path.nextWaypoint();
-    		*/
-    		/*
-    		if(!path.done()){
-        		if(x < path.nextX())
-        			x+=xSpeed;
-        		if(y < path.nextY())
-        			y+=ySpeed;
-        		else if(x >= path.nextX())
-        			path.nextWaypoint();
-        	}
-        	*/
     	}
-    	currentFrame = ++currentFrame % BMP_COLUMNS;
+    	currentFrame = ++currentFrame % BMP_ROWS;
     }
-    private int getAnimationRow(){
-    	double dirDouble = (Math.atan2(xSpeed, ySpeed) / (Math.PI/2)+2);
-    	int direction =(int) Math.round(dirDouble) % BMP_ROWS;
-    	return DIRECTION_TO_ANIMATION_MAP[direction];
-    }
-    @SuppressLint("DrawAllocation") 
     public void onDraw(Canvas canvas) {
           //update();
-          int srcX = currentFrame * width;
-          int srcY = 1 * height;
+    	  int fixedDirection = 0;
+    	  switch(direction){
+    	  case 0:
+    		  fixedDirection = 1;
+    		  break;
+    	  case 1:
+    		  fixedDirection = 2;
+    		  break;
+    	  case 2:
+    		  fixedDirection = 0;
+    	  }
+          int srcX = fixedDirection * width;
+          int srcY = currentFrame * height;
           Rect src = new Rect(srcX, srcY, srcX + width, srcY+height);
           Rect dst = new Rect(x,y,x+width, y+height);
           canvas.drawBitmap(bmp, src, dst, null);

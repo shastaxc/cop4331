@@ -19,7 +19,8 @@ public class Tower {
     protected int range = 50;
     protected long fireSpeed = 1000;//Time in ms between each shot
     protected int bulletSpeed = 20;
-    
+    protected int bulletID = 0; //Normal bullet = 0, AOE = 1, AOE/DEBUFF = 2
+    protected int towerID = 0;
     protected long lastFired = 0;
     protected ArrayList<Bullet> Bullets;
     protected Enemy target = null;
@@ -50,10 +51,23 @@ public class Tower {
 		Bullets = new ArrayList<Bullet>();
 		switch(i){
 		case 1:
-			strength = 3;
+			strength = 2;
 			range = 100;
-			fireSpeed = 1000;
-			bulletSpeed = 50;
+			fireSpeed = 500;
+			bulletSpeed = 16;
+			bulletID = 0;
+			towerID = 1;
+			break;
+		case 2:
+			
+			break;
+		case 4:
+			fireSpeed = 2000;
+			range = 200;
+			bulletSpeed = 10;
+			strength = 20;
+			bulletID = 0;
+			towerID = 4;
 			break;
 		default:
 			break;
@@ -73,10 +87,10 @@ public class Tower {
 	}
 	@SuppressLint("DrawAllocation") 
 	public void onDraw(Canvas canvas) {
-        canvas.drawBitmap(bmp, x,y, null);
-  }
-	public void fire(GameView gv) {
+		canvas.drawBitmap(bmp, x,y, null);
+	}
+	public void fire(GameView gameView2, Bitmap arrow) {
 		lastFired = System.currentTimeMillis();
-		Bullets.add(new Bullet(target,x,y,strength,bulletSpeed));
+		Bullets.add(new Bullet(target,x,y,strength,bulletSpeed,arrow));
 	}
 }

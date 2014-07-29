@@ -131,6 +131,7 @@ public class MapView extends TileView{
         CharSequence str = "";
         if (new_mode == READY) {
             str = r.getText(cop4331.cloud9001.bentd.R.string.mode_ready); //"Tap screen to begin"
+            
         }
         if (new_mode == DEFEAT) {
             str = r.getString(cop4331.cloud9001.bentd.R.string.mode_defeat); //"Defeat"

@@ -42,7 +42,7 @@ public class GameInstance extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game_instance);
 		app_context = getApplicationContext();
-		
+		fragman = getFragmentManager();
 		//Load map
 		basic_map_view = (MapView) findViewById(cop4331.cloud9001.bentd.R.id.map);
         basic_map_view.setEventText((TextView) findViewById(cop4331.cloud9001.bentd.R.id.event_textview), (LinearLayout) findViewById(R.id.text_layout));

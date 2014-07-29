@@ -43,6 +43,13 @@ public class GameView extends SurfaceView {
 	private final Bitmap enemyKitsune = BitmapFactory.decodeResource(getResources(), R.drawable.enemy_kitsune);
 	private final Bitmap bossOroshi = BitmapFactory.decodeResource(getResources(), R.drawable.enemy_oroshi_a);
 	/*
+	 * Bullets
+	 */
+	private final Bitmap arrow = BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_arrow);
+	private final Bitmap caltrops = BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_caltrops);
+	private final Bitmap fireBallA = BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_fireball_a);
+	private final Bitmap fireBallB = BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_fireball_b);
+	/*
 	 * View Variables
 	 */
     private SurfaceHolder holder;
@@ -148,14 +155,14 @@ public class GameView extends SurfaceView {
     	if(!spawnedFirstWave && begin){
     		spawnedFirstWave = true;
     		for(int i=0;i<level.EnemiesPerWave[currentWave];i++)
-				Enemies.add(new Enemy(this,fieldOfBattle,0));
+				Enemies.add(new Enemy(this,fieldOfBattle,1));
     		startOfWaveInMiliseconds = System.currentTimeMillis();
     	}
     	if(begin && (timeRemaining > level.timePerWave || Enemies.size() == 0)){//Wave is done, Spawn Next one
     		currentWave++;
     		if(currentWave < maxWaves-1)
     			for(int i=0;i<level.EnemiesPerWave[currentWave];i++)
-    				Enemies.add(new Enemy(this,fieldOfBattle,0));
+    				Enemies.add(new Enemy(this,fieldOfBattle,1));
     		startOfWaveInMiliseconds = System.currentTimeMillis();
     	}
     	if(currentWave == maxWaves){
@@ -176,21 +183,26 @@ public class GameView extends SurfaceView {
 				   //Fires at enemy
 				   if(System.currentTimeMillis() - t.lastFired > t.fireSpeed ){
 					   t.target = e;
-					   t.fire(this);
+					   if(t.towerID == 1)
+						   t.fire(this, arrow);
 				   }
 		   }
 		   //Has a target
 		   else{
 			   //Fires at enemy
 			   if(System.currentTimeMillis() - t.lastFired > t.fireSpeed && t.Bullets.size() < t.MAX_BULLETS){
-				   t.fire(this);
+				   if(t.towerID == 1)
+					   t.fire(this, arrow);
 			   }
 		   }
 		}
 		//TOWER AND BULLET UPDATES / DRAW
     	for(Tower t: Towers)
-    		for(int i=0;i<t.Bullets.size();i++)
+    		for(int i=0;i<t.Bullets.size();i++){
     			t.Bullets.get(i).update();
+    			if(t.Bullets.get(i).getLifeSpane() > 5000)
+    				t.Bullets.remove(i--);
+    		}
     	//ENEMY UPDATES
     	for(int i=0;i<Enemies.size();i++){
     		if(Enemies.get(i).health < 0){
@@ -208,14 +220,12 @@ public class GameView extends SurfaceView {
     	//ENEMY DRAW
     	for(int i=0;i<Enemies.size();i++){
     		Enemy e = Enemies.get(i);
+    		e.update();
     		if(wash(e.y,(GameInstance.game_view.getHeight()/MapView.Y_TILE_COUNT)) <=0 
     				&& wash(e.x,(GameInstance.game_view.getWidth()/MapView.X_TILE_COUNT))>=8){
     			health-=e.strength;
     			Enemies.remove(i--);
-    		}
-    		else
-    			e.update();
-    		
+    		}		
     	}
     }
     @Override

@@ -75,7 +75,7 @@ public class MapConfig {
 			health = 100;
 			EnemiesPerWave = new int[maxWaves];
 			for(int i=0;i<maxWaves;i++)
-				EnemiesPerWave[i] = 5+i;
+				EnemiesPerWave[i] = 5*i+5;
 			break;
 			default:
 				break;
