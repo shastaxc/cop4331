@@ -2,10 +2,13 @@ package cop4331.cloud9001.bentd;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -25,6 +28,7 @@ import android.widget.TextView;
 
 public class GameInstance extends Activity {
 	protected static FragmentManager fragman;
+	protected static GameInstance obj;
 	protected static Context app_context;
 	protected static MapView basic_map_view;
 	protected static GameView game_view;
@@ -45,6 +49,7 @@ public class GameInstance extends Activity {
 		setContentView(R.layout.activity_game_instance);
 		app_context = getApplicationContext();
 		fragman = getFragmentManager();
+		obj = this;
 		System.out.println("onCreate");
 		
 		//Load map
@@ -70,8 +75,8 @@ public class GameInstance extends Activity {
 		forward_btn = (Button)findViewById(R.id.fast_forward_btn);
 		forward_btn.setOnClickListener(global_on_click_listener);
 		
-		
 		game_view = (GameView) findViewById(cop4331.cloud9001.bentd.R.id.game);
+		
 	}
 	static Handler mHandler = new Handler(){
 		@Override
@@ -83,6 +88,7 @@ public class GameInstance extends Activity {
 			time_remaining_textview.setText(text.substring(9,text.length()));
 		}
 	};
+	
 	protected static String healthToString(int n){
 		if(n>=100)
 			return ""+n;
@@ -214,85 +220,6 @@ public class GameInstance extends Activity {
 	     					.commit();
     }
     
-    protected static ArrayList<Score> getHighScores(){
-		ArrayList<Score> high_scores = new ArrayList<Score>(20);
-		try{
-			//TODO: need activity context here
-		    File dir = context.getFilesDir();
-			File f = new File(dir, HIGH_SCORE_FILE);
-			System.out.println(f.canRead());
-			System.out.println(f.isDirectory());
-			if(!f.exists()){
-				return high_scores;
-			}
-
-			int size = (int)f.length();
-
-			if (size != 0){
-			    BufferedReader buffered_reader = new BufferedReader(new FileReader(f));
-			    String line;
-			    
-			    String[] parts = new String[40];
-			    while ((line = buffered_reader.readLine()) != null) {
-			        parts = line.split(" ");
-			    }
-			    for(int i = 1; i <= parts.length; i+=2){
-			    	high_scores.add(new Score(parts[i], parts[i-1]));
-			    }
-			    buffered_reader.close();
-			}
-		}
-		catch(IOException e){
-			//
-		}
-	    return high_scores;
-	}
-    
-    protected static void rewriteHighScores(int your_score){
-    	try{
-    		ArrayList<Score> high_scores = new ArrayList<Score>(20);
-			File f = app_context.getFileStreamPath(HIGH_SCORE_FILE);
-			if(!f.exists()){
-				//create new file
-				f = new File(app_context.getFilesDir(), HIGH_SCORE_FILE);
-			}
-
-        	high_scores = getHighScores();
-        	high_scores = sortHighScores(high_scores);
-        	
-        	FileOutputStream fos = app_context.openFileOutput(HIGH_SCORE_FILE, Context.MODE_PRIVATE);
-        	
-        	String write_string;
-        	
-        	for(int i = 0; i < high_scores.size(); i++){
-        		write_string = "";
-        		write_string += high_scores.get(i).getPlayer();
-        		write_string += " ";
-        		write_string += high_scores.get(i).getScore();
-        		write_string += System.getProperty("line.separator");
-        		fos.write(write_string.getBytes());
-        	}
-        	
-        	fos.flush();
-        	fos.close();
-    	}
-    	catch(IOException e){
-    		//
-    	}
-    }
-    
-    private static ArrayList<Score> sortHighScores(ArrayList<Score> high_scores){
-    	if(high_scores == null){
-    		return null;
-    	}
-    	
-    	for(int i = 0; i < high_scores.size(); i++){
-    		for(int j = 0; j < high_scores.size(); j++){
-    	    	//Sort highest to lowest
-    		}
-    	}
-    	return high_scores;
-    }
 
 	@Override
 	public void onBackPressed(){

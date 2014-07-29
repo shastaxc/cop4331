@@ -1,6 +1,6 @@
 package cop4331.cloud9001.bentd;
 
-public class Score {
+public class Score{
 	private String player;
 	private String score;
 	
