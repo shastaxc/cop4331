@@ -64,13 +64,16 @@ public class MainMenu extends Activity{
     
     private void resumeBtnClick(){
 		Intent intent = new Intent(MainMenu.this, GameInstance.class);
-		//intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 	    startActivity(intent);
     }
 
     private void newGameBtnClick(){
+    	Bundle b = new Bundle();
+    	b.putBoolean("endless",  false);
 		Intent intent = new Intent(MainMenu.this, GameInstance.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.putExtra("android.intent.extra.INTENT", b);
 	    startActivity(intent);
     }
 

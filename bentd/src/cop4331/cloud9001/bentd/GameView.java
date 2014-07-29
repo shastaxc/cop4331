@@ -11,7 +11,6 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Message;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,20 +19,19 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 //import android.R;
 //import android.view.View;
 
 @SuppressLint({ "WrongCall", "ClickableViewAccessibility", "DrawAllocation" }) 
 public class GameView extends SurfaceView {
-    private Bitmap bmp;
     /*
      * Towers
      */
     private final Bitmap tower1 = BitmapFactory.decodeResource(getResources(),  R.drawable.tower_archer);//50g
 	private final Bitmap tower2 = BitmapFactory.decodeResource(getResources(),  R.drawable.tower_ninja);//75g
-	private final Bitmap tower3 = BitmapFactory.decodeResource(getResources(),  R.drawable.tower_shrine);//100g
+	private final Bitmap tower3 = BitmapFactory.decodeResource(getResources(),  R.drawable.tower_shrine);//150g
 	private final Bitmap tower4 = BitmapFactory.decodeResource(getResources(),  R.drawable.tower_ballista_idle);//200g
 	/*
 	 * Enemies
@@ -53,13 +51,9 @@ public class GameView extends SurfaceView {
 	 * View Variables
 	 */
     private SurfaceHolder holder;
-    private GameLoopThread gameLoopThread; //Periodic call for GameView.onDraw();
+    protected GameLoopThread gameLoopThread; //Periodic call for GameView.onDraw();
     protected ArrayList<Enemy> Enemies; //Enemies on screen
     protected ArrayList<Tower> Towers; //Towers on screen
-    private ImageButton tower1_btn;
-    private ImageButton tower2_btn;
-    private ImageButton tower3_btn;
-    private ImageButton tower4_btn;
     protected MapConfig level;
     protected static PopupWindow popup_window;
     protected static boolean popup_active = false;
@@ -285,22 +279,23 @@ public class GameView extends SurfaceView {
 
 		    });
 	            
-		    tower1_btn = (ImageButton) popupView.findViewById(R.id.image_button_1);
-		    tower2_btn = (ImageButton) popupView.findViewById(R.id.image_button_2);
-		    tower3_btn = (ImageButton) popupView.findViewById(R.id.image_button_3);
-		    tower4_btn = (ImageButton) popupView.findViewById(R.id.image_button_4);
-		    tower1_btn.setOnClickListener(new OnClickListener() {
-		    	@Override
-		    	public void onClick(View v) {
-		    		if(money>=50){
-		    			money-=50;
-		    			Towers.add(new Tower(tower1,touch_x,touch_y,1));
-		    		}
-		    		popup_window.dismiss();
-		    		popup_active = false;
-			    }
-			});
-		    tower2_btn.setOnClickListener(new OnClickListener() {
+		    LinearLayout tower1_layout = (LinearLayout) popupView.findViewById(R.id.tower1_layout);
+		    LinearLayout tower2_layout = (LinearLayout) popupView.findViewById(R.id.tower2_layout);
+		    LinearLayout tower3_layout = (LinearLayout) popupView.findViewById(R.id.tower3_layout);
+		    LinearLayout tower4_layout = (LinearLayout) popupView.findViewById(R.id.tower4_layout);
+		    
+		    tower1_layout.setOnClickListener(new OnClickListener() {
+	    	@Override
+	    	public void onClick(View v) {
+	    		if(money>=50){
+	    			money-=50;
+	    			Towers.add(new Tower(tower1,touch_x,touch_y,1));
+	    		}
+	    		popup_window.dismiss();
+	    		popup_active = false;
+		    }
+		    });
+		    tower2_layout.setOnClickListener(new OnClickListener() {
 		    	@Override
 		    	public void onClick(View v) {
 		    		if(money>=75){
@@ -311,18 +306,18 @@ public class GameView extends SurfaceView {
 		    		popup_active = false;
 			    }
 			});
-		    tower3_btn.setOnClickListener(new OnClickListener() {
+		    tower3_layout.setOnClickListener(new OnClickListener() {
 		    	@Override
 		    	public void onClick(View v) {
-		    		if(money>=100){
-		    			money-=100;
+		    		if(money>=150){
+		    			money-=150;
 		    			Towers.add(new Tower(tower3,touch_x,touch_y));
 		    		}
 		    		popup_window.dismiss();
 		    		popup_active = false;
 			    }
 			});
-		    tower4_btn.setOnClickListener(new OnClickListener() {
+		    tower4_layout.setOnClickListener(new OnClickListener() {
 		    	@Override
 		    	public void onClick(View v) {
 		    		if(money>=200){

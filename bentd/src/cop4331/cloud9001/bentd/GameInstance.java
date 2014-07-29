@@ -295,9 +295,6 @@ public class GameInstance extends Activity {
     	}
 		else{
 			super.onBackPressed();
-        	basic_map_view.setMode(MapView.PAUSED);
-        	pause_btn.setBackgroundResource(R.drawable.play_icon);
-        	createPauseMenu();
 		}
 	}
 	
@@ -305,41 +302,32 @@ public class GameInstance extends Activity {
 	public void onPause(){
 		super.onPause(); //Super constructor saves views
 		System.out.println("onPause");
-		writeSaveData();
-    	
-        //Save fields and timers
-    	//out_state.putInt("currency", game_view.getMoney());
-    	/*out_state.putInt("score", GameView.score);
-    	out_state.putInt("health", GameView.health);
-    	out_state.putInt("currentWave", GameView.currentWave);
-    	out_state.putInt("maxWaves", GameView.maxWaves);*/
+    	basic_map_view.setMode(MapView.PAUSED);
+    	pause_btn.setBackgroundResource(R.drawable.play_icon);
+    	/*game_view.gameLoopThread.setRunning(false);
+    	try {
+			game_view.gameLoopThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}*/
+		//writeSaveData();
+
 	}
 	
 	@Override
 	public void onResume(){
 		super.onResume(); //Super constructor restores views
 		System.out.println("onResume");
-    	
-    	//Now restore saved fields and timers
-    	//pause(); //Don't need to know previous mode because will automatically resume as paused
-    	//game_view.money = saved_instance_state.getInt("currency");
-    	/*GameView.score = saved_instance_state.getInt("score");
-    	GameView.health = saved_instance_state.getInt("health");
-    	GameView.currentWave = saved_instance_state.getInt("currentWave");
-    	GameView.maxWaves = saved_instance_state.getInt("maxWaves");*/
-        //Restore towers
-        //Restore enemies
+		/*if(basic_map_view != null){
+			if(basic_map_view.getMode() == MapView.PAUSED){
+		    	game_view.gameLoopThread.setRunning(true);
+		    	try {
+					game_view.gameLoopThread.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+		    	createPauseMenu();
+			}
+		}*/
 	}
-	
-    @Override
-    public void onSaveInstanceState(Bundle out_state) {
-    	super.onSaveInstanceState(out_state);
-		System.out.println("onSaveInstanceState");
-    }
-    
-    @Override
-    public void onRestoreInstanceState(Bundle saved_instance_state){
-    	super.onRestoreInstanceState(saved_instance_state);
-		System.out.println("onRestoreInstanceState");
-    }
 }
