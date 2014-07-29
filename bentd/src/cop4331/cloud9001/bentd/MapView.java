@@ -3,6 +3,7 @@ package cop4331.cloud9001.bentd;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -124,6 +125,18 @@ public class MapView extends TileView{
         if ((new_mode == RUNNING && previous_mode != RUNNING) || (new_mode == PAUSED || (new_mode == FAST_FORWARD))) {
             event_text.setVisibility(View.GONE);
             event_text_layout.setVisibility(View.GONE);
+            if(new_mode == FAST_FORWARD){
+            	 Message msg = new Message();
+         		 String textToChange = "fast";
+         		 msg.obj = textToChange;
+         		 GameView.ffHandler.sendMessage(msg);
+            }
+            if(previous_mode == FAST_FORWARD){
+            	Message msg = new Message();
+        		 String textToChange = "slow";
+        		 msg.obj = textToChange;
+        		 GameView.ffHandler.sendMessage(msg);
+            }
             return;
         }
 
@@ -135,11 +148,11 @@ public class MapView extends TileView{
         }
         if (new_mode == DEFEAT) {
             str = r.getString(cop4331.cloud9001.bentd.R.string.mode_defeat); //"Defeat"
-            MainMenu.writeNewHighScore(new Score("YOU", Integer.toString(GameInstance.game_view.getMoney())));//Save score to highscores.txt file
+            MainMenu.writeNewHighScore(new Score("YOU", Integer.toString(GameInstance.game_view.score)));//Save score to highscores.txt file
         }
         if (new_mode == VICTORY) {
             str = r.getString(cop4331.cloud9001.bentd.R.string.mode_victory); //"Victory"
-            MainMenu.writeNewHighScore(new Score("YOU", Integer.toString(GameInstance.game_view.getMoney())));//Save score to highscores.txt file
+            MainMenu.writeNewHighScore(new Score("YOU", Integer.toString(GameInstance.game_view.score)));//Save score to highscores.txt file
         }
 
         event_text.setText(str);

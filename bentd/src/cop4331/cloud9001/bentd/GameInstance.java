@@ -1,13 +1,5 @@
 package cop4331.cloud9001.bentd;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
@@ -16,6 +8,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -76,13 +69,13 @@ public class GameInstance extends Activity {
         stats_bar_layout = (RelativeLayout) findViewById(R.id.stats_bar_layout);
         stats_bar_layout.setOnClickListener(global_on_click_listener);
         currency_textview = (TextView) findViewById(R.id.currency_textview);
-        currency_textview.setText("9999");
+        currency_textview.setText("0000");
         life_textview = (TextView) findViewById(R.id.life_textview);
-        life_textview.setText("999");
+        life_textview.setText("000");
         wave_textview = (TextView) findViewById(R.id.wave_textview);
-        wave_textview.setText("9/9");
+        wave_textview.setText("0/0");
         time_remaining_textview = (TextView) findViewById(R.id.time_remaining_textview);
-        time_remaining_textview.setText("99:99");
+        time_remaining_textview.setText("00:00");
 		pause_btn = (Button)findViewById(R.id.pause_btn);
 		pause_btn.setOnClickListener(global_on_click_listener);
 		forward_btn = (Button)findViewById(R.id.fast_forward_btn);
@@ -99,6 +92,17 @@ public class GameInstance extends Activity {
 			life_textview.setText(text.substring(4,7));
 			wave_textview.setText(""+text.substring(7,8)+"/"+text.substring(8,9));
 			time_remaining_textview.setText(text.substring(9,text.length()));
+		}
+	};
+	static Handler endHandler = new Handler(){
+		@Override
+		public void handleMessage(Message msg){
+			String text = (String)msg.obj;
+			if(text.compareTo("VICTORY") == 0)
+				basic_map_view.setMode(MapView.VICTORY);
+			else if(text.compareTo("DEFEAT")==0)
+				basic_map_view.setMode(MapView.DEFEAT);
+			Log.i("why","crashing");
 		}
 	};
 	protected static String healthToString(int n){

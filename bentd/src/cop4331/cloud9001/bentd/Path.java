@@ -1,8 +1,7 @@
 package cop4331.cloud9001.bentd;
 
 import java.util.ArrayList;
-
-import android.util.Log;
+import java.util.Random;
 
 public class Path {
 	private Integer x[];
@@ -55,37 +54,40 @@ public class Path {
 		ArrayList<Integer> yPts = new ArrayList<Integer>();
 		int gridH = gv.getHeight()/map.length;
 		int gridW = gv.getWidth()/map[0].length;
-		
+		Random rnd = new Random();
+		int X = 0, Y = 0;
 		for(int i=0;i<map.length;i++){
 			if(map[i][0] > 0 && map[i][0]<14){
 				yPts.add(i*gridH);
 				xPts.add(0);
 				int j=1;
 				while(true){
+					Y = rnd.nextInt(gridH);
+					X = rnd.nextInt(gridW);
 					switch(map[i][j]){
 					case 1:
-						yPts.add(i*gridH);
+						yPts.add(i*gridH+Y);
 						xPts.add(j*gridW);
 						j++;
 						break;
 					case 6:
 						yPts.add(i*gridH);
-						xPts.add(j*gridW);
+						xPts.add(j*gridW-X);
 						i++;
 						break;
 					case 4:
 						yPts.add(i*gridH);
-						xPts.add(j*gridW);
+						xPts.add(j*gridW-X);
 						i++;
 						break;
 					case 10:
-						yPts.add(i*gridH);
-						xPts.add(j*gridW);
+						yPts.add(i*gridH+Y);
+						xPts.add(j*gridW-X);
 						j++;
 						break;
 					case 9:
 						yPts.add(i*gridH);
-						xPts.add(j*gridW);
+						xPts.add(j*gridW+X);
 						i--;
 						break;
 					case 3:

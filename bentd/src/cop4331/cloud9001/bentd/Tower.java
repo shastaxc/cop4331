@@ -9,19 +9,21 @@ import android.graphics.Canvas;
 public class Tower {
 	private int x;
 	private int y;
+	protected int centerX;
+	protected int centerY;
 	protected int targetingRadius;
 	@SuppressWarnings("unused")
 	private GameView gameView;
     private Bitmap bmp;
     protected int MAX_BULLETS = 5;
     
-    private int strength = 5;
-    protected int range = 50;
-    protected long fireSpeed = 1000;//Time in ms between each shot
-    protected int bulletSpeed = 20;
-    protected int bulletID = 0; //Normal bullet = 0, AOE = 1, AOE/DEBUFF = 2
-    protected int towerID = 0;
-    protected long lastFired = 0;
+    private int strength;
+    protected int range;
+    protected long fireSpeed;//Time in ms between each shot
+    protected int bulletSpeed;
+    protected int bulletID; //Normal bullet = 0, AOE = 1, AOE/DEBUFF = 2
+    protected int towerID;
+    protected long lastFired;
     protected ArrayList<Bullet> Bullets;
     protected Enemy target = null;
     /******
@@ -44,17 +46,19 @@ public class Tower {
         Bullets = new ArrayList<Bullet>();
 	}
 	
-	public Tower(Bitmap tower1, int touch_x, int touch_y, int i) {
+	public Tower(Bitmap tower1, int touch_x, int touch_y, int i, int range) {
 		this.bmp = tower1;
 		this.x = touch_x;
 		this.y = touch_y;
+		this.centerX = bmp.getWidth()/2;
+		this.centerY = bmp.getHeight()/2;
 		Bullets = new ArrayList<Bullet>();
 		switch(i){
 		case 1:
-			strength = 2;
-			range = 100;
+			strength = 5;
+			this.range = (int) (range*2);
 			fireSpeed = 500;
-			bulletSpeed = 16;
+			bulletSpeed = 100;
 			bulletID = 0;
 			towerID = 1;
 			break;
@@ -89,8 +93,20 @@ public class Tower {
 	public void onDraw(Canvas canvas) {
 		canvas.drawBitmap(bmp, x,y, null);
 	}
-	public void fire(GameView gameView2, Bitmap arrow) {
+	public void fire(GameView gameView2, Bitmap[] arrow) {
 		lastFired = System.currentTimeMillis();
 		Bullets.add(new Bullet(target,x,y,strength,bulletSpeed,arrow));
+	}
+	public void speedUP() {
+		fireSpeed /= 2;
+	    bulletSpeed *=2;
+	    for(Bullet b: Bullets)
+	    	b.speedUP();
+	}
+	public void slowDown(){
+		fireSpeed *=2;
+		bulletSpeed /=2;
+		for(Bullet b: Bullets)
+	    	b.slowDown();
 	}
 }
