@@ -76,7 +76,7 @@ public class GameView extends SurfaceView {
     /*
      * Stats for stats bar
      */
-    protected static int money = 0;
+    protected int money = 0;
     protected int score = 0;
     protected int health = 0;
     protected int currentWave = 0;
@@ -87,7 +87,7 @@ public class GameView extends SurfaceView {
     protected boolean spawnedWave = false;
     protected boolean spawnSubWave1 = false;
     protected boolean spawnSubWave2 = false;
-    protected static long startOfWaveInMiliseconds = 0;
+    protected long startOfWaveInMiliseconds = 0;
 	protected static boolean fast = false;
 	protected static boolean slow = true;
     /*
@@ -250,7 +250,7 @@ public class GameView extends SurfaceView {
     				Enemies.add(new Enemy(this,fieldOfBattle,1,enemyImp));
     		}
     	}
-    	else if(timeRemaining < level.timePerWave/3 && currentWave > 2&& currentWave < maxWaves-1 && spawnSubWave2){
+    	else if(timeRemaining < level.timePerWave/3 && currentWave > 2 && currentWave < maxWaves-1 && spawnSubWave2){
     		//SUB WAVE 2
     		int spawnMax = level.EnemiesPerWave[currentWave];
     		Random rnd = new Random();
@@ -282,7 +282,7 @@ public class GameView extends SurfaceView {
     		Message msg = new Message();
     		String textToChange = "VICTORY";
     		msg.obj = textToChange;
-    		GameInstance.mHandler.sendMessage(msg);
+    		GameInstance.endHandler.sendMessage(msg);
     	}
     	else if(health < 0){
     		//SEND DEFEAT MESSAGE TO GAME INSTANCE
@@ -296,7 +296,7 @@ public class GameView extends SurfaceView {
     		Message msg = new Message();
     		String textToChange = "DEFEAT";
     		msg.obj = textToChange;
-    		GameInstance.mHandler.sendMessage(msg);
+    		GameInstance.endHandler.sendMessage(msg);
     	}
     	/*
     	 * ENTITY UPDATES
@@ -367,7 +367,7 @@ public class GameView extends SurfaceView {
 			String text = (String)msg.obj;
 			if(text.compareTo("fast")==0){
 				if(Enemies.size() == 0){
-					startOfWaveInMiliseconds = 0;
+					GameInstance.game_view.startOfWaveInMiliseconds = 0;
 				}
 				else if(!fast){
 					//SPEED EVERYTHING UP IN towers and enemies
@@ -461,7 +461,7 @@ public class GameView extends SurfaceView {
 	    	public void onClick(View v) {
 	    		if(money>=50){
 	    			money-=50;
-	    			Towers.add(new Tower(tower1,touch_x,touch_y,1));
+	    			Towers.add(new Tower(tower1,touch_x,touch_y,1, 100));
 	    		}
 	    		popup_window.dismiss();
 	    		popup_active = false;

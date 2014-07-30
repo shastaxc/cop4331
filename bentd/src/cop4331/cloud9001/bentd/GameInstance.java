@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,13 +28,13 @@ public class GameInstance extends Activity {
 	protected static Context app_context;
 	protected static MapView basic_map_view;
 	protected static GameView game_view;
-	protected static String CAPSULE_KEY = "map-view"; //Used to restore saved game
 	protected static Button pause_btn;
 	protected static Button forward_btn;
 	protected static TextView currency_textview;
 	protected static TextView life_textview;
 	protected static TextView wave_textview;
 	protected static TextView time_remaining_textview;
+	protected static ImageView infinity_icon;
 	protected static LinearLayout text_layout;
 	protected static RelativeLayout stats_bar_layout;
 	protected static AlertDialog dialog;
@@ -63,20 +65,23 @@ public class GameInstance extends Activity {
 	        life_textview = (TextView) findViewById(R.id.life_textview);
 	        life_textview.setText("100");
 	        wave_textview = (TextView) findViewById(R.id.wave_textview);
-	        wave_textview.setText("8/8");
+	        wave_textview.setText("000");
 	        time_remaining_textview = (TextView) findViewById(R.id.time_remaining_textview);
-	        time_remaining_textview.setText("02:00");
+	        time_remaining_textview.setText("INF");
+	        time_remaining_textview.setVisibility(View.GONE);
+	        infinity_icon = (ImageView) findViewById(R.id.infinity_icon);
+	        infinity_icon.setVisibility(View.VISIBLE);
 			pause_btn = (Button)findViewById(R.id.pause_btn);
 			pause_btn.setOnClickListener(global_on_click_listener);
 			forward_btn = (Button)findViewById(R.id.fast_forward_btn);
 			forward_btn.setOnClickListener(global_on_click_listener);
 			
-			game_view = (GameView) findViewById(cop4331.cloud9001.bentd.R.id.game);
+			game_view = (GameView) findViewById(R.id.game);
 		}
 		else{
 			//Load map
-			basic_map_view = (MapView) findViewById(cop4331.cloud9001.bentd.R.id.map);
-	        basic_map_view.setEventText((TextView) findViewById(cop4331.cloud9001.bentd.R.id.event_textview), (LinearLayout) findViewById(R.id.text_layout));
+			basic_map_view = (MapView) findViewById(R.id.map);
+	        basic_map_view.setEventText((TextView) findViewById(R.id.event_textview), (LinearLayout) findViewById(R.id.text_layout));
 	        basic_map_view.setMapGrid(0);
 	        basic_map_view.setMode(MapView.READY);
 			//Load Stats UI
@@ -87,15 +92,18 @@ public class GameInstance extends Activity {
 	        life_textview = (TextView) findViewById(R.id.life_textview);
 	        life_textview.setText("100");
 	        wave_textview = (TextView) findViewById(R.id.wave_textview);
-	        wave_textview.setText("8/8");
+	        wave_textview.setText("0/8");
 	        time_remaining_textview = (TextView) findViewById(R.id.time_remaining_textview);
 	        time_remaining_textview.setText("02:00");
+	        time_remaining_textview.setVisibility(View.VISIBLE);
+	        infinity_icon = (ImageView) findViewById(R.id.infinity_icon);
+	        infinity_icon.setVisibility(View.GONE);
 			pause_btn = (Button)findViewById(R.id.pause_btn);
 			pause_btn.setOnClickListener(global_on_click_listener);
 			forward_btn = (Button)findViewById(R.id.fast_forward_btn);
 			forward_btn.setOnClickListener(global_on_click_listener);
 			
-			game_view = (GameView) findViewById(cop4331.cloud9001.bentd.R.id.game);
+			game_view = (GameView) findViewById(R.id.game);
 		}
 	}
 	static Handler mHandler = new Handler(){
@@ -104,8 +112,13 @@ public class GameInstance extends Activity {
 			String text = (String)msg.obj;
 			currency_textview.setText(text.substring(0,4));
 			life_textview.setText(text.substring(4,7));
-			wave_textview.setText(""+text.substring(7,8)+"/"+text.substring(8,9));
-			time_remaining_textview.setText(text.substring(9,text.length()));
+			if(endless){
+				wave_textview.setText(""+text.substring(7,text.length()));
+			}
+			else{
+				wave_textview.setText(""+text.substring(7,8)+"/"+text.substring(8,9));
+				time_remaining_textview.setText(text.substring(9,text.length()));
+			}
 		}
 	};
 	static Handler endHandler = new Handler(){
@@ -160,6 +173,8 @@ public class GameInstance extends Activity {
 		else{
 			if(seconds>=10)
 				return "0"+minutes+":"+seconds;
+			else if(seconds == 0)
+				return "00:00";
 			else
 				return "0"+minutes+":"+"0"+seconds;
 		}

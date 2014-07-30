@@ -40,10 +40,17 @@ public class GameLoopThread extends Thread {
 	    		   if(System.currentTimeMillis() - LastDraw > (60/TARGET_FPS) *1000){
 	    			   Message msg = new Message();
 	        		   //Currency
-	           		   String textToChange = GameInstance.currencyToString(view.money)
-	           				   +GameInstance.healthToString(view.health)+(view.currentWave)+view.maxWaves
-	           				   +GameInstance.timeToString((long)(view.level.timePerWave - (System.currentTimeMillis() 
-	           						   - view.startOfWaveInMiliseconds)));
+	    			   String textToChange="";
+	    			   if(GameInstance.endless){
+		           		   textToChange = GameInstance.currencyToString(view.money)
+		           				   +GameInstance.healthToString(view.health)+(view.currentWave);
+	    			   }
+	    			   else{
+		           		   textToChange = GameInstance.currencyToString(view.money)
+		           				   +GameInstance.healthToString(view.health)+(view.currentWave)+view.maxWaves
+		           				   +GameInstance.timeToString((long)(view.level.timePerWave - (System.currentTimeMillis() 
+		           						   - view.startOfWaveInMiliseconds)));
+	    			   }
 	           		   msg.obj = textToChange;
 	           		   GameInstance.mHandler.sendMessage(msg);
 			           view.updateGame();

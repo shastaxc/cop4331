@@ -43,7 +43,8 @@
         android:id="@+id/text_layout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:gravity="center">
+		android:gravity="center"
+	>
 		<!-- Display messages in game -->		
 		<TextView
 		 	android:id="@+id/event_textview"
@@ -74,7 +75,8 @@
             android:layout_height="25dp"
             android:layout_centerVertical="true"
             android:layout_marginRight="5dp"
-            android:background="@drawable/pause_icon" />
+            android:background="@drawable/pause_icon"
+        />
 
         <Button
             android:id="@+id/fast_forward_btn"
@@ -83,8 +85,9 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:layout_toRightOf="@+id/pause_btn"
-            android:background="@drawable/fast_forward_icon" />
-
+            android:background="@drawable/fast_forward_icon"
+        />
+        
         <ImageView
             android:id="@+id/currency_img"
             android:layout_width="15dp"
@@ -94,8 +97,9 @@
             android:layout_toRightOf="@+id/fast_forward_btn"
             android:contentDescription="@string/currency_icon"
             android:src="@drawable/currency_icon"
-            android:text="@string/dollar_sign" />
-
+            android:text="@string/dollar_sign"
+        />
+        
         <TextView
             android:id="@+id/currency_textview"
             android:layout_width="wrap_content"
@@ -103,8 +107,9 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/currency_img"
             android:textColor="#000000"
-            android:textSize="15sp" />
-
+            android:textSize="15dp"
+        />
+        
         <ImageView
             android:id="@+id/life_img"
             android:layout_width="15dp"
@@ -114,8 +119,9 @@
             android:layout_marginRight="3dp"
             android:layout_toRightOf="@+id/currency_textview"
             android:contentDescription="@string/health"
-            android:src="@drawable/heart_icon" />
-
+            android:src="@drawable/heart_icon"
+        />
+        
         <TextView
             android:id="@+id/life_textview"
             android:layout_width="wrap_content"
@@ -123,8 +129,9 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/life_img"
             android:textColor="#000000"
-            android:textSize="15sp" />
-
+            android:textSize="15dp"
+        />
+        
         <ImageView
             android:id="@+id/wave_img"
             android:layout_width="15dp"
@@ -134,8 +141,9 @@
             android:layout_marginRight="3dp"
             android:layout_toRightOf="@+id/life_textview"
             android:contentDescription="@string/wave_icon"
-            android:src="@drawable/wave_icon" />
-
+            android:src="@drawable/wave_icon"
+        />
+        
         <TextView
             android:id="@+id/wave_textview"
             android:layout_width="wrap_content"
@@ -143,8 +151,9 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/wave_img"
             android:textColor="#000000"
-            android:textSize="15sp" />
-
+            android:textSize="15dp"
+        />
+        
         <ImageView
             android:id="@+id/time_remaining_img"
             android:layout_width="15dp"
@@ -154,8 +163,9 @@
             android:layout_marginRight="3dp"
             android:layout_toRightOf="@+id/wave_textview"
             android:contentDescription="@string/clock_icon"
-            android:src="@drawable/clock_icon" />
-
+            android:src="@drawable/clock_icon"
+        />
+        
         <TextView
             android:id="@+id/time_remaining_textview"
             android:layout_width="wrap_content"
@@ -163,7 +173,20 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/time_remaining_img"
             android:textColor="#000000"
-            android:textSize="15sp" />
+            android:textSize="15dp"
+        />
+        
+        <ImageView
+        	android:id="@+id/infinity_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/time_remaining_img"
+            android:contentDescription="Infinity Icon"
+            android:visibility="gone"
+            android:src="@drawable/infinity_symbol"
+        />
+        
     </RelativeLayout>
     
 

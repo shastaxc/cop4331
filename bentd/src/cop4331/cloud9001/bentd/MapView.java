@@ -143,16 +143,38 @@ public class MapView extends TileView{
         Resources r = getContext().getResources();
         CharSequence str = "";
         if (new_mode == READY) {
-            str = r.getText(cop4331.cloud9001.bentd.R.string.mode_ready); //"Tap screen to begin"
+            str = r.getText(R.string.mode_ready); //"Tap screen to begin"
             
         }
         if (new_mode == DEFEAT) {
-            str = r.getString(cop4331.cloud9001.bentd.R.string.mode_defeat); //"Defeat"
+            str = r.getString(R.string.mode_defeat); //"Defeat"
             MainMenu.writeNewHighScore(new Score("YOU", Integer.toString(GameInstance.game_view.score)));//Save score to highscores.txt file
+            //TODO: Set stats bar using mHandler
+            String textToChange;
+            if(GameInstance.endless){
+        		   textToChange = GameInstance.currencyToString(GameInstance.game_view.money)
+           				   +GameInstance.healthToString(GameInstance.game_view.health) + (GameInstance.game_view.currentWave);
+            }
+            else{
+     		   textToChange = GameInstance.currencyToString(GameInstance.game_view.money)
+       				   +GameInstance.healthToString(GameInstance.game_view.health) + (GameInstance.game_view.currentWave)
+       				   +GameInstance.game_view.maxWaves + " ";
+            }
         }
         if (new_mode == VICTORY) {
-            str = r.getString(cop4331.cloud9001.bentd.R.string.mode_victory); //"Victory"
+            str = r.getString(R.string.mode_victory); //"Victory"
             MainMenu.writeNewHighScore(new Score("YOU", Integer.toString(GameInstance.game_view.score)));//Save score to highscores.txt file
+            //TODO: Set stats bar using mHandler
+            String textToChange;
+            if(GameInstance.endless){
+     		   textToChange = GameInstance.currencyToString(GameInstance.game_view.money)
+       				   +GameInstance.healthToString(GameInstance.game_view.health) + (GameInstance.game_view.currentWave);
+            }
+            else{
+     		   textToChange = GameInstance.currencyToString(GameInstance.game_view.money)
+       				   +GameInstance.healthToString(GameInstance.game_view.health) + (GameInstance.game_view.currentWave)
+       				   +GameInstance.game_view.maxWaves + " ";
+            }
         }
 
         event_text.setText(str);
