@@ -4,26 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/main_frame"
->
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:orientation="horizontal"
 >
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight=".60" />
-    
-        
-        <RelativeLayout    
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="horizontal"
+	>
+	    <View
         	android:layout_width="0dp"
         	android:layout_height="match_parent"
-        	android:layout_weight=".35"
-        	android:paddingTop="40dp"
-       	>
-       		
+        	android:layout_weight=".60" />
+	    
+        	
+       	<RelativeLayout    
+        	android:layout_width="0dp"
+       		android:layout_height="match_parent"
+       		android:layout_weight=".35"
+       		android:paddingTop="40dp"
+      		>
 			<Button
 		        android:id="@+id/resume_btn"
 	        	android:gravity="center"
@@ -39,7 +38,7 @@
         	/>
 			
 	    	<Button
-		        android:id="@+id/new_game_btn"
+		        android:id="@+id/normal_game_btn"
 	        	android:gravity="center"
 	        	android:layout_width="match_parent"
 	        	android:layout_height="wrap_content"
@@ -47,7 +46,7 @@
 	        	android:layout_margin="1dp"
 	        	android:padding="10dp"
 	        	android:textSize="20sp"
-	        	android:text="@string/new_game_btn_txt"
+	        	android:text="@string/normal_game_btn_txt"
 	        	android:background="@drawable/button_bg_selector"
         		android:textColor="#FFFFFF"
         	/>
@@ -57,11 +56,11 @@
 	        	android:gravity="center"
 	        	android:layout_width="match_parent"
 	        	android:layout_height="wrap_content"
-	        	android:layout_below="@+id/new_game_btn"
+	        	android:layout_below="@+id/normal_game_btn"
 	        	android:layout_margin="1dp"
 	        	android:padding="10dp"
 	        	android:textSize="20sp"
-	        	android:text="Endless Mode"
+	        	android:text="@string/endless_btn_txt"
         		android:background="@drawable/button_bg_selector"
         		android:textColor="#FFFFFF"
         	/>
@@ -75,16 +74,16 @@
 	        	android:layout_margin="1dp"
 	        	android:padding="10dp"
 	        	android:textSize="20sp"
-	        	android:text="High Scores"
+	        	android:text="@string/high_scores_txt"
         		android:background="@drawable/button_bg_selector"
         		android:textColor="#FFFFFF"
         	/>
         </RelativeLayout>
-    
-    <View
-	    android:layout_width="0dp"
-       	android:layout_height="match_parent"
-       	android:layout_weight=".05"
-    />
-</LinearLayout>
+        
+	    <View
+		    android:layout_width="0dp"
+	       	android:layout_height="match_parent"
+	       	android:layout_weight=".05"
+	    />
+	</LinearLayout>
 </FrameLayout>
