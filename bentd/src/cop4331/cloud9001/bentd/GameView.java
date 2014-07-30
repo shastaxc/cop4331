@@ -267,25 +267,25 @@ public class GameView extends SurfaceView {
     		}
     	}
     	
+    	//If all enemies are killed and this is not the last wave
+    	//change back to RUNNING mode and change button image to spawn_next icon
+    	if(Enemies.size() == 0 && currentWave < maxWaves){
+    		if(GameInstance.basic_map_view.getMode() == MapView.FAST_FORWARD){
+    			Message msg = new Message();
+    			GameInstance.ffPress.sendMessage(msg);
+    		}
+    	}
+    	
     	//ENDING CONDITIONS
     	if(currentWave >= maxWaves && Enemies.size()==0 && health >0){
     		currentWave = maxWaves;
-    		//gameLoopThread.setRunning(false);
     		//SEND VICTORY MESSAGE TO GAME INSTANCE
-    		gameLoopThread.setRunning(false);
-    		try {
-				gameLoopThread.join();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
     		Message msg = new Message();
     		String textToChange = "VICTORY";
     		msg.obj = textToChange;
     		GameInstance.endHandler.sendMessage(msg);
-    	}
-    	else if(health < 0){
-    		//SEND DEFEAT MESSAGE TO GAME INSTANCE
+    		
+    		//Stop thread
     		gameLoopThread.setRunning(false);
     		try {
 				gameLoopThread.join();
@@ -293,10 +293,22 @@ public class GameView extends SurfaceView {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+    	}
+    	else if(health < 0){
+    		//SEND DEFEAT MESSAGE TO GAME INSTANCE
     		Message msg = new Message();
     		String textToChange = "DEFEAT";
     		msg.obj = textToChange;
     		GameInstance.endHandler.sendMessage(msg);
+
+    		//Stop thread
+    		gameLoopThread.setRunning(false);
+    		try {
+				gameLoopThread.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     	}
     	/*
     	 * ENTITY UPDATES

@@ -5,7 +5,10 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_game_instance">GameInstance</string>
     <string name="resume_btn_txt">Resume</string>
-    <string name="new_game_btn_txt">New Game</string>
+    <string name="normal_game_btn_txt">Normal Mode</string>
+    <string name="endless_btn_txt">Endless Mode</string>
+    <string name="high_scores_txt">High Scores</string>
+    <string name="infinity_icon">Infinity Icon</string>
     <string name="settings_btn_txt">Settings</string>
     <string name="currency_icon">Currency Icon</string>
     <string name="wave_icon">Wave Icon</string>

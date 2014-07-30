@@ -178,12 +178,14 @@
         
         <ImageView
         	android:id="@+id/infinity_icon"
-            android:layout_width="wrap_content"
+            android:layout_width="20dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/time_remaining_img"
-            android:contentDescription="Infinity Icon"
+            android:contentDescription="@string/infinity_icon"
             android:visibility="gone"
+        	android:adjustViewBounds="true"
+        	android:scaleType="centerInside"
             android:src="@drawable/infinity_symbol"
         />
         

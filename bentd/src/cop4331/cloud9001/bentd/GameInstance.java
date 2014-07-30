@@ -5,11 +5,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -37,8 +35,6 @@ public class GameInstance extends Activity {
 	protected static ImageView infinity_icon;
 	protected static LinearLayout text_layout;
 	protected static RelativeLayout stats_bar_layout;
-	protected static AlertDialog dialog;
-	protected static String SAVE_FILE = "save_data.txt";
 	protected static boolean endless = false;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +117,12 @@ public class GameInstance extends Activity {
 			}
 		}
 	};
+	static Handler ffPress = new Handler(){
+		@Override
+		public void handleMessage(Message msg){
+			fastForward();
+		}
+	};
 	static Handler endHandler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
@@ -132,13 +134,30 @@ public class GameInstance extends Activity {
 			Log.i("why","crashing");
 		}
 	};
+	protected static String currentWaveToString(int n){
+		if(endless){
+			if(n >= 1000)
+				return "999";
+			else if(n>=100)
+				return ""+n;
+			else if(n>=10)
+				return "0"+n;
+			else
+				return "00"+n;
+		}
+		else{
+			return ""+n;
+		}
+	}
 	protected static String healthToString(int n){
 		if(n>=100)
 			return ""+n;
 		else if(n>10)
 			return "0"+n;
-		else
+		else if(n >= 0)
 			return "00"+n;
+		else
+			return "000";
 	}
 	protected static String currencyToString(int n){
 		String str = Integer.toString(n);
@@ -164,19 +183,24 @@ public class GameInstance extends Activity {
 	static String timeToString(long timeInMili){
 		long minutes = timeInMili/60000;
 		long seconds = (timeInMili%60000)/1000;
+		if(GameInstance.basic_map_view.getMode() == MapView.DEFEAT || 
+				GameInstance.basic_map_view.getMode() == MapView.VICTORY || minutes > 99){
+			return "00:00";
+		}
 		if(minutes>10){
 			if(seconds>=10)
 				return ""+minutes+":"+seconds;
 			else
 				return ""+minutes+":"+"0"+seconds;
 		}
-		else{
+		else if(minutes >= 0){
 			if(seconds>=10)
 				return "0"+minutes+":"+seconds;
-			else if(seconds == 0)
-				return "00:00";
 			else
 				return "0"+minutes+":"+"0"+seconds;
+		}
+		else{
+			return timeToString(game_view.level.timePerWave);
 		}
 	}
 	//Global on click listener
@@ -240,12 +264,24 @@ public class GameInstance extends Activity {
     		forward_btn.setBackgroundResource(R.drawable.play_icon);
     	}
     	else if(basic_map_view.getMode() == MapView.RUNNING){
-    		basic_map_view.setMode(MapView.FAST_FORWARD);
-    		forward_btn.setBackgroundResource(R.drawable.play_icon);
+    		if(GameView.Enemies.size() == 0){
+    			//Do not change mode in this case, just advance to next wave
+				GameInstance.game_view.startOfWaveInMiliseconds = 0;
+        		forward_btn.setBackgroundResource(R.drawable.fast_forward_icon);
+    		}
+    		else{
+        		basic_map_view.setMode(MapView.FAST_FORWARD);
+        		forward_btn.setBackgroundResource(R.drawable.play_icon);
+    		}
     	}
-    	else if(basic_map_view.getMode() == MapView.FAST_FORWARD){
+    	else if(basic_map_view.getMode() == MapView.FAST_FORWARD){ //If fastfoward button pressed and already in ff mode
     		basic_map_view.setMode(MapView.RUNNING);
-    		forward_btn.setBackgroundResource(R.drawable.fast_forward_icon);
+    		if(GameView.Enemies.size() == 0){
+        		forward_btn.setBackgroundResource(R.drawable.spawn_icon); //Change icon to spawn_wave icon
+    		}
+    		else{
+        		forward_btn.setBackgroundResource(R.drawable.fast_forward_icon);
+    		}
     	}
     	else if(basic_map_view.getMode() == MapView.DEFEAT){
     		// Button will not function in this mode
@@ -325,10 +361,10 @@ public class GameInstance extends Activity {
 	public void onPause(){
 		super.onPause(); //Super constructor saves views
 		System.out.println("onPause");
+    	game_view.gameLoopThread.setRunning(false);
     	basic_map_view.setMode(MapView.PAUSED);
     	pause_btn.setBackgroundResource(R.drawable.play_icon);
-    	/*game_view.gameLoopThread.setRunning(false);
-    	try {
+    	/*try {
 			game_view.gameLoopThread.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -341,16 +377,8 @@ public class GameInstance extends Activity {
 	public void onResume(){
 		super.onResume(); //Super constructor restores views
 		System.out.println("onResume");
-		/*if(basic_map_view != null){
-			if(basic_map_view.getMode() == MapView.PAUSED){
-		    	game_view.gameLoopThread.setRunning(true);
-		    	try {
-					game_view.gameLoopThread.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-		    	createPauseMenu();
-			}
-		}*/
+		if(basic_map_view != null)
+			if(basic_map_view.getMode() != MapView.READY)
+				createPauseMenu();
 	}
 }

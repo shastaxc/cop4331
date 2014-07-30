@@ -28,10 +28,10 @@ public class ScoreBoardFragment extends Fragment{
 		current_score_label = (TextView) root_view.findViewById(R.id.current_score_label);
 
 
-		MainMenu.writeNewHighScore(new Score("YOU", "9001"));
+		//MainMenu.writeNewHighScore(new Score("YOU", "9001"));
 
 		display_list = MainMenu.getHighScores();
-		
+		display_list = MainMenu.sortHighScores(display_list, null);
 
 		/*display_list.add(new Score("NNN", "3000"));
 		display_list.add(new Score("WVA", "5816"));
@@ -51,7 +51,9 @@ public class ScoreBoardFragment extends Fragment{
 	private void updateCurrentScore(){
 		if(GameInstance.basic_map_view != null && GameInstance.game_view != null){ //If scoreboard was called from pause menu
 			if(GameInstance.basic_map_view.getMode() == MapView.PAUSED){
-				current_score.setText(Integer.toString(GameView.money));
+				current_score.setText(Integer.toString(GameInstance.game_view.score));
+				current_score_label.setVisibility(View.VISIBLE); //Hide text "current score"
+				current_score.setVisibility(View.VISIBLE); //Hide current score
 			}
 		}
 		else{ //If scoreboard was called from main menu
