@@ -76,7 +76,7 @@ public class GameView extends SurfaceView {
     /*
      * Stats for stats bar
      */
-    protected static int money = 0;
+    protected int money = 0;
     protected int score = 0;
     protected int health = 0;
     protected int currentWave = 0;
@@ -87,7 +87,7 @@ public class GameView extends SurfaceView {
     protected boolean spawnedWave = false;
     protected boolean spawnSubWave1 = false;
     protected boolean spawnSubWave2 = false;
-    protected static long startOfWaveInMiliseconds = 0;
+    protected long startOfWaveInMiliseconds = 0;
 	protected static boolean fast = false;
 	protected static boolean slow = true;
     /*
@@ -178,35 +178,40 @@ public class GameView extends SurfaceView {
     	}
     	else if(!spawnedWave&& currentWave == 1){
     		spawnedWave = true;
+    		currentWave++;
+    		//ENEMY SPAWN
     		for(int i=0;i<level.EnemiesPerWave[currentWave]-1;i++)
     			Enemies.add(new Enemy(this,fieldOfBattle,1,enemyImp));
     		Enemies.add(new Enemy(this,fieldOfBattle,3, enemyOgre));
     		startOfWaveInMiliseconds = System.currentTimeMillis();
-    		currentWave++;
+    		//SPEED CORRECTION
     		if(fast){
     			for(Enemy e: Enemies)
     				e.speedUP();
     		}
     	}
     	else if(!spawnedWave && currentWave ==2){
+    		spawnedWave = true;
+    		currentWave++;
+    		//ENEMY SPAWN
     		for(int i=0;i<level.EnemiesPerWave[currentWave]-3;i++)
     			Enemies.add(new Enemy(this,fieldOfBattle,1,enemyImp));
     		Enemies.add(new Enemy(this,fieldOfBattle,2, enemyKitsune));
     		Enemies.add(new Enemy(this,fieldOfBattle,3, enemyOgre));
     		Enemies.add(new Enemy(this,fieldOfBattle,3, enemyOgre));
     		startOfWaveInMiliseconds = System.currentTimeMillis();
-    		spawnedWave = true;
-    		currentWave++;
+    		//SPEED CORRECTION
     		if(fast){
     			for(Enemy e: Enemies)
     				e.speedUP();
     		}
     	}
     	else if(!spawnedWave && currentWave == (maxWaves -1)){
+    		startOfWaveInMiliseconds = System.currentTimeMillis();
     		currentWave++;
     		spawnedWave = true;
+    		
     		Enemies.add(new Enemy(this,fieldOfBattle,5,bossOroshi));
-    		startOfWaveInMiliseconds = System.currentTimeMillis();
     		if(fast){
     			for(Enemy e: Enemies)
     				e.speedUP();
@@ -214,6 +219,9 @@ public class GameView extends SurfaceView {
     	}
     	else if(!spawnedWave&& currentWave < (maxWaves-1)){
     		startOfWaveInMiliseconds = System.currentTimeMillis();
+    		currentWave++;
+    		spawnedWave = true;
+    		
     		int spawnMax = level.EnemiesPerWave[currentWave]/2;
     		Random rnd = new Random();
     		int chance = 0;
@@ -231,10 +239,12 @@ public class GameView extends SurfaceView {
     			for(Enemy e: Enemies)
     				e.speedUP();
     		}
-    		currentWave++;
     	}
-    	else if(timeRemaining < 2*level.timePerWave/3 && currentWave > 2&& currentWave < maxWaves-1 && spawnSubWave1){
+    	else if(timeRemaining < ((2/3)*level.timePerWave) && currentWave > 3 && currentWave < maxWaves-1 && !spawnSubWave1){
     		//SUB WAVE 1
+    		spawnSubWave1 = true;
+    		
+    		//ENEMY SPAWN
     		int spawnMax = level.EnemiesPerWave[currentWave]/2;
     		level.EnemiesPerWave[currentWave]-= spawnMax;
     		Random rnd = new Random();
@@ -250,8 +260,11 @@ public class GameView extends SurfaceView {
     				Enemies.add(new Enemy(this,fieldOfBattle,1,enemyImp));
     		}
     	}
-    	else if(timeRemaining < level.timePerWave/3 && currentWave > 2&& currentWave < maxWaves-1 && spawnSubWave2){
+    	else if(timeRemaining < (level.timePerWave/3) && currentWave > 2 && currentWave < (maxWaves-1) && !spawnSubWave2){
     		//SUB WAVE 2
+    		spawnSubWave2 = true;
+    		
+    		//ENEMY SPAWN
     		int spawnMax = level.EnemiesPerWave[currentWave];
     		Random rnd = new Random();
     		int chance = 0;
@@ -267,25 +280,25 @@ public class GameView extends SurfaceView {
     		}
     	}
     	
+    	//If all enemies are killed and this is not the last wave
+    	//change back to RUNNING mode and change button image to spawn_next icon
+    	if(Enemies.size() == 0 && currentWave < maxWaves){
+    		if(GameInstance.basic_map_view.getMode() == MapView.FAST_FORWARD){
+    			Message msg = new Message();
+    			GameInstance.ffPress.sendMessage(msg);
+    		}
+    	}
+    	
     	//ENDING CONDITIONS
     	if(currentWave >= maxWaves && Enemies.size()==0 && health >0){
     		currentWave = maxWaves;
-    		//gameLoopThread.setRunning(false);
     		//SEND VICTORY MESSAGE TO GAME INSTANCE
-    		gameLoopThread.setRunning(false);
-    		try {
-				gameLoopThread.join();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
     		Message msg = new Message();
     		String textToChange = "VICTORY";
     		msg.obj = textToChange;
-    		GameInstance.mHandler.sendMessage(msg);
-    	}
-    	else if(health < 0){
-    		//SEND DEFEAT MESSAGE TO GAME INSTANCE
+    		GameInstance.endHandler.sendMessage(msg);
+    		
+    		//Stop thread
     		gameLoopThread.setRunning(false);
     		try {
 				gameLoopThread.join();
@@ -293,10 +306,22 @@ public class GameView extends SurfaceView {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+    	}
+    	else if(health < 0){
+    		//SEND DEFEAT MESSAGE TO GAME INSTANCE
     		Message msg = new Message();
     		String textToChange = "DEFEAT";
     		msg.obj = textToChange;
-    		GameInstance.mHandler.sendMessage(msg);
+    		GameInstance.endHandler.sendMessage(msg);
+
+    		//Stop thread
+    		gameLoopThread.setRunning(false);
+    		try {
+				gameLoopThread.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     	}
     	/*
     	 * ENTITY UPDATES
@@ -367,7 +392,7 @@ public class GameView extends SurfaceView {
 			String text = (String)msg.obj;
 			if(text.compareTo("fast")==0){
 				if(Enemies.size() == 0){
-					startOfWaveInMiliseconds = 0;
+					GameInstance.game_view.startOfWaveInMiliseconds = 0;
 				}
 				else if(!fast){
 					//SPEED EVERYTHING UP IN towers and enemies
@@ -461,7 +486,7 @@ public class GameView extends SurfaceView {
 	    	public void onClick(View v) {
 	    		if(money>=50){
 	    			money-=50;
-	    			Towers.add(new Tower(tower1,touch_x,touch_y,1));
+	    			Towers.add(new Tower(tower1,touch_x,touch_y,1, 100));
 	    		}
 	    		popup_window.dismiss();
 	    		popup_active = false;

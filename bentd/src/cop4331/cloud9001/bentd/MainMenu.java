@@ -3,7 +3,6 @@ package cop4331.cloud9001.bentd;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -32,8 +31,8 @@ public class MainMenu extends Activity{
 		resume_btn.setOnClickListener(globalOnClickListener);
 		resume_btn.setVisibility(View.GONE);
 		
-		Button new_game_btn = (Button)findViewById(R.id.new_game_btn);
-		new_game_btn.setOnClickListener(globalOnClickListener);
+		Button normal_game_btn = (Button)findViewById(R.id.normal_game_btn);
+		normal_game_btn.setOnClickListener(globalOnClickListener);
 
 		Button endless_btn = (Button)findViewById(R.id.endless_btn);
 		endless_btn.setOnClickListener(globalOnClickListener);
@@ -49,7 +48,7 @@ public class MainMenu extends Activity{
     			case R.id.resume_btn:
     				resumeBtnClick();
     				break;
-    			case R.id.new_game_btn:
+    			case R.id.normal_game_btn:
     				newGameBtnClick();
     				break;
     			case R.id.endless_btn:
@@ -144,19 +143,22 @@ public class MainMenu extends Activity{
     	}
     }
     
-    private static ArrayList<Score> sortHighScores(ArrayList<Score> high_scores, Score your_score){
-    	if(high_scores.size() == 0 && your_score != null){
-    		high_scores.add(your_score);
-    		return high_scores;
-    	}
+    protected static ArrayList<Score> sortHighScores(ArrayList<Score> high_scores, Score your_score){
     	if(your_score != null){
     		high_scores.add(your_score);
     	}
+    	if(high_scores.size() <= 1){
+    		return high_scores;
+    	}
     	if(high_scores.size() > 1){
+    		int compare1 = 0;
+    		int compare2 = 0;
     		for(int i = 0; i < high_scores.size(); i++){
         		for(int j = 0; j < high_scores.size()-1; j++){
         	    	//Sort highest to lowest
-        			if(high_scores.get(j).getScore().compareTo(high_scores.get(j+1).getScore()) < 0){
+        			compare1 = Integer.parseInt(high_scores.get(j).getScore());
+        			compare2 = Integer.parseInt(high_scores.get(j+1).getScore());
+        			if(compare1 < compare2){
         				Score temp = high_scores.get(j);
         				high_scores.remove(j);
         				high_scores.add(j+1, temp);
@@ -164,10 +166,15 @@ public class MainMenu extends Activity{
         		}
         	}
     	}
-    	if(high_scores.size() < 20){
+    	if(high_scores.size() <= 20){
     		return high_scores;
     	}
-        return (ArrayList<Score>)high_scores.subList(0, 19);
+    	else{
+    		for(int i = 20; i <= high_scores.size(); i++){
+    			high_scores.remove(i);
+    		}
+    	}
+        return high_scores;
     }
     
     protected static void readSaveData(){
