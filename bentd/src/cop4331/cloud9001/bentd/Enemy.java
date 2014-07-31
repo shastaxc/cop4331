@@ -60,7 +60,7 @@ public class Enemy {
     		xSpeed = (int) Math.sqrt(rnd.nextInt(10)+15);
     		ySpeed = xSpeed;
     		bounty = 20;
-    		strength = 1;
+    		strength = 5;
     		health = 20;
     		break;
     	case 3://OGRE

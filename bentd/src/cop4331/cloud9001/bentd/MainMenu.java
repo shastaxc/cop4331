@@ -13,12 +13,10 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.TextView;
 
 public class MainMenu extends Activity{
 	protected static Context app_context;
@@ -28,11 +26,6 @@ public class MainMenu extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_menu);
 		app_context = getApplicationContext();
-		
-		TextView title_text = (TextView)findViewById(R.id.title_text);
-		Typeface face=Typeface.createFromAsset(getAssets(), "fonts/banzai.ttf");
-
-		title_text.setTypeface(face);
 
 		Button resume_btn = (Button)findViewById(R.id.resume_btn);
 		resume_btn.setOnClickListener(globalOnClickListener);

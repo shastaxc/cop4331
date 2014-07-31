@@ -1,5 +1,7 @@
 package cop4331.cloud9001.bentd;
 
+import java.util.ArrayList;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -8,7 +10,7 @@ public class Bullet {
 	protected Enemy target;
 	protected int posX;
 	protected int posY;
-	protected int radius;
+	protected int radius = 10;
 	protected int stoppingPower;
 	protected int velocity;
 	protected boolean destroyed = false;
@@ -18,6 +20,7 @@ public class Bullet {
 	private int currentFrame = 0;
 	private long birth = System.currentTimeMillis();
 	private int bulletID;
+	private ArrayList<Enemy> targets;
 	
 	public Bullet(Enemy e, int x, int y, int strength, int bulletSpeed, Bitmap[] bmpArr, int id) {
 		bmp = bmpArr;
@@ -26,7 +29,7 @@ public class Bullet {
 		posY = y;
 		stoppingPower = strength;
 		velocity = bulletSpeed;
-		bulletID = 0;
+		bulletID = id;
 	}
 	public Bullet(int i, int x, int xmod, int y, int ymod, int direction,
 			Bitmap bmp) {
@@ -109,6 +112,28 @@ public class Bullet {
 			posY = y;
 		}
 	}
+	public Bullet(Enemy target2, int x, int y, int strength, int bulletSpeed,
+			Bitmap fireBall, int id) {
+		target = target2;
+		posX = x;
+		posY = y;
+		this.stoppingPower = strength;
+		velocity = bulletSpeed;
+		bmp2 = fireBall;
+		this.bulletID = id;
+	}
+	public Bullet(Enemy target2, ArrayList<Enemy> enemies, int x, int y,
+			int strength, int bulletSpeed, Bitmap fireBall, int i) {
+		this.targets = enemies;
+		this.target = target2;
+		posX = x;
+		posY = y;
+		this.radius = 100;
+		this.velocity = bulletSpeed;
+		bmp2 = fireBall;
+		this.stoppingPower = strength;
+		this.bulletID = i;
+	}
 	public int distance(int x1, int x2, int y1, int y2){
 		return (int)Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
 	}
@@ -121,8 +146,26 @@ public class Bullet {
 
 		if(!destroyed && hitDetection(targetX-target.radius,targetX+target.radius,targetY-target.radius,targetY+target.radius,
 				posX,posX,posY,posY)){
-			target.health -= stoppingPower;
-			destroyed = true;
+			if(bulletID == 0){
+				target.health -= stoppingPower;
+				destroyed = true;
+			}
+			else if(bulletID == 2){
+				if(System.currentTimeMillis() - target.lastSlowed > 3000){
+					target.lastSlowed = System.currentTimeMillis();
+					target.xSpeed /= 2;
+					target.ySpeed /= 2;
+					target.isSlowed = true;
+				}
+			}
+			else{
+				target.health -= stoppingPower;
+				for(int i=0;i<targets.size();i++)
+					if(distance(targets.get(i),target) < this.radius){
+						targets.get(i).health -= stoppingPower;
+					}
+				destroyed = true;
+			}
 		}
 		else{
 			if(diffX < 0){
@@ -180,14 +223,17 @@ public class Bullet {
 				currentFrame = 5;
 		}
 	}
+	private int distance(Enemy e1, Enemy e2) {
+		return (int) Math.sqrt((e2.x-e1.x)*(e2.x-e1.x)+(e2.y-e1.y)*(e2.y-e1.y));
+	}
 	public void onDraw(Canvas canvas){
 		//update();
 		//canvas.drawCircle(posX,posY,10, paint);
 		if(bulletID == 0)
 			canvas.drawBitmap(bmp[currentFrame], posX,posY, null);
-		else if(bulletID == 1)
+		else if(bulletID == 1 || bulletID ==2)
 			canvas.drawBitmap(bmp2,posX,posY,null);
-	}
+		}
 	public long getLifeSpane(){
 		return (long) (System.currentTimeMillis() - birth);
 	}

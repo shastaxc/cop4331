@@ -56,8 +56,7 @@ public class GameView extends SurfaceView {
 			BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_arrow_l),
 			BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_arrow_lu)};
 	private final Bitmap caltrops = BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_caltrops);
-	private final Bitmap fireBall[] = {BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_fireball_a),
-			BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_fireball_b)};
+	private final Bitmap fireBall = BitmapFactory.decodeResource(getResources(),  R.drawable.projectile_fireball_a);
 	/*
 	 * View Variables
 	 */
@@ -230,7 +229,7 @@ public class GameView extends SurfaceView {
     		}
     	}
     	else if(!spawnedWave&& currentWave < (maxWaves-1)){
-    		int spawnMax = level.EnemiesPerWave[currentWave]/2;
+    		int spawnMax = level.EnemiesPerWave[currentWave];
     		startOfWaveInMiliseconds = System.currentTimeMillis();
     		currentWave++;
     		spawnedWave = true;
@@ -253,7 +252,7 @@ public class GameView extends SurfaceView {
     				e.speedUP();
     		}
     	}
-    	else if(timeRemaining < ((2/3)*level.timePerWave) && currentWave > 2 && currentWave < maxWaves-1 && !spawnSubWave1){
+    	/*else if(timeRemaining < ((2/3)*level.timePerWave) && currentWave > 2 && currentWave < maxWaves-1 && !spawnSubWave1){
     		//SUB WAVE 1
     		spawnSubWave1 = true;
     		//Log.i("wave","subwave1");
@@ -291,7 +290,7 @@ public class GameView extends SurfaceView {
     			else
     				Enemies.add(new Enemy(this,fieldOfBattle,1,enemyImp));
     		}
-    	}
+    	}*/
     	
     	//If all enemies are killed and this is not the last wave
     	//change back to RUNNING mode and change button image to spawn_next icon
@@ -309,7 +308,6 @@ public class GameView extends SurfaceView {
     		Message msg = new Message();
     		String textToChange = "VICTORY";
     		msg.obj = textToChange;
-    		GameInstance.endHandler.sendMessage(msg);
     		
     		//Stop thread
     		gameLoopThread.setRunning(false);
@@ -319,13 +317,15 @@ public class GameView extends SurfaceView {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+    		GameInstance.endHandler.sendMessage(msg);
+    		
     	}
     	else if(health < 0){
     		//SEND DEFEAT MESSAGE TO GAME INSTANCE
     		Message msg = new Message();
     		String textToChange = "DEFEAT";
     		msg.obj = textToChange;
-    		GameInstance.endHandler.sendMessage(msg);
+    		
 
     		//Stop thread
     		gameLoopThread.setRunning(false);
@@ -335,6 +335,7 @@ public class GameView extends SurfaceView {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+    		GameInstance.endHandler.sendMessage(msg);
     	}
     	/*
     	 * ENTITY UPDATES
@@ -363,34 +364,37 @@ public class GameView extends SurfaceView {
 						   t.fire(this, arrow);
 					   else if(t.towerID == 4)
 						   t.fire(this, arrow);
+					   else if(t.towerID == 3)
+						   t.fire(this, fireBall, Enemies);
 				   }
 		   }
 		   //Has a target
 		   else{
 			   //Fires at enemy
 			   if(System.currentTimeMillis() - t.lastFired > t.fireSpeed && t.Bullets.size() < t.MAX_BULLETS){
-				   if(t.towerID == 1)
+				   if(t.towerID == 1 || t.towerID == 4)
 					   t.fire(this, arrow);
+				   else if(t.towerID == 3)
+					   t.fire(this, fireBall, Enemies);
 			   }
 		   }
 		}
 		//TOWER AND BULLET UPDATES / DRAW
     	for(Tower t: Towers){
     		if(t.towerID == 2){
-    			for(int i=0;i<t.Bullets.size();i++){
     				for(int j=0;j<t.Bullets.size();j++){
     					Bullet b = t.Bullets.get(j);
     					for(int k=0;k<Enemies.size();k++){
     						Enemy e = Enemies.get(k);
-    						if(Bullet.hitDetection(e.hitCenterX-e.radius,e.hitCenterX+e.radius,e.hitCenterY-e.radius,e.hitCenterY+e.radius,
+    						if(!e.isSlowed && Bullet.hitDetection(e.hitCenterX-e.radius,e.hitCenterX+e.radius,e.hitCenterY-e.radius,e.hitCenterY+e.radius,
     								b.posX-b.radius,b.posX+b.radius,b.posY-b.radius,b.posY+b.radius)){
     							e.xSpeed /=2;
     							e.ySpeed /=2;
     							e.lastSlowed = System.currentTimeMillis();
+    							e.isSlowed = true;
     						}
     					}
     				}
-    			}
     		}
     		else{
     			for(int i=0;i<t.Bullets.size();i++){
@@ -493,27 +497,77 @@ public class GameView extends SurfaceView {
 		//012
 		//7X3
 		//654
-		if(x==0){
+		if(gridY >= MapView.Y_TILE_COUNT){
+			return 1;
+		}
+		else if(gridX >= MapView.X_TILE_COUNT){
 			return 7;
 		}
-		else if(y==0){
+		else if(gridX==0){
+			if(fieldOfBattle[gridY+1][gridX+1] > 0 && fieldOfBattle[gridY+1][gridX+1] < 14
+					&& fieldOfBattle[gridY][gridX+1] > 0 && fieldOfBattle[gridY][gridX+1] < 14
+					&& fieldOfBattle[gridY+1][gridX] > 0 && fieldOfBattle[gridY+1][gridX] < 14)
+				return 4;
+			else if(fieldOfBattle[gridY-1][gridX+1] > 0 && fieldOfBattle[gridY-1][gridX+1] < 14
+					&& fieldOfBattle[gridY-1][gridX] > 0 && fieldOfBattle[gridY-1][gridX] < 14
+					&& fieldOfBattle[gridY][gridX+1] > 0 && fieldOfBattle[gridY][gridX+1] < 14)
+				return 2;
+			else if(fieldOfBattle[gridY-1][gridX] > 0 && fieldOfBattle[gridY-1][gridX] < 14)
+				return 1;
+			else if(fieldOfBattle[gridY][gridX+1] > 0 && fieldOfBattle[gridY][gridX+1] < 14)
+				return 3;
+			else if(fieldOfBattle[gridY+1][gridX] > 0 && fieldOfBattle[gridY+1][gridX] < 14)
+				return 5;
+		}
+		else if(gridY==0){
 			return 7;
 		}
-		else if(gridY +1 == MapView.Y_TILE_COUNT){
-			return 7;
+		else if(gridY +1 == MapView.Y_TILE_COUNT && gridX +1 != MapView.X_TILE_COUNT){
+			//0
+			if(fieldOfBattle[gridY-1][gridX-1] > 0 && fieldOfBattle[gridY-1][gridX-1] < 14 
+					&& fieldOfBattle[gridY-1][gridX] > 0 && fieldOfBattle[gridY-1][gridX] < 14
+					&& fieldOfBattle[gridY][gridX-1] > 0 && fieldOfBattle[gridY][gridX-1] < 14)
+				return 0;
+			else if(fieldOfBattle[gridY-1][gridX+1] > 0 && fieldOfBattle[gridY-1][gridX+1] < 14
+					&& fieldOfBattle[gridY-1][gridX] > 0 && fieldOfBattle[gridY-1][gridX] < 14)
+				return 2;
+			else if(fieldOfBattle[gridY-1][gridX] > 0 && fieldOfBattle[gridY-1][gridX] < 14)
+				return 1;
+			else if(fieldOfBattle[gridY][gridX+1] > 0 && fieldOfBattle[gridY][gridX+1] < 14)
+				return 3;
+			else if(fieldOfBattle[gridY][gridX-1] > 0 && fieldOfBattle[gridY][gridX-1] < 14)
+				return 7;
 		}
 		else if(gridX +1 == MapView.X_TILE_COUNT){
-			return 7;
+			//0
+			if(fieldOfBattle[gridY-1][gridX-1] > 0 && fieldOfBattle[gridY-1][gridX-1] < 14 
+					&& fieldOfBattle[gridY-1][gridX] > 0 && fieldOfBattle[gridY-1][gridX] < 14
+					&& fieldOfBattle[gridY][gridX-1] > 0 && fieldOfBattle[gridY][gridX-1] < 14)
+				return 0;
+			else if(fieldOfBattle[gridY-1][gridX+1] > 0 && fieldOfBattle[gridY-1][gridX+1] < 14
+					&& fieldOfBattle[gridY-1][gridX] > 0 && fieldOfBattle[gridY-1][gridX] < 14
+					&& fieldOfBattle[gridY][gridX+1] > 0 && fieldOfBattle[gridY][gridX+1] < 14)
+				return 2;
+			else if(fieldOfBattle[gridY-1][gridX] > 0 && fieldOfBattle[gridY-1][gridX] < 14)
+				return 1;
 		}
 		else{
 			//0
-			if(fieldOfBattle[gridY-1][gridX-1] > 0 && fieldOfBattle[gridY-1][gridX-1] < 14)
+			if(fieldOfBattle[gridY-1][gridX-1] > 0 && fieldOfBattle[gridY-1][gridX-1] < 14 
+					&& fieldOfBattle[gridY-1][gridX] > 0 && fieldOfBattle[gridY-1][gridX] < 14
+					&& fieldOfBattle[gridY][gridX-1] > 0 && fieldOfBattle[gridY][gridX-1] < 14)
 				return 0;
-			else if(fieldOfBattle[gridY+1][gridX+1] > 0 && fieldOfBattle[gridY+1][gridX+1] < 14)
+			else if(fieldOfBattle[gridY+1][gridX+1] > 0 && fieldOfBattle[gridY+1][gridX+1] < 14
+					&& fieldOfBattle[gridY][gridX+1] > 0 && fieldOfBattle[gridY][gridX+1] < 14
+					&& fieldOfBattle[gridY+1][gridX] > 0 && fieldOfBattle[gridY+1][gridX] < 14)
 				return 4;
-			else if(fieldOfBattle[gridY-1][gridX+1] > 0 && fieldOfBattle[gridY-1][gridX+1] < 14)
+			else if(fieldOfBattle[gridY-1][gridX+1] > 0 && fieldOfBattle[gridY-1][gridX+1] < 14
+					&& fieldOfBattle[gridY-1][gridX] > 0 && fieldOfBattle[gridY-1][gridX] < 14
+					&& fieldOfBattle[gridY][gridX+1] > 0 && fieldOfBattle[gridY][gridX+1] < 14)
 				return 2;
-			else if(fieldOfBattle[gridY+1][gridX-1] > 0 && fieldOfBattle[gridY+1][gridX-1] < 14)
+			else if(fieldOfBattle[gridY+1][gridX-1] > 0 && fieldOfBattle[gridY+1][gridX-1] < 14
+					&& fieldOfBattle[gridY][gridX-1] > 0 && fieldOfBattle[gridY][gridX-1] < 14
+					&& fieldOfBattle[gridY+1][gridX] > 0 && fieldOfBattle[gridY+1][gridX] < 14)
 				return 6;
 			else if(fieldOfBattle[gridY-1][gridX] > 0 && fieldOfBattle[gridY-1][gridX] < 14)
 				return 1;
@@ -580,7 +634,7 @@ public class GameView extends SurfaceView {
 	    		if(money>=50){
 	    			money-=50;
 	    			Towers.add(new Tower(tower1,touch_x,touch_y,1, 100));
-	    			Log.i("tower1",""+gridW);
+	    			//Log.i("tower1",""+gridW);
 	    		}
 	    		popup_window.dismiss();
 	    		popup_active = false;
@@ -604,7 +658,7 @@ public class GameView extends SurfaceView {
 		    	public void onClick(View v) {
 		    		if(money>=150){
 		    			money-=150;
-		    			Towers.add(new Tower(tower3,touch_x,touch_y));
+		    			Towers.add(new Tower(tower3,touch_x,touch_y,3,100));
 		    		}
 		    		popup_window.dismiss();
 		    		popup_active = false;

@@ -27,6 +27,7 @@ public class Tower {
     protected int towerID;
     protected long lastFired;
     protected ArrayList<Bullet> Bullets;
+    protected ArrayList<Enemy> targets;
     protected Enemy target = null;
 	private Bitmap bmp2;
 	private int direction;
@@ -68,8 +69,13 @@ public class Tower {
 			bulletID = 0;
 			towerID = 1;
 			break;
-		case 2:
-			
+		case 3://Shrine
+			strength = 5;
+			this.range = (int)(range*2);
+			fireSpeed = 1500;
+			bulletSpeed = 150;
+			bulletID = 3;
+			towerID = 3;
 			break;
 		default:
 			break;
@@ -144,6 +150,8 @@ public class Tower {
 		lastFired = System.currentTimeMillis();
 		if(towerID == 1 || towerID == 4)
 			Bullets.add(new Bullet(target,x,y,strength,bulletSpeed,arrow,0));
+		//else if(towerID == 3)
+			//Bullets.add(new Bullet(target,x,y,strength,bulletSpeed,2));
 		idle = true;
 	}
 	public void fire(GameView gameView, Bitmap bmp){
@@ -163,5 +171,12 @@ public class Tower {
 		bulletSpeed /=2;
 		for(Bullet b: Bullets)
 	    	b.slowDown();
+	}
+	public void fire(GameView gameView2, Bitmap fireBall,
+			ArrayList<Enemy> enemies) {
+		if(towerID == 3)
+			Bullets.add(new Bullet(target,enemies,x,y,strength,bulletSpeed,fireBall,2));
+		idle = true;
+		
 	}
 }
