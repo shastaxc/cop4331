@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">bentd</string>
-    <string name="hello_world">Hello world!</string>
     <string name="title_activity_game_instance">GameInstance</string>
     <string name="resume_btn_txt">Resume</string>
     <string name="normal_game_btn_txt">Normal Mode</string>
