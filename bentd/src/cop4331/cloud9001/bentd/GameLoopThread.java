@@ -10,6 +10,7 @@ public class GameLoopThread extends Thread {
        private long LastDraw = 0;
        private int TARGET_FPS= 12;// With respect to 60, so if 12 is our target, 12*5=60, 5 is our fps inverse
        private boolean running = false;
+	   protected boolean speedEditing = false;
        
        public GameLoopThread(GameView view) {
              this.view = view;
@@ -23,6 +24,9 @@ public class GameLoopThread extends Thread {
     	   while (running) {
     		   if(!running){
     			   //
+    		   }
+    		   else if(speedEditing){
+    			   //Don't update game while speed values are changing
     		   }
     		   else if(GameInstance.basic_map_view.getMode() == MapView.PAUSED || GameInstance.basic_map_view.getMode() == MapView.READY 
     				   || GameInstance.basic_map_view.getMode() == MapView.DEFEAT || GameInstance.basic_map_view.getMode() == MapView.VICTORY){

@@ -14,16 +14,100 @@ public class Bullet {
 	protected boolean destroyed = false;
 	protected Paint paint;
 	private Bitmap bmp[];
+	private Bitmap bmp2;
 	private int currentFrame = 0;
 	private long birth = System.currentTimeMillis();
+	private int bulletID;
 	
-	public Bullet(Enemy e, int x, int y, int strength, int bulletSpeed, Bitmap[] bmpArr) {
+	public Bullet(Enemy e, int x, int y, int strength, int bulletSpeed, Bitmap[] bmpArr, int id) {
 		bmp = bmpArr;
 		target = e;
 		posX = x;
 		posY = y;
 		stoppingPower = strength;
 		velocity = bulletSpeed;
+		bulletID = 0;
+	}
+	public Bullet(int i, int x, int xmod, int y, int ymod, int direction,
+			Bitmap bmp) {
+		bmp2 = bmp;
+		bulletID = 1;
+		//012
+		//7X3
+		//654
+		radius = bmp.getWidth();
+		if(direction == 1){
+			posX = x;
+			posY = y-ymod;
+		}
+		else if(direction == 0){
+			if(i==1){
+				posX = x-xmod;
+				posY = y;
+			}
+			else if(i==2){
+				posX = x;
+				posY = y-ymod;
+			}
+			else{
+				posX = x-xmod;
+				posY = y-ymod;
+			}
+		}
+		else if(direction == 2){
+			if(i==1){
+				posX = x;
+				posY = y-ymod;
+			}
+			else if(i==2){
+				posX = x+xmod;
+				posY = y;
+			}
+			else{
+				posX = x+xmod;
+				posY = y-ymod;
+			}
+		}
+		else if(direction == 3){
+			posX = x+xmod;
+			posY = y;
+		}
+		else if(direction == 4){
+			if(i==1){
+				posX = x+xmod;
+				posY = y;
+			}
+			else if(i==2){
+				posX = x+xmod;
+				posY = y+ymod;
+			}
+			else{
+				posX = x;
+				posY = y+ymod;
+			}
+		}
+		else if(direction == 5){
+			posX = x;
+			posY = y+ymod;
+		}
+		else if(direction == 6){
+			if(i==1){
+				posX = x-xmod;
+				posY = y;
+			}
+			else if(i==2){
+				posX = x-xmod;
+				posY = y+ymod;
+			}
+			else{
+				posX = x;
+				posY = y+ymod;
+			}
+		}
+		else if(direction == 7){
+			posX = x-xmod;
+			posY = y;
+		}
 	}
 	public int distance(int x1, int x2, int y1, int y2){
 		return (int)Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
@@ -67,7 +151,7 @@ public class Bullet {
 			}
 			
 			if(hitDetection(targetX-target.radius,targetX+target.radius,targetY-target.radius,targetY+target.radius,
-					posX,posX,posY,posY) && !destroyed){
+					posX-(int)(.1*posX),posX+(int)(.1*posX),posY-(int)(.1*posY),posY+(int)(.1*posY)) && !destroyed){
 				target.health -= stoppingPower;
 				destroyed = true;
 			}
@@ -99,12 +183,15 @@ public class Bullet {
 	public void onDraw(Canvas canvas){
 		//update();
 		//canvas.drawCircle(posX,posY,10, paint);
-		canvas.drawBitmap(bmp[currentFrame], posX,posY, null);
+		if(bulletID == 0)
+			canvas.drawBitmap(bmp[currentFrame], posX,posY, null);
+		else if(bulletID == 1)
+			canvas.drawBitmap(bmp2,posX,posY,null);
 	}
 	public long getLifeSpane(){
 		return (long) (System.currentTimeMillis() - birth);
 	}
-	private boolean hitDetection(int minEnemyX, int maxEnemyX, int minEnemyY, int maxEnemyY,
+	static boolean hitDetection(int minEnemyX, int maxEnemyX, int minEnemyY, int maxEnemyY,
 			int minBulletX, int maxBulletX, int minBulletY, int maxBulletY){
 		return ((minBulletX <= maxEnemyX && maxEnemyX <= maxBulletX)|| (minEnemyX <= maxBulletX && maxBulletX <= maxEnemyX))
 				&&((minBulletY <= maxEnemyY && maxEnemyY <= maxBulletY)|| (minEnemyY <= maxBulletY && maxBulletY <= maxEnemyY));

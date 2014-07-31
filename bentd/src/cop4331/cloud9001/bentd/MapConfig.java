@@ -66,7 +66,7 @@ public class MapConfig {
 	protected int[] EnemiesPerWave;
 	protected long timePerWave;
 	
-	public MapConfig(int[][] fieldOfBattle, int level){
+	/*public MapConfig(int[][] fieldOfBattle, int level){
 		switch(level){
 		case 0: //FIRST LEVEL
 			startingMoney = 100;
@@ -75,22 +75,22 @@ public class MapConfig {
 			health = 100;
 			EnemiesPerWave = new int[maxWaves];
 			for(int i=0;i<maxWaves;i++)
-				EnemiesPerWave[i] = 5*(i+1);
+				EnemiesPerWave[i] = 3*(i+1)+3;
 			break;
 			default:
 				break;
 		}
-	}
+	}*/
 	public MapConfig(int level){
 		switch(level){
 		case 0: //FIRST LEVEL
-			startingMoney = 100;
+			startingMoney = 1000;
 			maxWaves = 8;
-			timePerWave = 120000;
+			timePerWave = 60000;
 			health = 100;
 			EnemiesPerWave = new int[maxWaves];
 			for(int i=0;i<maxWaves;i++)
-				EnemiesPerWave[i] = i+2;
+				EnemiesPerWave[i] = 2*(i+1)+3;
 			break;
 			default:
 				break;

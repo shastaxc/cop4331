@@ -16,14 +16,16 @@ public class Enemy {
 	protected int x = 0; 
 	protected int y = 0;
 	private int direction = 0;//0 up,1 right, 2 down, 3 left
-    private int xSpeed;
-    private int ySpeed;
+    protected int xSpeed;
+    protected int ySpeed;
     protected int strength;
     protected int health;
     protected int radius;
     protected int hitCenterX = 0;
     protected int hitCenterY = 0;
     protected int bounty;
+    protected boolean isSlowed = false;
+    protected long lastSlowed = 0;
     private Bitmap bmp;
     private Path path;
     
@@ -46,7 +48,7 @@ public class Enemy {
     	case 1://IMPS
     		BMP_COLUMNS = 3;
     		BMP_ROWS = 3;
-    		xSpeed = (int) Math.sqrt(rnd.nextInt(20)+20);
+    		xSpeed = (int) Math.sqrt(rnd.nextInt(10)+10);
     		ySpeed = xSpeed;
     		bounty = 10;
     		strength = 3;
@@ -55,7 +57,7 @@ public class Enemy {
     	case 2://FOX
     		BMP_COLUMNS = 3;
     		BMP_ROWS = 3;
-    		xSpeed = (int) Math.sqrt(rnd.nextInt(20)+30);
+    		xSpeed = (int) Math.sqrt(rnd.nextInt(10)+15);
     		ySpeed = xSpeed;
     		bounty = 20;
     		strength = 1;
@@ -64,7 +66,7 @@ public class Enemy {
     	case 3://OGRE
     		BMP_COLUMNS = 3;
     		BMP_ROWS = 3;
-    		xSpeed = (int) Math.sqrt(rnd.nextInt(20)+10);
+    		xSpeed = (int) Math.sqrt(rnd.nextInt(10)+5);
     		ySpeed = xSpeed;
     		bounty = 30;
     		strength = 10;
@@ -73,7 +75,7 @@ public class Enemy {
     	case 5:
     		BMP_COLUMNS = 8;
     		BMP_ROWS = 2;
-    		xSpeed = (int) Math.sqrt(rnd.nextInt(20)+5);
+    		xSpeed = (int) Math.sqrt(rnd.nextInt(10)+3);
     		ySpeed = xSpeed;
     		bounty = 1000;
     		strength = 90001;//IT"S HUUUUUUUUGEEEEEEEEEE!!!!!!!!
@@ -166,7 +168,10 @@ public class Enemy {
           //update();
     	int srcX = 0, srcY = 0;
         if(id == 5){
-        	srcX = ((((health-1)/50)+8)%8) * width;
+        	if(health >= 360)
+        		srcX = 0;
+        	else
+        		srcX = (8-((((health)/50)+8)%8))*width;
         	srcY = currentFrame * height;
         }
         else{
@@ -199,7 +204,7 @@ public class Enemy {
 			if(distance(e,X,Y) < distance(victim,X,Y))
 				victim = e;
 		}
-		if(distance(victim,X,Y) > range)
+		if(distance(victim,X,Y) > range-victim.radius)
 			return null;
 		return victim;
 	}
