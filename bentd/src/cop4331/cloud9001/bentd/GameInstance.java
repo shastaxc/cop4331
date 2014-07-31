@@ -34,7 +34,6 @@ public class GameInstance extends Activity {
 	protected static TextView time_remaining_textview;
 	protected static ImageView infinity_icon;
 	protected static LinearLayout text_layout;
-	protected static RelativeLayout stats_bar_layout;
 	protected static boolean endless = false;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -217,10 +216,8 @@ public class GameInstance extends Activity {
     				if(basic_map_view.getMode() == MapView.READY){
     					basic_map_view.setMode(MapView.RUNNING);
     				}
-    				break;
-    			case R.id.stats_bar_layout:
-    				if(basic_map_view.getMode() == MapView.READY){
-    					basic_map_view.setMode(MapView.RUNNING);
+    				else if(basic_map_view.getMode() == MapView.DEFEAT || basic_map_view.getMode() == MapView.VICTORY){
+    					finish();
     				}
     				break;
     		}
