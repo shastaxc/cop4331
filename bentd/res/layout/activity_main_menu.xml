@@ -10,11 +10,23 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
 	    android:orientation="horizontal"
+	    android:background="@drawable/title_bg"
 	>
-	    <View
+	    <LinearLayout
         	android:layout_width="0dp"
         	android:layout_height="match_parent"
-        	android:layout_weight=".60" />
+        	android:layout_weight=".60"
+        >
+        	<TextView
+        	    android:id="@+id/title_text"
+        	    android:layout_width="250dp"
+        	    android:layout_height="wrap_content"
+        	    android:textSize="25sp"
+        	    android:textStyle="bold"
+        	    android:textColor="#000000"
+        	    android:text="Banzai Exorcist Nippon Tower Defense"
+        	/>
+        </LinearLayout>
 	    
         	
        	<RelativeLayout    
