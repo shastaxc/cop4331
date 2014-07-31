@@ -122,8 +122,8 @@ public class GameInstance extends Activity {
 		public void handleMessage(Message msg){
 			fastForward();
 		}
-	};
-	static Handler endHandler = new Handler(){
+};
+		static Handler endHandler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
 			String text = (String)msg.obj;
@@ -217,10 +217,8 @@ public class GameInstance extends Activity {
     				if(basic_map_view.getMode() == MapView.READY){
     					basic_map_view.setMode(MapView.RUNNING);
     				}
-    				break;
-    			case R.id.stats_bar_layout:
-    				if(basic_map_view.getMode() == MapView.READY){
-    					basic_map_view.setMode(MapView.RUNNING);
+    				else if(basic_map_view.getMode() == MapView.DEFEAT || basic_map_view.getMode() == MapView.VICTORY){
+    					finish();
     				}
     				break;
     		}

@@ -22,10 +22,7 @@ public class GameLoopThread extends Thread {
        @Override
        public void run() {
     	   while (running) {
-    		   if(!running){
-    			   //
-    		   }
-    		   else if(speedEditing){
+    		   if(speedEditing){
     			   //Don't update game while speed values are changing
     		   }
     		   else if(GameInstance.basic_map_view.getMode() == MapView.PAUSED || GameInstance.basic_map_view.getMode() == MapView.READY 
